@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Employee - Profile</title>
+  <style>
+    :root {
+      --bg: #F5F7FA;
+      --soft: #DBEAFE;
+      --accent: #2563EB;
+      --text: #0f172a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .layout { display: grid; grid-template-columns: 230px 1fr; min-height: 100vh; }
+    .sidebar { background: var(--soft); padding: 18px; }
+    .sidebar h2 { margin: 0 0 8px; font-size: 1.1rem; }
+    .sidebar a {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--text);
+      margin: 6px 0;
+    }
+    .sidebar a.active,
+    .sidebar a:hover { background: #bfdbfe; }
+    .main { padding: 22px; }
+    .card { background: #fff; border-radius: 12px; padding: 16px; max-width: 820px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+    }
+    .btn {
+      background: var(--accent);
+      border: 0;
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    @media (max-width: 860px) {
+      .layout { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: 1fr; }
+      .sidebar { display: flex; gap: 6px; overflow: auto; }
+      .sidebar a { white-space: nowrap; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>Employee</h2>
+      <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a class="active" href="profile.html">Profile</a>
+        <a href="evaluations.html">Assigned Evaluations</a>
+        <a href="upload.html">Upload Evidence</a>
+        <a href="feedback.html">Feedback</a>
+        <a href="history.html">History</a>
+        <a href="#" onclick="logout(); return false;">Logout</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <h1>Profile Input</h1>
+      <div class="card">
+        <div class="grid">
+          <input placeholder="Full name" value="Employee User" />
+          <input placeholder="Department" value="IT" />
+          <input placeholder="Position" value="Software Engineer" />
+          <input placeholder="Contact" value="employee@sample.com" />
+        </div>
+        <br />
+        <textarea rows="4" placeholder="Career goals">
+Improve leadership and communication skills.</textarea
+        >
+        <br /><br />
+        <button class="btn" onclick="alert('Profile updated (prototype).')">
+          Save Profile
+        </button>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const auth = JSON.parse(localStorage.getItem("epsAuth") || "null");
+    if (!auth || auth.role !== "Employee") location.href = "../index.html";
+    function logout() {
+      localStorage.removeItem("epsAuth");
+      location.href = "../index.html";
+    }
+  </script>
+</body>
+</html>

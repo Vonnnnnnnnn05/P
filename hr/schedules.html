@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HR - Schedules</title>
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --soft: #E0F2FE;
+      --accent: #0EA5E9;
+      --text: #0f172a;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+    .sidebar { background: var(--soft); padding: 18px; }
+    .sidebar h2 { margin: 0 0 8px; font-size: 1.1rem; }
+    .sidebar a {
+      display: block;
+      padding: 10px 12px;
+      margin: 6px 0;
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .sidebar a.active,
+    .sidebar a:hover { background: #bae6fd; }
+    .main { padding: 22px; }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      max-width: 860px;
+    }
+    input, button {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+    }
+    button {
+      border: 0;
+      background: var(--accent);
+      color: #fff;
+      cursor: pointer;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+    @media (max-width: 860px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { display: flex; gap: 6px; overflow: auto; }
+      .sidebar a { white-space: nowrap; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>HR Officer</h2>
+      <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="forms.html">Evaluation Forms</a>
+        <a class="active" href="schedules.html">Schedules</a>
+        <a href="review.html">Review</a>
+        <a href="finalize.html">Finalize</a>
+        <a href="reports.html">Reports</a>
+        <a href="#" onclick="logout(); return false;">Logout</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <h1>Assign Schedules</h1>
+      <div class="card">
+        <p>Set deadline reminders and cycle windows.</p>
+        <input id="cycle" placeholder="Cycle name" />
+        <input id="deadline" type="date" />
+        <button onclick="assign()">Assign</button>
+        <table>
+          <thead>
+            <tr>
+              <th>Cycle</th>
+              <th>Deadline</th>
+              <th>Reminder</th>
+            </tr>
+          </thead>
+          <tbody id="rows">
+            <tr>
+              <td>Q2 2026</td>
+              <td>2026-06-30</td>
+              <td>Enabled</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const auth = JSON.parse(localStorage.getItem("epsAuth") || "null");
+    if (!auth || auth.role !== "HR Officer") location.href = "../index.html";
+
+    function assign() {
+      if (!cycle.value || !deadline.value) {
+        alert("Provide schedule details.");
+        return;
+      }
+      rows.insertAdjacentHTML(
+        "beforeend",
+        `<tr><td>${cycle.value}</td><td>${deadline.value}</td><td>Enabled</td></tr>`,
+      );
+      cycle.value = "";
+      deadline.value = "";
+      alert("Schedule assigned.");
+    }
+    function logout() {
+      localStorage.removeItem("epsAuth");
+      location.href = "../index.html";
+    }
+  </script>
+</body>
+</html>

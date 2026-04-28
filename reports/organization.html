@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Report - Organizational Performance</title>
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --soft: #E0F2FE;
+      --accent: #0EA5E9;
+      --text: #0f172a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+    .sidebar { background: var(--soft); padding: 18px; }
+    .sidebar h2 { margin: 0 0 8px; font-size: 1.1rem; }
+    .sidebar a {
+      display: block;
+      padding: 10px 12px;
+      margin: 6px 0;
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .sidebar a.active,
+    .sidebar a:hover { background: #bae6fd; }
+    .main { padding: 22px; }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+    .card { background: #fff; padding: 14px; border-radius: 12px; }
+    .btn {
+      background: var(--accent);
+      border: 0;
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    @media (max-width: 860px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { display: flex; gap: 6px; overflow: auto; }
+      .sidebar a { white-space: nowrap; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>Reports</h2>
+      <nav>
+        <a href="individual.html">Individual Summary</a>
+        <a href="department.html">Department Overview</a>
+        <a href="completion.html">Completion Status</a>
+        <a href="trends.html">Trend Comparison</a>
+        <a href="training.html">Training Needs</a>
+        <a class="active" href="organization.html">Organizational</a>
+        <a href="#" onclick="logout(); return false;">Logout</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <h1>Organizational Performance</h1>
+      <div class="cards">
+        <div class="card">
+          <h4>Org Average</h4>
+          <p>4.12 / 5</p>
+        </div>
+        <div class="card">
+          <h4>Completion</h4>
+          <p>82%</p>
+        </div>
+        <div class="card">
+          <h4>Top Department</h4>
+          <p>IT (4.2)</p>
+        </div>
+        <div class="card">
+          <h4>Risk Area</h4>
+          <p>Cross-team communication</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const auth = JSON.parse(localStorage.getItem("epsAuth") || "null");
+    if (!auth) location.href = "../index.html";
+    function logout() {
+      localStorage.removeItem("epsAuth");
+      location.href = "../index.html";
+    }
+  </script>
+</body>
+</html>

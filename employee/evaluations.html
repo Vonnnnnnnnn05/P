@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Employee - Evaluations</title>
+  <style>
+    :root {
+      --bg: #F5F7FA;
+      --soft: #DBEAFE;
+      --accent: #2563EB;
+      --text: #0f172a;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .layout { display: grid; grid-template-columns: 230px 1fr; min-height: 100vh; }
+    .sidebar { background: var(--soft); padding: 18px; }
+    .sidebar h2 { margin: 0 0 8px; font-size: 1.1rem; }
+    .sidebar a {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--text);
+      margin: 6px 0;
+    }
+    .sidebar a.active,
+    .sidebar a:hover { background: #bfdbfe; }
+    .main { padding: 22px; }
+    table {
+      width: 100%;
+      background: #fff;
+      border-collapse: collapse;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+    .btn {
+      background: var(--accent);
+      border: 0;
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    @media (max-width: 860px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { display: flex; gap: 6px; overflow: auto; }
+      .sidebar a { white-space: nowrap; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>Employee</h2>
+      <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="profile.html">Profile</a>
+        <a class="active" href="evaluations.html">Assigned Evaluations</a>
+        <a href="upload.html">Upload Evidence</a>
+        <a href="feedback.html">Feedback</a>
+        <a href="history.html">History</a>
+        <a href="#" onclick="logout(); return false;">Logout</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <h1>Assigned Evaluations</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>Evaluation</th>
+            <th>Assigned By</th>
+            <th>Due Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Q2 Performance Review</td>
+            <td>Supervisor A</td>
+            <td>2026-05-05</td>
+            <td>Pending</td>
+          </tr>
+          <tr>
+            <td>Competency Self-Assessment</td>
+            <td>HR Officer</td>
+            <td>2026-05-10</td>
+            <td>In Progress</td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+  </div>
+
+  <script>
+    const auth = JSON.parse(localStorage.getItem("epsAuth") || "null");
+    if (!auth || auth.role !== "Employee") location.href = "../index.html";
+    function logout() {
+      localStorage.removeItem("epsAuth");
+      location.href = "../index.html";
+    }
+  </script>
+</body>
+</html>

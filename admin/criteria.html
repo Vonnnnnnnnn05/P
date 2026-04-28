@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - Evaluation Criteria</title>
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --soft: #DBEAFE;
+      --accent: #2563EB;
+      --text: #0f172a;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+    .sidebar { background: var(--soft); padding: 18px; }
+    .sidebar h2 { margin: 0 0 8px; font-size: 1.1rem; }
+    .sidebar a {
+      display: block;
+      padding: 10px 12px;
+      margin: 6px 0;
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .sidebar a.active,
+    .sidebar a:hover { background: #bfdbfe; }
+    .main { padding: 22px; }
+    .card {
+      background: #fff;
+      padding: 16px;
+      border-radius: 12px;
+      max-width: 780px;
+      box-shadow: 0 6px 18px rgba(2, 6, 23, 0.06);
+    }
+    label { display: block; margin-top: 8px; }
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+    }
+    .row { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; }
+    .btn {
+      margin-top: 12px;
+      background: var(--accent);
+      color: #fff;
+      border: 0;
+      padding: 10px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .sum { font-weight: 700; }
+    @media (max-width: 860px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { display: flex; gap: 6px; overflow: auto; }
+      .sidebar a { white-space: nowrap; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>Administrator</h2>
+      <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="users.html">Manage Users</a>
+        <a href="departments.html">Departments</a>
+        <a class="active" href="criteria.html">Evaluation Criteria</a>
+        <a href="settings.html">System Settings</a>
+        <a href="organization.html">Organization Report</a>
+        <a href="system.html">System Evaluation</a>
+        <a href="#" onclick="logout(); return false;">Logout</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <h1>Configure Evaluation Criteria</h1>
+      <div class="card">
+        <p>Set weighting percentages used in evaluation forms.</p>
+        <div class="row">
+          <label>Quality of Work (%)<input id="c1" type="number" value="30" /></label>
+          <label>Productivity (%)<input id="c2" type="number" value="25" /></label>
+        </div>
+        <div class="row">
+          <label>Teamwork (%)<input id="c3" type="number" value="20" /></label>
+          <label>Initiative (%)<input id="c4" type="number" value="25" /></label>
+        </div>
+        <p class="sum">Total Weight: <span id="total">100</span>%</p>
+        <button class="btn" onclick="save()">Save Criteria</button>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const auth = JSON.parse(localStorage.getItem("epsAuth") || "null");
+    if (!auth || auth.role !== "Administrator") location.href = "../index.html";
+
+    [c1, c2, c3, c4].forEach((el) => el.addEventListener("input", update));
+    function update() {
+      total.textContent = [c1, c2, c3, c4].reduce(
+        (a, b) => a + (Number(b.value) || 0),
+        0,
+      );
+    }
+    function save() {
+      const t = Number(total.textContent);
+      if (t !== 100) {
+        alert("Total must equal 100%.");
+        return;
+      }
+      alert("Criteria saved (prototype only).");
+    }
+    function logout() {
+      localStorage.removeItem("epsAuth");
+      location.href = "../index.html";
+    }
+  </script>
+</body>
+</html>

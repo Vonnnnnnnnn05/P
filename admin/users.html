@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - Manage Users</title>
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --soft: #DBEAFE;
+      --accent: #2563EB;
+      --text: #0f172a;
+      --card: #ffffff;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+    .sidebar { background: var(--soft); padding: 18px; }
+    .sidebar h2 { margin: 0 0 8px; font-size: 1.1rem; }
+    .sidebar a {
+      display: block;
+      padding: 10px 12px;
+      margin: 6px 0;
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .sidebar a.active,
+    .sidebar a:hover { background: #bfdbfe; }
+    .main { padding: 22px; }
+    .btn {
+      background: var(--accent);
+      color: #fff;
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr auto;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    input, select {
+      padding: 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      width: 100%;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+    @media (max-width: 860px) {
+      .layout { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: 1fr; }
+      .sidebar { display: flex; gap: 6px; overflow: auto; }
+      .sidebar a { white-space: nowrap; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>Administrator</h2>
+      <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a class="active" href="users.html">Manage Users</a>
+        <a href="departments.html">Departments</a>
+        <a href="criteria.html">Evaluation Criteria</a>
+        <a href="settings.html">System Settings</a>
+        <a href="organization.html">Organization Report</a>
+        <a href="system.html">System Evaluation</a>
+        <a href="#" onclick="logout(); return false;">Logout</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <h1>Manage Users</h1>
+      <div class="grid">
+        <input id="name" placeholder="Full name" />
+        <select id="role">
+          <option>Employee</option>
+          <option>Supervisor</option>
+          <option>HR Officer</option>
+          <option>Administrator</option>
+        </select>
+        <input id="dept" placeholder="Department" />
+        <button class="btn" onclick="addUser()">Add User</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Department</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="userRows">
+          <tr>
+            <td>Maria Santos</td>
+            <td>Employee</td>
+            <td>Finance</td>
+            <td>Active</td>
+          </tr>
+          <tr>
+            <td>John Cruz</td>
+            <td>Supervisor</td>
+            <td>IT</td>
+            <td>Active</td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+  </div>
+
+  <script>
+    const auth = JSON.parse(localStorage.getItem("epsAuth") || "null");
+    if (!auth || auth.role !== "Administrator") location.href = "../index.html";
+
+    function addUser() {
+      const n = name.value.trim();
+      const r = role.value;
+      const d = dept.value.trim();
+      if (!n || !d) {
+        alert("Fill in name and department.");
+        return;
+      }
+      userRows.insertAdjacentHTML(
+        "beforeend",
+        `<tr><td>${n}</td><td>${r}</td><td>${d}</td><td>Active</td></tr>`,
+      );
+      name.value = "";
+      dept.value = "";
+      alert("User added (prototype).");
+    }
+
+    function logout() {
+      localStorage.removeItem("epsAuth");
+      location.href = "../index.html";
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Employee - History</title>
+  <style>
+    :root {
+      --bg: #F5F7FA;
+      --soft: #DBEAFE;
+      --accent: #2563EB;
+      --text: #0f172a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .layout { display: grid; grid-template-columns: 230px 1fr; min-height: 100vh; }
+    .sidebar { background: var(--soft); padding: 18px; }
+    .sidebar h2 { margin: 0 0 8px; font-size: 1.1rem; }
+    .sidebar a {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--text);
+      margin: 6px 0;
+    }
+    .sidebar a.active,
+    .sidebar a:hover { background: #bfdbfe; }
+    .main { padding: 22px; }
+    .card { background: #fff; padding: 16px; border-radius: 12px; max-width: 860px; }
+    .trend { display: grid; gap: 8px; }
+    .bar {
+      height: 26px;
+      background: #e2e8f0;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    .bar span {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      background: var(--accent);
+      color: #fff;
+      padding-left: 8px;
+      display: flex;
+      align-items: center;
+      font-size: 12px;
+    }
+    .btn {
+      background: var(--accent);
+      border: 0;
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    @media (max-width: 860px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { display: flex; gap: 6px; overflow: auto; }
+      .sidebar a { white-space: nowrap; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>Employee</h2>
+      <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="profile.html">Profile</a>
+        <a href="evaluations.html">Assigned Evaluations</a>
+        <a href="upload.html">Upload Evidence</a>
+        <a href="feedback.html">Feedback</a>
+        <a class="active" href="history.html">History</a>
+        <a href="#" onclick="logout(); return false;">Logout</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <h1>Performance History</h1>
+      <div class="card">
+        <div class="trend">
+          <div class="bar"><span style="width: 76%">2023 - 3.8</span></div>
+          <div class="bar"><span style="width: 82%">2024 - 4.1</span></div>
+          <div class="bar"><span style="width: 86%">2025 - 4.3</span></div>
+        </div>
+        <p>Trend comparison shows continuous improvement.</p>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const auth = JSON.parse(localStorage.getItem("epsAuth") || "null");
+    if (!auth || auth.role !== "Employee") location.href = "../index.html";
+    function logout() {
+      localStorage.removeItem("epsAuth");
+      location.href = "../index.html";
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard</title>
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --soft: #DBEAFE;
+      --accent: #2563EB;
+      --text: #0f172a;
+      --card: #ffffff;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      min-height: 100vh;
+    }
+    .sidebar {
+      background: var(--soft);
+      padding: 18px;
+    }
+    .sidebar h2 { margin: 0 0 8px; font-size: 1.1rem; }
+    .sidebar a {
+      display: block;
+      padding: 10px 12px;
+      margin: 6px 0;
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .sidebar a.active,
+    .sidebar a:hover { background: #bfdbfe; }
+    .main { padding: 22px; }
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      border: 0;
+      background: var(--accent);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 6px 20px rgba(2, 6, 23, 0.07);
+    }
+    .badge {
+      background: var(--accent);
+      color: #fff;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 12px;
+    }
+    .table-wrap { overflow: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 11px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+    @media (max-width: 860px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { display: flex; gap: 6px; overflow: auto; }
+      .sidebar a { white-space: nowrap; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>Administrator</h2>
+      <nav>
+        <a class="active" href="dashboard.html">Dashboard</a>
+        <a href="users.html">Manage Users</a>
+        <a href="departments.html">Departments</a>
+        <a href="criteria.html">Evaluation Criteria</a>
+        <a href="settings.html">System Settings</a>
+        <a href="organization.html">Organization Report</a>
+        <a href="system.html">System Evaluation</a>
+        <a href="#" onclick="logout(); return false;">Logout</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <div class="top">
+        <h1>Admin Dashboard</h1>
+      </div>
+
+      <section class="cards">
+        <div class="card">
+          <h3>Users</h3>
+          <p><strong>48</strong> registered</p>
+        </div>
+        <div class="card">
+          <h3>Departments</h3>
+          <p><strong>7</strong> active units</p>
+        </div>
+        <div class="card">
+          <h3>Pending Approvals <span class="badge">9</span></h3>
+          <p>Profiles and role updates</p>
+        </div>
+        <div class="card">
+          <h3>System Health</h3>
+          <p>Stable - all modules available</p>
+        </div>
+      </section>
+
+      <h3>Recent Administrative Activity</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Action</th>
+              <th>Owner</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2026-04-28</td>
+              <td>Added Supervisor account</td>
+              <td>admin</td>
+              <td>Completed</td>
+            </tr>
+            <tr>
+              <td>2026-04-27</td>
+              <td>Updated KPI criteria set B</td>
+              <td>admin</td>
+              <td>Completed</td>
+            </tr>
+            <tr>
+              <td>2026-04-26</td>
+              <td>Department restructure: QA</td>
+              <td>admin</td>
+              <td>In review</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Role guard: admin only
+    const auth = JSON.parse(localStorage.getItem("epsAuth") || "null");
+    if (!auth || auth.role !== "Administrator") location.href = "../index.html";
+    function logout() {
+      localStorage.removeItem("epsAuth");
+      location.href = "../index.html";
+    }
+  </script>
+</body>
+</html>

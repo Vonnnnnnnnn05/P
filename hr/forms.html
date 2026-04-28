@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HR - Evaluation Forms</title>
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --soft: #E0F2FE;
+      --accent: #0EA5E9;
+      --text: #0f172a;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+    .sidebar { background: var(--soft); padding: 18px; }
+    .sidebar h2 { margin: 0 0 8px; font-size: 1.1rem; }
+    .sidebar a {
+      display: block;
+      padding: 10px 12px;
+      margin: 6px 0;
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .sidebar a.active,
+    .sidebar a:hover { background: #bae6fd; }
+    .main { padding: 22px; }
+    .box {
+      background: #fff;
+      padding: 16px;
+      border-radius: 12px;
+      max-width: 860px;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr auto;
+      gap: 10px;
+    }
+    input, select {
+      padding: 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+    }
+    .btn {
+      background: var(--accent);
+      border: 0;
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      .row { grid-template-columns: 1fr; }
+      .sidebar { display: flex; gap: 6px; overflow: auto; }
+      .sidebar a { white-space: nowrap; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>HR Officer</h2>
+      <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a class="active" href="forms.html">Evaluation Forms</a>
+        <a href="schedules.html">Schedules</a>
+        <a href="review.html">Review</a>
+        <a href="finalize.html">Finalize</a>
+        <a href="reports.html">Reports</a>
+        <a href="#" onclick="logout(); return false;">Logout</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <h1>Create Evaluation Forms</h1>
+      <div class="box">
+        <div class="row">
+          <input id="formName" placeholder="Form name" />
+          <input id="period" placeholder="Period (Q1 2026)" />
+          <select id="target">
+            <option>All Employees</option>
+            <option>IT Dept</option>
+            <option>Finance Dept</option>
+          </select>
+          <button class="btn" onclick="createForm()">Create</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Form</th>
+              <th>Period</th>
+              <th>Target</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="formRows">
+            <tr>
+              <td>Annual Review A</td>
+              <td>2026</td>
+              <td>All Employees</td>
+              <td>Published</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const auth = JSON.parse(localStorage.getItem("epsAuth") || "null");
+    if (!auth || auth.role !== "HR Officer") location.href = "../index.html";
+
+    function createForm() {
+      if (!formName.value.trim() || !period.value.trim()) {
+        alert("Complete form fields.");
+        return;
+      }
+      formRows.insertAdjacentHTML(
+        "beforeend",
+        `<tr><td>${formName.value}</td><td>${period.value}</td><td>${target.value}</td><td>Draft</td></tr>`,
+      );
+      formName.value = "";
+      period.value = "";
+      alert("Form created.");
+    }
+    function logout() {
+      localStorage.removeItem("epsAuth");
+      location.href = "../index.html";
+    }
+  </script>
+</body>
+</html>

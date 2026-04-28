@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - Departments</title>
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --soft: #DBEAFE;
+      --accent: #2563EB;
+      --text: #0f172a;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+    .sidebar { background: var(--soft); padding: 18px; }
+    .sidebar h2 { margin: 0 0 8px; font-size: 1.1rem; }
+    .sidebar a {
+      display: block;
+      padding: 10px 12px;
+      margin: 6px 0;
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .sidebar a.active,
+    .sidebar a:hover { background: #bfdbfe; }
+    .main { padding: 22px; }
+    .btn {
+      background: var(--accent);
+      color: #fff;
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      cursor: pointer;
+    }
+    input {
+      padding: 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+    @media (max-width: 860px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { display: flex; gap: 6px; overflow: auto; }
+      .sidebar a { white-space: nowrap; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>Administrator</h2>
+      <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="users.html">Manage Users</a>
+        <a class="active" href="departments.html">Departments</a>
+        <a href="criteria.html">Evaluation Criteria</a>
+        <a href="settings.html">System Settings</a>
+        <a href="organization.html">Organization Report</a>
+        <a href="system.html">System Evaluation</a>
+        <a href="#" onclick="logout(); return false;">Logout</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <h1>Department Management</h1>
+      <p>Maintain organizational structure for assignment and reporting.</p>
+      <input id="depName" placeholder="New department name" />
+      <button class="btn" onclick="addDept()">Add Department</button>
+      <br /><br />
+      <table>
+        <thead>
+          <tr>
+            <th>Department</th>
+            <th>Head</th>
+            <th>Employees</th>
+          </tr>
+        </thead>
+        <tbody id="depRows">
+          <tr>
+            <td>IT</td>
+            <td>A. Velasco</td>
+            <td>11</td>
+          </tr>
+          <tr>
+            <td>Finance</td>
+            <td>D. Reyes</td>
+            <td>8</td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+  </div>
+
+  <script>
+    const auth = JSON.parse(localStorage.getItem("epsAuth") || "null");
+    if (!auth || auth.role !== "Administrator") location.href = "../index.html";
+
+    function addDept() {
+      const d = depName.value.trim();
+      if (!d) {
+        alert("Enter department name.");
+        return;
+      }
+      depRows.insertAdjacentHTML(
+        "beforeend",
+        `<tr><td>${d}</td><td>TBD</td><td>0</td></tr>`,
+      );
+      depName.value = "";
+      alert("Department saved.");
+    }
+
+    function logout() {
+      localStorage.removeItem("epsAuth");
+      location.href = "../index.html";
+    }
+  </script>
+</body>
+</html>

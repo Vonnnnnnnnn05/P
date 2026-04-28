@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - System Evaluation</title>
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --soft: #DBEAFE;
+      --accent: #2563EB;
+      --text: #0f172a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+    .sidebar { background: var(--soft); padding: 18px; }
+    .sidebar h2 { margin: 0 0 8px; font-size: 1.1rem; }
+    .sidebar a {
+      display: block;
+      padding: 10px 12px;
+      margin: 6px 0;
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .sidebar a.active,
+    .sidebar a:hover { background: #bfdbfe; }
+    .main { padding: 22px; }
+    .card {
+      max-width: 900px;
+      background: #fff;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(2, 6, 23, 0.06);
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 120px;
+      gap: 12px;
+      align-items: center;
+      margin: 10px 0;
+    }
+    input[type="range"] { width: 100%; }
+    .score {
+      font-weight: 700;
+      background: #eff6ff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .btn {
+      background: var(--accent);
+      border: 0;
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    @media (max-width: 860px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { display: flex; gap: 6px; overflow: auto; }
+      .sidebar a { white-space: nowrap; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>Administrator</h2>
+      <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="users.html">Manage Users</a>
+        <a href="departments.html">Departments</a>
+        <a href="criteria.html">Evaluation Criteria</a>
+        <a href="settings.html">System Settings</a>
+        <a href="organization.html">Organization Report</a>
+        <a class="active" href="system.html">System Evaluation</a>
+        <a href="#" onclick="logout(); return false;">Logout</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <h1>System Evaluation</h1>
+      <div class="card">
+        <p>Rate the prototype system quality dimensions.</p>
+        <div class="row">
+          <label>Functionality</label>
+          <input id="f1" type="range" min="1" max="5" value="4" />
+        </div>
+        <div class="row">
+          <label>Accuracy</label>
+          <input id="f2" type="range" min="1" max="5" value="4" />
+        </div>
+        <div class="row">
+          <label>Reliability</label>
+          <input id="f3" type="range" min="1" max="5" value="4" />
+        </div>
+        <div class="row">
+          <label>Usability</label>
+          <input id="f4" type="range" min="1" max="5" value="5" />
+        </div>
+        <div class="row">
+          <label>Efficiency</label>
+          <input id="f5" type="range" min="1" max="5" value="4" />
+        </div>
+        <p class="score">Overall System Rating: <span id="avg">4.20</span> / 5</p>
+        <button class="btn" onclick="submitEval()">Submit Evaluation</button>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const auth = JSON.parse(localStorage.getItem("epsAuth") || "null");
+    if (!auth || auth.role !== "Administrator") location.href = "../index.html";
+    [f1, f2, f3, f4, f5].forEach((x) => x.addEventListener("input", calc));
+    function calc() {
+      avg.textContent = (
+        [f1, f2, f3, f4, f5].reduce((t, x) => t + Number(x.value), 0) / 5
+      ).toFixed(2);
+    }
+    function submitEval() {
+      alert(`System evaluation submitted. Overall: ${avg.textContent}`);
+    }
+    function logout() {
+      localStorage.removeItem("epsAuth");
+      location.href = "../index.html";
+    }
+  </script>
+</body>
+</html>

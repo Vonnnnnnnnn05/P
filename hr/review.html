@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HR - Review</title>
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --soft: #E0F2FE;
+      --accent: #0EA5E9;
+      --text: #0f172a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+    .sidebar { background: var(--soft); padding: 18px; }
+    .sidebar h2 { margin: 0 0 8px; font-size: 1.1rem; }
+    .sidebar a {
+      display: block;
+      padding: 10px 12px;
+      margin: 6px 0;
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .sidebar a.active,
+    .sidebar a:hover { background: #bae6fd; }
+    .main { padding: 22px; }
+    .box {
+      background: #fff;
+      padding: 16px;
+      border-radius: 12px;
+      max-width: 840px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      margin: 6px 0;
+    }
+    .btn {
+      background: var(--accent);
+      border: 0;
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .score { font-weight: 700; }
+    @media (max-width: 860px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { display: flex; gap: 6px; overflow: auto; }
+      .sidebar a { white-space: nowrap; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>HR Officer</h2>
+      <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="forms.html">Evaluation Forms</a>
+        <a href="schedules.html">Schedules</a>
+        <a class="active" href="review.html">Review</a>
+        <a href="finalize.html">Finalize</a>
+        <a href="reports.html">Reports</a>
+        <a href="#" onclick="logout(); return false;">Logout</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <h1>Review & Validate Evaluations</h1>
+      <div class="box">
+        <p>Prototype score validation with auto-calculation.</p>
+        <label>Quality<input id="s1" type="number" min="1" max="5" value="4" /></label>
+        <label>Productivity<input id="s2" type="number" min="1" max="5" value="5" /></label>
+        <label>Teamwork<input id="s3" type="number" min="1" max="5" value="4" /></label>
+        <p class="score">Average Score: <span id="avg">4.33</span></p>
+        <button class="btn" onclick="validateEval()">Validate</button>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const auth = JSON.parse(localStorage.getItem("epsAuth") || "null");
+    if (!auth || auth.role !== "HR Officer") location.href = "../index.html";
+
+    [s1, s2, s3].forEach((i) => i.addEventListener("input", calc));
+    function calc() {
+      avg.textContent = (
+        [s1, s2, s3].reduce((t, x) => t + (Number(x.value) || 0), 0) / 3
+      ).toFixed(2);
+    }
+    function validateEval() {
+      alert(`Evaluation validated with average ${avg.textContent}.`);
+    }
+    function logout() {
+      localStorage.removeItem("epsAuth");
+      location.href = "../index.html";
+    }
+  </script>
+</body>
+</html>

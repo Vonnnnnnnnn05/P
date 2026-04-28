@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Supervisor - Recommendations</title>
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --soft: #DBEAFE;
+      --accent: #2563EB;
+      --text: #0f172a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .layout { display: grid; grid-template-columns: 230px 1fr; min-height: 100vh; }
+    .sidebar { background: var(--soft); padding: 18px; }
+    .sidebar h2 { margin: 0 0 8px; font-size: 1.1rem; }
+    .sidebar a {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--text);
+      margin: 6px 0;
+    }
+    .sidebar a.active,
+    .sidebar a:hover { background: #bfdbfe; }
+    .main { padding: 22px; }
+    .card { max-width: 860px; background: #fff; padding: 16px; border-radius: 12px; }
+    select, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      margin: 8px 0;
+    }
+    .btn {
+      background: var(--accent);
+      border: 0;
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    @media (max-width: 860px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { display: flex; gap: 6px; overflow: auto; }
+      .sidebar a { white-space: nowrap; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>Supervisor</h2>
+      <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="evaluations.html">Evaluate Employees</a>
+        <a href="rate.html">Rate Criteria</a>
+        <a href="comments.html">Comments</a>
+        <a class="active" href="recommendations.html">Recommendations</a>
+        <a href="#" onclick="logout(); return false;">Logout</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <h1>Recommendations</h1>
+      <div class="card">
+        <select id="type">
+          <option>Promotion Consideration</option>
+          <option>Training Needed</option>
+          <option>Coaching Plan</option>
+        </select>
+        <textarea id="note" rows="4" placeholder="Add recommendation details..."></textarea>
+        <button class="btn" onclick="saveRec()">Save Recommendation</button>
+        <p id="out"></p>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const auth = JSON.parse(localStorage.getItem("epsAuth") || "null");
+    if (!auth || auth.role !== "Supervisor") location.href = "../index.html";
+    function saveRec() {
+      if (!note.value.trim()) {
+        alert("Enter recommendation details.");
+        return;
+      }
+      out.textContent = `Saved: ${type.value} - ${note.value}`;
+      note.value = "";
+    }
+    function logout() {
+      localStorage.removeItem("epsAuth");
+      location.href = "../index.html";
+    }
+  </script>
+</body>
+</html>

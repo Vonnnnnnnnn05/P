@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HR - Reports</title>
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --soft: #E0F2FE;
+      --accent: #0EA5E9;
+      --text: #0f172a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+    .sidebar { background: var(--soft); padding: 18px; }
+    .sidebar h2 { margin: 0 0 8px; font-size: 1.1rem; }
+    .sidebar a {
+      display: block;
+      padding: 10px 12px;
+      margin: 6px 0;
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .sidebar a.active,
+    .sidebar a:hover { background: #bae6fd; }
+    .main { padding: 22px; }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 12px;
+    }
+    .card {
+      background: #fff;
+      padding: 14px;
+      border-radius: 12px;
+    }
+    .bar {
+      height: 10px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .bar span { display: block; height: 100%; background: var(--accent); }
+    .btn {
+      background: var(--accent);
+      color: #fff;
+      border: 0;
+      padding: 10px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    @media (max-width: 860px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { display: flex; gap: 6px; overflow: auto; }
+      .sidebar a { white-space: nowrap; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>HR Officer</h2>
+      <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="forms.html">Evaluation Forms</a>
+        <a href="schedules.html">Schedules</a>
+        <a href="review.html">Review</a>
+        <a href="finalize.html">Finalize</a>
+        <a class="active" href="reports.html">Reports</a>
+        <a href="#" onclick="logout(); return false;">Logout</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <h1>Reports Dashboard</h1>
+      <div class="cards">
+        <div class="card">
+          <h4>Completion Status</h4>
+          <div class="bar"><span style="width: 82%"></span></div>
+          <p>82% completed</p>
+        </div>
+        <div class="card">
+          <h4>Department Avg</h4>
+          <p>IT 4.2 | Finance 4.0 | HR 4.1</p>
+        </div>
+        <div class="card">
+          <h4>Training Needs</h4>
+          <p>Communication, Time management</p>
+        </div>
+      </div>
+      <p>
+        <a href="../reports/individual.html">Individual Summary</a> |
+        <a href="../reports/department.html">Department Overview</a> |
+        <a href="../reports/trends.html">Trend Comparison</a>
+      </p>
+    </main>
+  </div>
+
+  <script>
+    const auth = JSON.parse(localStorage.getItem("epsAuth") || "null");
+    if (!auth || auth.role !== "HR Officer") location.href = "../index.html";
+    function logout() {
+      localStorage.removeItem("epsAuth");
+      location.href = "../index.html";
+    }
+  </script>
+</body>
+</html>

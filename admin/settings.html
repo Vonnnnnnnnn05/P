@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - System Settings</title>
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --soft: #DBEAFE;
+      --accent: #2563EB;
+      --text: #0f172a;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+    .sidebar { background: var(--soft); padding: 18px; }
+    .sidebar h2 { margin: 0 0 8px; font-size: 1.1rem; }
+    .sidebar a {
+      display: block;
+      padding: 10px 12px;
+      margin: 6px 0;
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .sidebar a.active,
+    .sidebar a:hover { background: #bfdbfe; }
+    .main { padding: 22px; }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      max-width: 760px;
+      box-shadow: 0 6px 18px rgba(2, 6, 23, 0.06);
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .btn {
+      background: var(--accent);
+      color: #fff;
+      border: 0;
+      padding: 10px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    @media (max-width: 860px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { display: flex; gap: 6px; overflow: auto; }
+      .sidebar a { white-space: nowrap; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>Administrator</h2>
+      <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="users.html">Manage Users</a>
+        <a href="departments.html">Departments</a>
+        <a href="criteria.html">Evaluation Criteria</a>
+        <a class="active" href="settings.html">System Settings</a>
+        <a href="organization.html">Organization Report</a>
+        <a href="system.html">System Evaluation</a>
+        <a href="#" onclick="logout(); return false;">Logout</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <h1>System Settings</h1>
+      <div class="card">
+        <div class="row">
+          <span>Email reminders</span>
+          <input type="checkbox" checked />
+        </div>
+        <div class="row">
+          <span>Auto-close evaluation cycle</span>
+          <input type="checkbox" />
+        </div>
+        <div class="row">
+          <span>Allow late submission</span>
+          <input type="checkbox" checked />
+        </div>
+        <div class="row">
+          <span>Display training recommendations</span>
+          <input type="checkbox" checked />
+        </div>
+        <br />
+        <button class="btn" onclick="alert('Settings updated (prototype).')">
+          Save Settings
+        </button>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const auth = JSON.parse(localStorage.getItem("epsAuth") || "null");
+    if (!auth || auth.role !== "Administrator") location.href = "../index.html";
+    function logout() {
+      localStorage.removeItem("epsAuth");
+      location.href = "../index.html";
+    }
+  </script>
+</body>
+</html>
