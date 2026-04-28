@@ -140,9 +140,13 @@
         }
 
         .report-features li::before {
-            content: '✓';
-            color: var(--success-color);
-            font-weight: bold;
+            content: '';
+            width: 20px;
+            height: 20px;
+            flex: 0 0 20px;
+            background: var(--success-color);
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / contain no-repeat;
+            -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center / contain no-repeat;
         }
 
         .report-actions {
@@ -273,7 +277,7 @@
             <!-- Admin Reports -->
             <div class="report-card" onclick="window.location.href='admin/'">
                 <div class="report-header" style="background: linear-gradient(135deg, #7C3AED, #6D28D9);">
-                    <div class="report-icon">👑</div>
+                    <div class="report-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6l5 4 5-7 5 7 5-4-3 12H5L2 6z"></path><path d="M5 21h14"></path></svg></div>
                     <h2 class="report-title">Admin Reports</h2>
                     <p class="report-description">System-wide analytics and administrative reports</p>
                 </div>
@@ -295,7 +299,7 @@
             <!-- HR Reports -->
             <div class="report-card" onclick="window.location.href='hr/'">
                 <div class="report-header" style="background: linear-gradient(135deg, #2563EB, #1D4ED8);">
-                    <div class="report-icon">💼</div>
+                    <div class="report-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg></div>
                     <h2 class="report-title">HR Reports</h2>
                     <p class="report-description">Human resources and workforce analytics</p>
                 </div>
@@ -317,7 +321,7 @@
             <!-- Supervisor Reports -->
             <div class="report-card" onclick="window.location.href='supervisor/'">
                 <div class="report-header" style="background: linear-gradient(135deg, #10B981, #059669);">
-                    <div class="report-icon">👥</div>
+                    <div class="report-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
                     <h2 class="report-title">Supervisor Reports</h2>
                     <p class="report-description">Team performance and management reports</p>
                 </div>
@@ -339,7 +343,7 @@
             <!-- Employee Reports -->
             <div class="report-card" onclick="window.location.href='individual/'">
                 <div class="report-header" style="background: linear-gradient(135deg, #F59E0B, #D97706);">
-                    <div class="report-icon">👤</div>
+                    <div class="report-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
                     <h2 class="report-title">Individual Reports</h2>
                     <p class="report-description">Personal performance and development reports</p>
                 </div>
@@ -361,7 +365,7 @@
             <!-- Custom Reports -->
             <div class="report-card" onclick="window.location.href='custom/'">
                 <div class="report-header" style="background: linear-gradient(135deg, #EF4444, #DC2626);">
-                    <div class="report-icon">📊</div>
+                    <div class="report-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg></div>
                     <h2 class="report-title">Custom Reports</h2>
                     <p class="report-description">Build and generate custom reports</p>
                 </div>
@@ -383,7 +387,7 @@
             <!-- Analytics Dashboard -->
             <div class="report-card" onclick="window.location.href='analytics/'">
                 <div class="report-header" style="background: linear-gradient(135deg, #06B6D4, #0891B2);">
-                    <div class="report-icon">📈</div>
+                    <div class="report-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg></div>
                     <h2 class="report-title">Analytics Dashboard</h2>
                     <p class="report-description">Real-time analytics and data visualization</p>
                 </div>
@@ -411,22 +415,22 @@
             </p>
             <div class="role-cards">
                 <div class="role-card">
-                    <div class="role-icon">👑</div>
+                    <div class="role-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6l5 4 5-7 5 7 5-4-3 12H5L2 6z"></path><path d="M5 21h14"></path></svg></div>
                     <div class="role-name">Administrator</div>
                     <div class="role-description">Full system access</div>
                 </div>
                 <div class="role-card">
-                    <div class="role-icon">💼</div>
+                    <div class="role-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg></div>
                     <div class="role-name">HR Manager</div>
                     <div class="role-description">Workforce analytics</div>
                 </div>
                 <div class="role-card">
-                    <div class="role-icon">👥</div>
+                    <div class="role-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
                     <div class="role-name">Supervisor</div>
                     <div class="role-description">Team performance</div>
                 </div>
                 <div class="role-card">
-                    <div class="role-icon">👤</div>
+                    <div class="role-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
                     <div class="role-name">Employee</div>
                     <div class="role-description">Personal reports</div>
                 </div>
