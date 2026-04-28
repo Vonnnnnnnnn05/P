@@ -540,13 +540,13 @@
             </div>
             <div class="header-actions">
                 <button class="btn btn-primary" onclick="runFullEvaluation()">
-                    <span>🔍</span> Run Full Evaluation
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.5rem;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Run Full Evaluation
                 </button>
                 <button class="btn btn-secondary" onclick="exportReport()">
-                    <span>📥</span> Export Report
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.5rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> Export Report
                 </button>
                 <button class="btn btn-danger" onclick="window.location.href='../index.html'">
-                    <span>🚪</span> Exit
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.5rem;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> Exit
                 </button>
             </div>
         </header>
@@ -556,7 +556,7 @@
             <div class="status-card">
                 <div class="status-header">
                     <h3 class="status-title">System Health</h3>
-                    <div class="status-icon" style="background: #D1FAE5; color: #10B981;">💚</div>
+                    <div class="status-icon" style="background: #D1FAE5; color: #10B981;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div>
                 </div>
                 <div class="status-value">
                     <span class="status-indicator online"></span>
@@ -568,7 +568,7 @@
             <div class="status-card">
                 <div class="status-header">
                     <h3 class="status-title">Database Status</h3>
-                    <div class="status-icon" style="background: #D1FAE5; color: #10B981;">🗄️</div>
+                    <div class="status-icon" style="background: #D1FAE5; color: #10B981;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg></div>
                 </div>
                 <div class="status-value">
                     <span class="status-indicator online"></span>
@@ -580,7 +580,7 @@
             <div class="status-card">
                 <div class="status-header">
                     <h3 class="status-title">API Services</h3>
-                    <div class="status-icon" style="background: #D1FAE5; color: #10B981;">🔌</div>
+                    <div class="status-icon" style="background: #D1FAE5; color: #10B981;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg></div>
                 </div>
                 <div class="status-value">
                     <span class="status-indicator online"></span>
@@ -592,7 +592,7 @@
             <div class="status-card warning">
                 <div class="status-header">
                     <h3 class="status-title">Storage Usage</h3>
-                    <div class="status-icon" style="background: #FED7AA; color: #F59E0B;">💾</div>
+                    <div class="status-icon" style="background: #FED7AA; color: #F59E0B;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg></div>
                 </div>
                 <div class="status-value">78%</div>
                 <p class="status-description">7.8GB of 10GB used</p>
@@ -673,8 +673,8 @@
                             <div class="health-description">Connection to PostgreSQL database is stable and responsive</div>
                         </div>
                         <div class="health-actions">
-                            <button class="action-btn" onclick="testConnection('database')" title="Test">🔍</button>
-                            <button class="action-btn" onclick="viewDetails('database')" title="Details">📊</button>
+                            <button class="action-btn" onclick="testConnection('database')" title="Test">🔍
+                            <button class="action-btn" onclick="viewDetails('database')" title="Details">📊
                         </div>
                     </div>
 
@@ -685,8 +685,8 @@
                             <div class="health-description">JWT token validation and user authentication working properly</div>
                         </div>
                         <div class="health-actions">
-                            <button class="action-btn" onclick="testConnection('auth')" title="Test">🔍</button>
-                            <button class="action-btn" onclick="viewDetails('auth')" title="Details">📊</button>
+                            <button class="action-btn" onclick="testConnection('auth')" title="Test"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
+                            <button class="action-btn" onclick="viewDetails('auth')" title="Details"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg></button>
                         </div>
                     </div>
 
@@ -697,8 +697,8 @@
                             <div class="health-description">File upload and storage systems functioning normally</div>
                         </div>
                         <div class="health-actions">
-                            <button class="action-btn" onclick="testConnection('storage')" title="Test">🔍</button>
-                            <button class="action-btn" onclick="viewDetails('storage')" title="Details">📊</button>
+                            <button class="action-btn" onclick="testConnection('storage')" title="Test"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
+                            <button class="action-btn" onclick="viewDetails('storage')" title="Details"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg></button>
                         </div>
                     </div>
 
@@ -709,8 +709,8 @@
                             <div class="health-description">Email service experiencing minor delays (avg 2.5s response time)</div>
                         </div>
                         <div class="health-actions">
-                            <button class="action-btn" onclick="testConnection('email')" title="Test">🔍</button>
-                            <button class="action-btn" onclick="viewDetails('email')" title="Details">📊</button>
+                            <button class="action-btn" onclick="testConnection('email')" title="Test"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
+                            <button class="action-btn" onclick="viewDetails('email')" title="Details"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg></button>
                         </div>
                     </div>
 
@@ -721,8 +721,8 @@
                             <div class="health-description">All API endpoints responding within acceptable time limits</div>
                         </div>
                         <div class="health-actions">
-                            <button class="action-btn" onclick="testConnection('api')" title="Test">🔍</button>
-                            <button class="action-btn" onclick="viewDetails('api')" title="Details">📊</button>
+                            <button class="action-btn" onclick="testConnection('api')" title="Test"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
+                            <button class="action-btn" onclick="viewDetails('api')" title="Details"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg></button>
                         </div>
                     </div>
 
@@ -733,8 +733,8 @@
                             <div class="health-description">Automated backups running successfully, last backup: 2 hours ago</div>
                         </div>
                         <div class="health-actions">
-                            <button class="action-btn" onclick="testConnection('backup')" title="Test">🔍</button>
-                            <button class="action-btn" onclick="viewDetails('backup')" title="Details">📊</button>
+                            <button class="action-btn" onclick="testConnection('backup')" title="Test"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
+                            <button class="action-btn" onclick="viewDetails('backup')" title="Details"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg></button>
                         </div>
                     </div>
                 </div>
