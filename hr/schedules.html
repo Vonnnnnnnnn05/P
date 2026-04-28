@@ -1,134 +1,1314 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HR - Schedules</title>
-  <style>
-    :root {
-      --bg: #F8FAFC;
-      --soft: #E0F2FE;
-      --accent: #0EA5E9;
-      --text: #0f172a;
-      --border: #e2e8f0;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-    .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
-    .sidebar { background: var(--soft); padding: 18px; }
-    .sidebar h2 { margin: 0 0 8px; font-size: 1.1rem; }
-    .sidebar a {
-      display: block;
-      padding: 10px 12px;
-      margin: 6px 0;
-      border-radius: 8px;
-      text-decoration: none;
-      color: var(--text);
-    }
-    .sidebar a.active,
-    .sidebar a:hover { background: #bae6fd; }
-    .main { padding: 22px; }
-    .card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 16px;
-      max-width: 860px;
-    }
-    input, button {
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #cbd5e1;
-    }
-    button {
-      border: 0;
-      background: var(--accent);
-      color: #fff;
-      cursor: pointer;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 12px;
-    }
-    th, td {
-      padding: 10px;
-      border-bottom: 1px solid var(--border);
-      text-align: left;
-    }
-    @media (max-width: 860px) {
-      .layout { grid-template-columns: 1fr; }
-      .sidebar { display: flex; gap: 6px; overflow: auto; }
-      .sidebar a { white-space: nowrap; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluation Schedules - Performance Evaluation System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-bg: #F8FAFC;
+            --secondary-bg: #DBEAFE;
+            --accent-color: #2563EB;
+            --accent-hover: #1D4ED8;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --border-color: #E5E7EB;
+            --success-color: #10B981;
+            --warning-color: #F59E0B;
+            --error-color: #EF4444;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --sidebar-width: 280px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            border-right: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            color: white;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+
+        .sidebar-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .sidebar-subtitle {
+            font-size: 0.75rem;
+            opacity: 0.9;
+        }
+
+        .nav-menu {
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 0.875rem 1.5rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: var(--primary-bg);
+            border-left-color: var(--accent-color);
+        }
+
+        .nav-item.active {
+            background: var(--secondary-bg);
+            border-left-color: var(--accent-color);
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            display: inline-block;
+            width: 20px;
+            margin-right: 0.75rem;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+        }
+
+        .header {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-bg);
+        }
+
+        .btn-danger {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #DC2626;
+        }
+
+        /* Calendar View */
+        .calendar-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .calendar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .calendar-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .calendar-nav button {
+            padding: 0.5rem 1rem;
+            background: var(--primary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .calendar-nav button:hover {
+            background: var(--secondary-bg);
+            border-color: var(--accent-color);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: var(--border-color);
+        }
+
+        .calendar-day-header {
+            padding: 1rem;
+            background: var(--primary-bg);
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--text-primary);
+        }
+
+        .calendar-day {
+            min-height: 100px;
+            background: white;
+            padding: 0.5rem;
+            position: relative;
+        }
+
+        .calendar-day-number {
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .calendar-day.other-month .calendar-day-number {
+            color: var(--text-secondary);
+        }
+
+        .calendar-day.today {
+            background: var(--secondary-bg);
+        }
+
+        .calendar-event {
+            font-size: 0.75rem;
+            padding: 0.25rem;
+            border-radius: 4px;
+            margin-bottom: 0.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .calendar-event:hover {
+            transform: scale(1.05);
+        }
+
+        .calendar-event.evaluation {
+            background: #DBEAFE;
+            color: #1E3A8A;
+        }
+
+        .calendar-event.deadline {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .calendar-event.reminder {
+            background: #FED7AA;
+            color: #9A3412;
+        }
+
+        /* Schedule List */
+        .schedule-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: var(--primary-bg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .filter-tab {
+            padding: 0.5rem 1rem;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+        }
+
+        .filter-tab:hover {
+            background: var(--secondary-bg);
+            border-color: var(--accent-color);
+        }
+
+        .filter-tab.active {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        .schedule-list {
+            padding: 1.5rem;
+        }
+
+        .schedule-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: var(--primary-bg);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent-color);
+            transition: all 0.2s;
+        }
+
+        .schedule-item:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .schedule-item.urgent {
+            border-left-color: var(--error-color);
+        }
+
+        .schedule-date {
+            text-align: center;
+            min-width: 80px;
+            padding: 0.75rem;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .date-month {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .date-day {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .schedule-content {
+            flex: 1;
+        }
+
+        .schedule-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .schedule-details {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .schedule-detail {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .participants {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .participant-avatars {
+            display: flex;
+            margin-right: 0.5rem;
+        }
+
+        .participant-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.625rem;
+            font-weight: 600;
+            border: 2px solid white;
+            margin-left: -8px;
+        }
+
+        .participant-avatar:first-child {
+            margin-left: 0;
+        }
+
+        .participant-count {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .schedule-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .action-btn:hover {
+            background: var(--secondary-bg);
+            color: var(--accent-color);
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-badge.scheduled {
+            background: #DBEAFE;
+            color: #1E3A8A;
+        }
+
+        .status-badge.in-progress {
+            background: #FED7AA;
+            color: #9A3412;
+        }
+
+        .status-badge.completed {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.25rem;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .employee-selector {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .employee-option {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .employee-option:hover {
+            background: var(--primary-bg);
+        }
+
+        .employee-option:last-child {
+            border-bottom: none;
+        }
+
+        .employee-checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent-color);
+        }
+
+        .employee-info {
+            flex: 1;
+        }
+
+        .employee-name {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .employee-role {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .selected-count {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        /* Mobile Responsive */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+                padding-top: 4rem;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .calendar-grid {
+                font-size: 0.75rem;
+            }
+
+            .calendar-day {
+                min-height: 80px;
+            }
+
+            .schedule-item {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .schedule-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="layout">
-    <aside class="sidebar">
-      <h2>HR Officer</h2>
-      <nav>
-        <a href="dashboard.html">Dashboard</a>
-        <a href="forms.html">Evaluation Forms</a>
-        <a class="active" href="schedules.html">Schedules</a>
-        <a href="review.html">Review</a>
-        <a href="finalize.html">Finalize</a>
-        <a href="reports.html">Reports</a>
-        <a href="#" onclick="logout(); return false;">Logout</a>
-      </nav>
-    </aside>
-    <main class="main">
-      <h1>Assign Schedules</h1>
-      <div class="card">
-        <p>Set deadline reminders and cycle windows.</p>
-        <input id="cycle" placeholder="Cycle name" />
-        <input id="deadline" type="date" />
-        <button onclick="assign()">Assign</button>
-        <table>
-          <thead>
-            <tr>
-              <th>Cycle</th>
-              <th>Deadline</th>
-              <th>Reminder</th>
-            </tr>
-          </thead>
-          <tbody id="rows">
-            <tr>
-              <td>Q2 2026</td>
-              <td>2026-06-30</td>
-              <td>Enabled</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </main>
-  </div>
+    <div class="app-container">
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-toggle" onclick="toggleSidebar()">☰</button>
+        
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <div class="logo-icon">EP</div>
+                    <div>
+                        <div class="sidebar-title">HR Portal</div>
+                        <div class="sidebar-subtitle">Performance Evaluation</div>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item">
+                    <span class="nav-icon">📊</span> Dashboard
+                </a>
+                <a href="forms.html" class="nav-item">
+                    <span class="nav-icon">📝</span> Evaluation Forms
+                </a>
+                <a href="schedules.html" class="nav-item active">
+                    <span class="nav-icon">📅</span> Schedules
+                </a>
+                <a href="review.html" class="nav-item">
+                    <span class="nav-icon">👁️</span> Review & Validate
+                </a>
+                <a href="finalize.html" class="nav-item">
+                    <span class="nav-icon">✅</span> Finalize Evaluations
+                </a>
+                <a href="reports.html" class="nav-item">
+                    <span class="nav-icon">📈</span> Reports
+                </a>
+                <a href="../admin/settings.html" class="nav-item">
+                    <span class="nav-icon">⚙️</span> Settings
+                </a>
+            </nav>
+        </aside>
 
-  <script>
-    const auth = JSON.parse(localStorage.getItem("epsAuth") || "null");
-    if (!auth || auth.role !== "HR Officer") location.href = "../index.html";
+        <!-- Overlay for mobile -->
+        <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
-    function assign() {
-      if (!cycle.value || !deadline.value) {
-        alert("Provide schedule details.");
-        return;
-      }
-      rows.insertAdjacentHTML(
-        "beforeend",
-        `<tr><td>${cycle.value}</td><td>${deadline.value}</td><td>Enabled</td></tr>`,
-      );
-      cycle.value = "";
-      deadline.value = "";
-      alert("Schedule assigned.");
-    }
-    function logout() {
-      localStorage.removeItem("epsAuth");
-      location.href = "../index.html";
-    }
-  </script>
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div>
+                    <h1 class="header-title">Evaluation Schedules</h1>
+                    <p style="color: var(--text-secondary); margin-top: 0.25rem;">Manage and schedule employee evaluations</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="openScheduleModal()">
+                        <span>➕</span> Schedule Evaluation
+                    </button>
+                    <button class="btn btn-danger" onclick="logout()">
+                        <span>🚪</span> Logout
+                    </button>
+                </div>
+            </header>
+
+            <!-- Calendar View -->
+            <section class="calendar-container">
+                <div class="calendar-header">
+                    <h3 class="calendar-title">April 2024</h3>
+                    <div class="calendar-nav">
+                        <button onclick="previousMonth()">← Previous</button>
+                        <button onclick="currentMonth()">Today</button>
+                        <button onclick="nextMonth()">Next →</button>
+                    </div>
+                </div>
+                <div class="calendar-grid">
+                    <div class="calendar-day-header">Sun</div>
+                    <div class="calendar-day-header">Mon</div>
+                    <div class="calendar-day-header">Tue</div>
+                    <div class="calendar-day-header">Wed</div>
+                    <div class="calendar-day-header">Thu</div>
+                    <div class="calendar-day-header">Fri</div>
+                    <div class="calendar-day-header">Sat</div>
+                    
+                    <!-- Calendar Days -->
+                    <div class="calendar-day other-month">
+                        <div class="calendar-day-number">31</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">1</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">2</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">3</div>
+                        <div class="calendar-event evaluation">IT Team Eval</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">4</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">5</div>
+                        <div class="calendar-event deadline">Q1 Deadline</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">6</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">7</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">8</div>
+                        <div class="calendar-event evaluation">Sales Review</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">9</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">10</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">11</div>
+                        <div class="calendar-event reminder">HR Meeting</div>
+                    </div>
+                    <div class="calendar-day today">
+                        <div class="calendar-day-number">12</div>
+                        <div class="calendar-event evaluation">New Hire Eval</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">13</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">14</div>
+                        <div class="calendar-event evaluation">Finance Team</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">15</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">16</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">17</div>
+                        <div class="calendar-event deadline">Submit Reviews</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">18</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">19</div>
+                        <div class="calendar-event evaluation">Marketing</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">20</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">21</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">22</div>
+                        <div class="calendar-event reminder">Planning</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">23</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">24</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">25</div>
+                        <div class="calendar-event evaluation">IT Dept</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">26</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">27</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">28</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">29</div>
+                        <div class="calendar-event deadline">Q2 Start</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number">30</div>
+                    </div>
+                    <div class="calendar-day other-month">
+                        <div class="calendar-day-number">1</div>
+                    </div>
+                    <div class="calendar-day other-month">
+                        <div class="calendar-day-number">2</div>
+                    </div>
+                    <div class="calendar-day other-month">
+                        <div class="calendar-day-number">3</div>
+                    </div>
+                    <div class="calendar-day other-month">
+                        <div class="calendar-day-number">4</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Schedule List -->
+            <section class="schedule-section">
+                <div class="section-header">
+                    <h3 class="section-title">Upcoming Evaluations</h3>
+                    <button class="btn btn-secondary" onclick="exportSchedule()">Export Calendar</button>
+                </div>
+
+                <div class="filter-tabs">
+                    <button class="filter-tab active" onclick="filterSchedules('all')">All</button>
+                    <button class="filter-tab" onclick="filterSchedules('today')">Today</button>
+                    <button class="filter-tab" onclick="filterSchedules('week')">This Week</button>
+                    <button class="filter-tab" onclick="filterSchedules('month')">This Month</button>
+                    <button class="filter-tab" onclick="filterSchedules('urgent')">Urgent</button>
+                </div>
+
+                <div class="schedule-list" id="scheduleList">
+                    <!-- Today's Evaluation -->
+                    <div class="schedule-item urgent" data-filter="today week month urgent">
+                        <div class="schedule-date">
+                            <div class="date-month">APR</div>
+                            <div class="date-day">12</div>
+                        </div>
+                        <div class="schedule-content">
+                            <h4 class="schedule-title">New Hire 90-Day Evaluation</h4>
+                            <div class="schedule-details">
+                                <span class="schedule-detail">📅 Today, 2:00 PM</span>
+                                <span class="schedule-detail">📍 Conference Room A</span>
+                                <span class="schedule-detail">📝 Technical Skills Form</span>
+                            </div>
+                            <div class="participants">
+                                <div class="participant-avatars">
+                                    <div class="participant-avatar">JD</div>
+                                    <div class="participant-avatar">MS</div>
+                                    <div class="participant-avatar">+3</div>
+                                </div>
+                                <span class="participant-count">5 participants</span>
+                            </div>
+                            <div class="schedule-actions">
+                                <span class="status-badge scheduled">Scheduled</span>
+                                <button class="action-btn" onclick="editSchedule('new-hire-90day')">Edit</button>
+                                <button class="action-btn" onclick="viewSchedule('new-hire-90day')">View</button>
+                                <button class="action-btn" onclick="cancelSchedule('new-hire-90day')">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tomorrow's Evaluation -->
+                    <div class="schedule-item" data-filter="week month">
+                        <div class="schedule-date">
+                            <div class="date-month">APR</div>
+                            <div class="date-day">13</div>
+                        </div>
+                        <div class="schedule-content">
+                            <h4 class="schedule-title">Q1 IT Department Review</h4>
+                            <div class="schedule-details">
+                                <span class="schedule-detail">📅 Tomorrow, 10:00 AM</span>
+                                <span class="schedule-detail">📍 Virtual - Teams</span>
+                                <span class="schedule-detail">📝 General Evaluation Form</span>
+                            </div>
+                            <div class="participants">
+                                <div class="participant-avatars">
+                                    <div class="participant-avatar">JS</div>
+                                    <div class="participant-avatar">AB</div>
+                                    <div class="participant-avatar">+8</div>
+                                </div>
+                                <span class="participant-count">10 participants</span>
+                            </div>
+                            <div class="schedule-actions">
+                                <span class="status-badge scheduled">Scheduled</span>
+                                <button class="action-btn" onclick="editSchedule('q1-it-review')">Edit</button>
+                                <button class="action-btn" onclick="viewSchedule('q1-it-review')">View</button>
+                                <button class="action-btn" onclick="cancelSchedule('q1-it-review')">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Next Week -->
+                    <div class="schedule-item" data-filter="week month">
+                        <div class="schedule-date">
+                            <div class="date-month">APR</div>
+                            <div class="date-day">17</div>
+                        </div>
+                        <div class="schedule-content">
+                            <h4 class="schedule-title">Sales Team Performance Review</h4>
+                            <div class="schedule-details">
+                                <span class="schedule-detail">📅 Next Wed, 1:00 PM</span>
+                                <span class="schedule-detail">📍 Sales Office</span>
+                                <span class="schedule-detail">📝 Leadership Assessment</span>
+                            </div>
+                            <div class="participants">
+                                <div class="participant-avatars">
+                                    <div class="participant-avatar">MW</div>
+                                    <div class="participant-avatar">RB</div>
+                                    <div class="participant-avatar">+5</div>
+                                </div>
+                                <span class="participant-count">7 participants</span>
+                            </div>
+                            <div class="schedule-actions">
+                                <span class="status-badge in-progress">In Progress</span>
+                                <button class="action-btn" onclick="editSchedule('sales-review')">Edit</button>
+                                <button class="action-btn" onclick="viewSchedule('sales-review')">View</button>
+                                <button class="action-btn" onclick="cancelSchedule('sales-review')">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- End of Month -->
+                    <div class="schedule-item" data-filter="month">
+                        <div class="schedule-date">
+                            <div class="date-month">APR</div>
+                            <div class="date-day">29</div>
+                        </div>
+                        <div class="schedule-content">
+                            <h4 class="schedule-title">Q1 Final Review Deadline</h4>
+                            <div class="schedule-details">
+                                <span class="schedule-detail">📅 Apr 29, 5:00 PM</span>
+                                <span class="schedule-detail">📍 All Departments</span>
+                                <span class="schedule-detail">📝 Final Submissions</span>
+                            </div>
+                            <div class="participants">
+                                <div class="participant-avatars">
+                                    <div class="participant-avatar">HR</div>
+                                    <div class="participant-avatar">ALL</div>
+                                </div>
+                                <span class="participant-count">All departments</span>
+                            </div>
+                            <div class="schedule-actions">
+                                <span class="status-badge scheduled">Scheduled</span>
+                                <button class="action-btn" onclick="editSchedule('q1-deadline')">Edit</button>
+                                <button class="action-btn" onclick="viewSchedule('q1-deadline')">View</button>
+                                <button class="action-btn" onclick="cancelSchedule('q1-deadline')">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Schedule Evaluation Modal -->
+    <div class="modal" id="scheduleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Schedule New Evaluation</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="scheduleForm">
+                    <div class="form-group">
+                        <label class="form-label">Evaluation Title</label>
+                        <input type="text" class="form-input" id="evalTitle" placeholder="Enter evaluation title" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Evaluation Type</label>
+                        <select class="form-select" id="evalType" required>
+                            <option value="">Select Type</option>
+                            <option value="quarterly">Quarterly Review</option>
+                            <option value="annual">Annual Review</option>
+                            <option value="new-hire">New Hire Evaluation</option>
+                            <option value="360">360-Degree Feedback</option>
+                            <option value="project">Project-Based</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Date & Time</label>
+                        <input type="datetime-local" class="form-input" id="evalDateTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Location</label>
+                        <input type="text" class="form-input" id="evalLocation" placeholder="Conference room, virtual link, etc.">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Select Employees</label>
+                        <div class="employee-selector">
+                            <div class="employee-option">
+                                <input type="checkbox" class="employee-checkbox" value="john-smith">
+                                <div class="employee-info">
+                                    <div class="employee-name">John Smith</div>
+                                    <div class="employee-role">Software Developer • IT Department</div>
+                                </div>
+                            </div>
+                            <div class="employee-option">
+                                <input type="checkbox" class="employee-checkbox" value="sarah-johnson">
+                                <div class="employee-info">
+                                    <div class="employee-name">Sarah Johnson</div>
+                                    <div class="employee-role">HR Manager • HR Department</div>
+                                </div>
+                            </div>
+                            <div class="employee-option">
+                                <input type="checkbox" class="employee-checkbox" value="mike-wilson">
+                                <div class="employee-info">
+                                    <div class="employee-name">Mike Wilson</div>
+                                    <div class="employee-role">Sales Representative • Sales</div>
+                                </div>
+                            </div>
+                            <div class="employee-option">
+                                <input type="checkbox" class="employee-checkbox" value="emily-davis">
+                                <div class="employee-info">
+                                    <div class="employee-name">Emily Davis</div>
+                                    <div class="employee-role">Financial Analyst • Finance</div>
+                                </div>
+                            </div>
+                            <div class="employee-option">
+                                <input type="checkbox" class="employee-checkbox" value="robert-brown">
+                                <div class="employee-info">
+                                    <div class="employee-name">Robert Brown</div>
+                                    <div class="employee-role">Marketing Specialist • Marketing</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="selected-count" id="selectedCount">0 employees selected</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Evaluation Form</label>
+                        <select class="form-select" id="evalForm" required>
+                            <option value="">Select Form</option>
+                            <option value="general">General Evaluation</option>
+                            <option value="technical">Technical Skills</option>
+                            <option value="leadership">Leadership Assessment</option>
+                            <option value="360-feedback">360-Degree Feedback</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Notes</label>
+                        <textarea class="form-textarea" id="evalNotes" placeholder="Additional notes or instructions..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveSchedule()">Schedule Evaluation</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check authentication
+        function checkAuth() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            const user = JSON.parse(currentUser);
+            if (user.role !== 'hr') {
+                const dashboardMap = {
+                    administrator: '../admin/dashboard.html',
+                    employee: '../employee/dashboard.html',
+                    supervisor: '../supervisor/dashboard.html'
+                };
+                if (dashboardMap[user.role]) {
+                    window.location.href = dashboardMap[user.role];
+                }
+            }
+        }
+
+        // Toggle sidebar for mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        // Global logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('currentUser');
+                window.location.href = '../index.html';
+            }
+        }
+
+        // Modal functions
+        function openScheduleModal() {
+            document.getElementById('scheduleForm').reset();
+            document.getElementById('selectedCount').textContent = '0 employees selected';
+            document.getElementById('scheduleModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('scheduleModal').classList.remove('active');
+        }
+
+        function saveSchedule() {
+            const form = document.getElementById('scheduleForm');
+            const selectedEmployees = document.querySelectorAll('.employee-checkbox:checked');
+            
+            if (form.checkValidity() && selectedEmployees.length > 0) {
+                alert('Evaluation scheduled successfully!');
+                closeModal();
+            } else {
+                if (selectedEmployees.length === 0) {
+                    alert('Please select at least one employee.');
+                } else {
+                    alert('Please fill in all required fields.');
+                }
+            }
+        }
+
+        // Employee selection
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+
+            const checkboxes = document.querySelectorAll('.employee-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateSelectedCount);
+            });
+        });
+
+        function updateSelectedCount() {
+            const selectedCount = document.querySelectorAll('.employee-checkbox:checked').length;
+            document.getElementById('selectedCount').textContent = `${selectedCount} employee${selectedCount !== 1 ? 's' : ''} selected`;
+        }
+
+        // Schedule actions
+        function editSchedule(scheduleId) {
+            alert('Edit schedule: ' + scheduleId);
+        }
+
+        function viewSchedule(scheduleId) {
+            alert('View schedule details: ' + scheduleId);
+        }
+
+        function cancelSchedule(scheduleId) {
+            if (confirm('Are you sure you want to cancel this evaluation?')) {
+                alert('Evaluation cancelled successfully!');
+            }
+        }
+
+        function exportSchedule() {
+            alert('Exporting calendar to .ics file...');
+        }
+
+        // Filter functions
+        function filterSchedules(filter) {
+            const tabs = document.querySelectorAll('.filter-tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const items = document.querySelectorAll('.schedule-item');
+            items.forEach(item => {
+                if (filter === 'all') {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = item.dataset.filter && item.dataset.filter.includes(filter) ? 'flex' : 'none';
+                }
+            });
+        }
+
+        // Calendar navigation
+        function previousMonth() {
+            alert('Navigate to previous month');
+        }
+
+        function currentMonth() {
+            alert('Navigate to current month');
+        }
+
+        function nextMonth() {
+            alert('Navigate to next month');
+        }
+
+        // Add animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Animate schedule items on load
+        window.addEventListener('load', function() {
+            const scheduleItems = document.querySelectorAll('.schedule-item');
+            scheduleItems.forEach((item, index) => {
+                item.style.animation = `fadeInUp 0.5s ease ${index * 0.1}s both`;
+            });
+        });
+    </script>
 </body>
 </html>

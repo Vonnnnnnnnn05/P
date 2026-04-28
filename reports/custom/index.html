@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Reports - Performance Evaluation System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-bg: #F8FAFC;
+            --secondary-bg: #DBEAFE;
+            --accent-color: #2563EB;
+            --accent-hover: #1D4ED8;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --border-color: #E5E7EB;
+            --success-color: #10B981;
+            --warning-color: #F59E0B;
+            --error-color: #EF4444;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-bg);
+        }
+
+        .btn-danger {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #DC2626;
+        }
+
+        /* Report Builder */
+        .builder-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .builder-content {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Data Sources */
+        .data-sources {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .source-card {
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .source-card:hover {
+            border-color: var(--accent-color);
+            background: var(--secondary-bg);
+        }
+
+        .source-card.selected {
+            border-color: var(--accent-color);
+            background: var(--secondary-bg);
+        }
+
+        .source-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .source-icon {
+            font-size: 1.25rem;
+        }
+
+        .source-name {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .source-description {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Metrics Selection */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .metric-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .metric-item:hover {
+            background: var(--primary-bg);
+        }
+
+        .metric-item.selected {
+            background: var(--secondary-bg);
+            border-color: var(--accent-color);
+        }
+
+        .metric-checkbox {
+            accent-color: var(--accent-color);
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            color: var(--text-primary);
+        }
+
+        /* Filters Section */
+        .filters-section {
+            background: var(--primary-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        /* Preview Section */
+        .preview-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .preview-content {
+            padding: 2rem;
+        }
+
+        .preview-placeholder {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .preview-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Saved Reports */
+        .saved-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem;
+            background: var(--primary-bg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            background: white;
+        }
+
+        .reports-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .reports-table th {
+            text-align: left;
+            padding: 1rem;
+            background: var(--primary-bg);
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .reports-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.875rem;
+        }
+
+        .reports-table tr:hover {
+            background: var(--primary-bg);
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .action-btn:hover {
+            background: var(--secondary-bg);
+            color: var(--accent-color);
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-badge.active {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .status-badge.scheduled {
+            background: #DBEAFE;
+            color: #1E3A8A;
+        }
+
+        .status-badge.draft {
+            background: #FED7AA;
+            color: #9A3412;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .data-sources {
+                grid-template-columns: 1fr;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: none;
+            }
+
+            .reports-table {
+                font-size: 0.75rem;
+            }
+
+            .reports-table th,
+            .reports-table td {
+                padding: 0.5rem;
+            }
+
+            .table-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div>
+                <h1 class="header-title">Custom Reports Builder</h1>
+                <p style="color: var(--text-secondary); margin-top: 0.25rem;">Create personalized reports with custom metrics and filters</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="showTutorial()">
+                    <span>📚</span> Tutorial
+                </button>
+                <button class="btn btn-secondary" onclick="window.location.href='../index.html'">
+                    <span>📊</span> All Reports
+                </button>
+            </div>
+        </header>
+
+        <!-- Report Builder -->
+        <section class="builder-section">
+            <div class="section-header">
+                <h3 class="section-title">Build Custom Report</h3>
+                <button class="btn btn-primary" onclick="saveReport()">Save Report</button>
+            </div>
+            <div class="builder-content">
+                <form id="reportBuilderForm">
+                    <!-- Basic Information -->
+                    <div class="form-group">
+                        <label class="form-label">Report Name</label>
+                        <input type="text" class="form-input" id="reportName" placeholder="Enter report name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-textarea" id="reportDescription" placeholder="Describe what this report shows"></textarea>
+                    </div>
+
+                    <!-- Data Sources -->
+                    <div class="form-group">
+                        <label class="form-label">Select Data Sources</label>
+                        <div class="data-sources">
+                            <div class="source-card" onclick="toggleSource(this, 'performance')">
+                                <div class="source-header">
+                                    <span class="source-icon">📊</span>
+                                    <span class="source-name">Performance Data</span>
+                                </div>
+                                <p class="source-description">Evaluation scores, ratings, and performance metrics</p>
+                            </div>
+                            <div class="source-card" onclick="toggleSource(this, 'employees')">
+                                <div class="source-header">
+                                    <span class="source-icon">👥</span>
+                                    <span class="source-name">Employee Information</span>
+                                </div>
+                                <p class="source-description">Employee profiles, roles, and demographics</p>
+                            </div>
+                            <div class="source-card" onclick="toggleSource(this, 'goals')">
+                                <div class="source-header">
+                                    <span class="source-icon">🎯</span>
+                                    <span class="source-name">Goals & Objectives</span>
+                                </div>
+                                <p class="source-description">Goal setting, progress tracking, and achievement data</p>
+                            </div>
+                            <div class="source-card" onclick="toggleSource(this, 'skills')">
+                                <div class="source-header">
+                                    <span class="source-icon">🎯</span>
+                                    <span class="source-name">Skills & Competencies</span>
+                                </div>
+                                <p class="source-description">Skill assessments, training records, and development plans</p>
+                            </div>
+                            <div class="source-card" onclick="toggleSource(this, 'feedback')">
+                                <div class="source-header">
+                                    <span class="source-icon">💬</span>
+                                    <span class="source-name">Feedback Data</span>
+                                </div>
+                                <p class="source-description">360-degree feedback, comments, and reviews</p>
+                            </div>
+                            <div class="source-card" onclick="toggleSource(this, 'training')">
+                                <div class="source-header">
+                                    <span class="source-icon">📚</span>
+                                    <span class="source-name">Training & Development</span>
+                                </div>
+                                <p class="source-description">Training programs, certifications, and learning outcomes</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Metrics Selection -->
+                    <div class="form-group">
+                        <label class="form-label">Select Metrics & KPIs</label>
+                        <div class="metrics-grid">
+                            <div class="metric-item" onclick="toggleMetric(this)">
+                                <input type="checkbox" class="metric-checkbox">
+                                <span class="metric-label">Average Performance Score</span>
+                            </div>
+                            <div class="metric-item" onclick="toggleMetric(this)">
+                                <input type="checkbox" class="metric-checkbox">
+                                <span class="metric-label">Completion Rate</span>
+                            </div>
+                            <div class="metric-item" onclick="toggleMetric(this)">
+                                <input type="checkbox" class="metric-checkbox">
+                                <span class="metric-label">Goal Achievement Rate</span>
+                            </div>
+                            <div class="metric-item" onclick="toggleMetric(this)">
+                                <input type="checkbox" class="metric-checkbox">
+                                <span class="metric-label">Skill Proficiency</span>
+                            </div>
+                            <div class="metric-item" onclick="toggleMetric(this)">
+                                <input type="checkbox" class="metric-checkbox">
+                                <span class="metric-label">Training Completion</span>
+                            </div>
+                            <div class="metric-item" onclick="toggleMetric(this)">
+                                <input type="checkbox" class="metric-checkbox">
+                                <span class="metric-label">Feedback Score</span>
+                            </div>
+                            <div class="metric-item" onclick="toggleMetric(this)">
+                                <input type="checkbox" class="metric-checkbox">
+                                <span class="metric-label">Retention Rate</span>
+                            </div>
+                            <div class="metric-item" onclick="toggleMetric(this)">
+                                <input type="checkbox" class="metric-checkbox">
+                                <span class="metric-label">Promotion Rate</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="form-group">
+                        <label class="form-label">Configure Filters</label>
+                        <div class="filters-section">
+                            <div class="filters-grid">
+                                <div>
+                                    <label class="form-label" style="font-size: 0.875rem;">Date Range</label>
+                                    <select class="form-select">
+                                        <option value="last-30-days">Last 30 Days</option>
+                                        <option value="last-90-days">Last 90 Days</option>
+                                        <option value="last-6-months">Last 6 Months</option>
+                                        <option value="last-year">Last Year</option>
+                                        <option value="custom">Custom Range</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="form-label" style="font-size: 0.875rem;">Department</label>
+                                    <select class="form-select">
+                                        <option value="all">All Departments</option>
+                                        <option value="it">IT</option>
+                                        <option value="hr">HR</option>
+                                        <option value="finance">Finance</option>
+                                        <option value="marketing">Marketing</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="form-label" style="font-size: 0.875rem;">Employee Level</label>
+                                    <select class="form-select">
+                                        <option value="all">All Levels</option>
+                                        <option value="junior">Junior</option>
+                                        <option value="mid">Mid-Level</option>
+                                        <option value="senior">Senior</option>
+                                        <option value="lead">Lead</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="form-label" style="font-size: 0.875rem;">Report Type</label>
+                                    <select class="form-select">
+                                        <option value="summary">Summary</option>
+                                        <option value="detailed">Detailed</option>
+                                        <option value="trend">Trend Analysis</option>
+                                        <option value="comparison">Comparison</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visualization Options -->
+                    <div class="form-group">
+                        <label class="form-label">Visualization Options</label>
+                        <div class="metrics-grid">
+                            <div class="metric-item" onclick="toggleMetric(this)">
+                                <input type="checkbox" class="metric-checkbox">
+                                <span class="metric-label">Bar Charts</span>
+                            </div>
+                            <div class="metric-item" onclick="toggleMetric(this)">
+                                <input type="checkbox" class="metric-checkbox">
+                                <span class="metric-label">Line Graphs</span>
+                            </div>
+                            <div class="metric-item" onclick="toggleMetric(this)">
+                                <input type="checkbox" class="metric-checkbox">
+                                <span class="metric-label">Pie Charts</span>
+                            </div>
+                            <div class="metric-item" onclick="toggleMetric(this)">
+                                <input type="checkbox" class="metric-checkbox">
+                                <span class="metric-label">Tables</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scheduling -->
+                    <div class="form-group">
+                        <label class="form-label">Schedule (Optional)</label>
+                        <div class="filters-grid">
+                            <div>
+                                <label class="form-label" style="font-size: 0.875rem;">Frequency</label>
+                                <select class="form-select">
+                                    <option value="manual">Manual Only</option>
+                                    <option value="daily">Daily</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="quarterly">Quarterly</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="form-label" style="font-size: 0.875rem;">Delivery Method</label>
+                                <select class="form-select">
+                                    <option value="download">Download Only</option>
+                                    <option value="email">Email</option>
+                                    <option value="dashboard">Dashboard</option>
+                                    <option value="both">Email + Dashboard</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="button" class="btn btn-primary" onclick="generateReport()">Generate Report</button>
+                        <button type="button" class="btn btn-secondary" onclick="previewReport()">Preview</button>
+                        <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Preview Section -->
+        <section class="preview-section">
+            <div class="section-header">
+                <h3 class="section-title">Report Preview</h3>
+            </div>
+            <div class="preview-content">
+                <div class="preview-placeholder">
+                    <div class="preview-icon">📊</div>
+                    <h4>Report Preview</h4>
+                    <p>Select data sources and metrics, then click "Preview" to see how your report will look.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Saved Custom Reports -->
+        <section class="saved-section">
+            <div class="section-header">
+                <h3 class="section-title">Saved Custom Reports</h3>
+                <button class="btn btn-secondary" onclick="exportAllReports()">Export All</button>
+            </div>
+
+            <div class="filter-controls">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" placeholder="Search reports..." id="searchInput">
+                </div>
+                <select class="filter-select" id="statusFilter">
+                    <option value="">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="scheduled">Scheduled</option>
+                    <option value="draft">Draft</option>
+                </select>
+                <select class="filter-select" id="dateFilter">
+                    <option value="">All Dates</option>
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                </select>
+            </div>
+
+            <table class="reports-table">
+                <thead>
+                    <tr>
+                        <th>Report Name</th>
+                        <th>Data Sources</th>
+                        <th>Created</th>
+                        <th>Last Run</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="reportsTableBody">
+                    <tr data-status="active" data-date="2024-04-10">
+                        <td>Team Performance Dashboard</td>
+                        <td>Performance, Employees, Goals</td>
+                        <td>April 10, 2024</td>
+                        <td>April 15, 2024</td>
+                        <td><span class="status-badge active">ACTIVE</span></td>
+                        <td>
+                            <div class="table-actions">
+                                <button class="action-btn" onclick="runReport('team-dashboard')" title="Run">▶️</button>
+                                <button class="action-btn" onclick="editReport('team-dashboard')" title="Edit">✏️</button>
+                                <button class="action-btn" onclick="duplicateReport('team-dashboard')" title="Duplicate">📋</button>
+                                <button class="action-btn" onclick="deleteReport('team-dashboard')" title="Delete">🗑️</button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr data-status="scheduled" data-date="2024-04-08">
+                        <td>Monthly Skills Assessment</td>
+                        <td>Skills, Training, Feedback</td>
+                        <td>April 8, 2024</td>
+                        <td>April 1, 2024</td>
+                        <td><span class="status-badge scheduled">SCHEDULED</span></td>
+                        <td>
+                            <div class="table-actions">
+                                <button class="action-btn" onclick="runReport('skills-monthly')" title="Run">▶️</button>
+                                <button class="action-btn" onclick="editReport('skills-monthly')" title="Edit">✏️</button>
+                                <button class="action-btn" onclick="duplicateReport('skills-monthly')" title="Duplicate">📋</button>
+                                <button class="action-btn" onclick="deleteReport('skills-monthly')" title="Delete">🗑️</button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr data-status="draft" data-date="2024-04-05">
+                        <td>Goal Achievement Analysis</td>
+                        <td>Goals, Performance, Employees</td>
+                        <td>April 5, 2024</td>
+                        <td>Never</td>
+                        <td><span class="status-badge draft">DRAFT</span></td>
+                        <td>
+                            <div class="table-actions">
+                                <button class="action-btn" onclick="runReport('goal-analysis')" title="Run">▶️</button>
+                                <button class="action-btn" onclick="editReport('goal-analysis')" title="Edit">✏️</button>
+                                <button class="action-btn" onclick="duplicateReport('goal-analysis')" title="Duplicate">📋</button>
+                                <button class="action-btn" onclick="deleteReport('goal-analysis')" title="Delete">🗑️</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <script>
+        // Data source selection
+        function toggleSource(element, sourceType) {
+            element.classList.toggle('selected');
+        }
+
+        // Metric selection
+        function toggleMetric(element) {
+            element.classList.toggle('selected');
+            const checkbox = element.querySelector('.metric-checkbox');
+            checkbox.checked = !checkbox.checked;
+        }
+
+        // Form actions
+        function generateReport() {
+            const reportName = document.getElementById('reportName').value;
+            if (!reportName) {
+                alert('Please enter a report name');
+                return;
+            }
+
+            // Check if data sources are selected
+            const selectedSources = document.querySelectorAll('.source-card.selected');
+            if (selectedSources.length === 0) {
+                alert('Please select at least one data source');
+                return;
+            }
+
+            // Check if metrics are selected
+            const selectedMetrics = document.querySelectorAll('.metric-item.selected');
+            if (selectedMetrics.length === 0) {
+                alert('Please select at least one metric');
+                return;
+            }
+
+            alert(`Generating custom report: ${reportName}\nData Sources: ${selectedSources.length}\nMetrics: ${selectedMetrics.length}\n\nThis may take a few moments...`);
+        }
+
+        function previewReport() {
+            const reportName = document.getElementById('reportName').value || 'Untitled Report';
+            alert(`Generating preview for: ${reportName}\n\nPreview will show how your report will look with the selected data sources and metrics.`);
+        }
+
+        function saveReport() {
+            const reportName = document.getElementById('reportName').value;
+            if (!reportName) {
+                alert('Please enter a report name');
+                return;
+            }
+
+            alert(`Custom report "${reportName}" saved successfully!\n\nYou can find it in the "Saved Custom Reports" section below.`);
+        }
+
+        function resetForm() {
+            if (confirm('Are you sure you want to reset the form? All unsaved changes will be lost.')) {
+                document.getElementById('reportBuilderForm').reset();
+                document.querySelectorAll('.source-card.selected, .metric-item.selected').forEach(el => {
+                    el.classList.remove('selected');
+                });
+                document.querySelectorAll('.metric-checkbox').forEach(cb => {
+                    cb.checked = false;
+                });
+            }
+        }
+
+        // Report actions
+        function runReport(reportId) {
+            alert(`Running custom report: ${reportId}\n\nThe report will be generated and available for download shortly.`);
+        }
+
+        function editReport(reportId) {
+            alert(`Opening report editor for: ${reportId}\n\nYou can modify the data sources, metrics, and filters.`);
+        }
+
+        function duplicateReport(reportId) {
+            const newName = prompt('Enter name for duplicated report:');
+            if (newName) {
+                alert(`Report duplicated as: ${newName}`);
+            }
+        }
+
+        function deleteReport(reportId) {
+            if (confirm('Are you sure you want to delete this custom report?')) {
+                alert(`Custom report ${reportId} deleted successfully!`);
+            }
+        }
+
+        function exportAllReports() {
+            alert('Exporting all custom reports to ZIP file...');
+        }
+
+        function showTutorial() {
+            alert('Custom Reports Builder Tutorial\n\n1. Enter a descriptive name for your report\n2. Select data sources you want to include\n3. Choose metrics and KPIs to display\n4. Configure filters to narrow down data\n5. Select visualization options\n6. Set up automatic scheduling (optional)\n7. Preview and generate your report\n\nFor detailed help, contact your system administrator.');
+        }
+
+        // Filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Search functionality
+            document.getElementById('searchInput').addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                const rows = document.querySelectorAll('#reportsTableBody tr');
+                
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(searchTerm) ? '' : 'none';
+                });
+            });
+
+            // Filter functionality
+            const filters = ['statusFilter', 'dateFilter'];
+            filters.forEach(filterId => {
+                document.getElementById(filterId).addEventListener('change', function() {
+                    filterReports();
+                });
+            });
+        });
+
+        function filterReports() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const dateFilter = document.getElementById('dateFilter').value;
+            const rows = document.querySelectorAll('#reportsTableBody tr');
+
+            rows.forEach(row => {
+                const matchesStatus = !statusFilter || row.dataset.status === statusFilter;
+                const matchesDate = !dateFilter || checkDateFilter(row.dataset.date, dateFilter);
+
+                row.style.display = matchesStatus && matchesDate ? '' : 'none';
+            });
+        }
+
+        function checkDateFilter(dateString, filter) {
+            const date = new Date(dateString);
+            const today = new Date();
+            
+            switch(filter) {
+                case 'today':
+                    return date.toDateString() === today.toDateString();
+                case 'week':
+                    const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    return date >= weekAgo;
+                case 'month':
+                    const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+                    return date >= monthAgo;
+                default:
+                    return true;
+            }
+        }
+
+        // Initialize page
+        window.addEventListener('load', function() {
+            // Add hover effects
+            const sourceCards = document.querySelectorAll('.source-card');
+            sourceCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+
+            const metricItems = document.querySelectorAll('.metric-item');
+            metricItems.forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateX(4px)';
+                });
+                item.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateX(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

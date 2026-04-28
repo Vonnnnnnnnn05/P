@@ -1,114 +1,1083 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Supervisor - Evaluations</title>
-  <style>
-    :root {
-      --bg: #F8FAFC;
-      --soft: #DBEAFE;
-      --accent: #2563EB;
-      --text: #0f172a;
-      --border: #e2e8f0;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-    .layout { display: grid; grid-template-columns: 230px 1fr; min-height: 100vh; }
-    .sidebar { background: var(--soft); padding: 18px; }
-    .sidebar h2 { margin: 0 0 8px; font-size: 1.1rem; }
-    .sidebar a {
-      display: block;
-      padding: 10px 12px;
-      border-radius: 8px;
-      text-decoration: none;
-      color: var(--text);
-      margin: 6px 0;
-    }
-    .sidebar a.active,
-    .sidebar a:hover { background: #bfdbfe; }
-    .main { padding: 22px; }
-    table {
-      width: 100%;
-      background: #fff;
-      border-collapse: collapse;
-      border-radius: 12px;
-      overflow: hidden;
-    }
-    th, td {
-      padding: 10px;
-      border-bottom: 1px solid var(--border);
-      text-align: left;
-    }
-    .btn {
-      background: var(--accent);
-      border: 0;
-      color: #fff;
-      padding: 10px 12px;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-    @media (max-width: 860px) {
-      .layout { grid-template-columns: 1fr; }
-      .sidebar { display: flex; gap: 6px; overflow: auto; }
-      .sidebar a { white-space: nowrap; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Evaluations - Performance Evaluation System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-bg: #F8FAFC;
+            --secondary-bg: #DBEAFE;
+            --accent-color: #2563EB;
+            --accent-hover: #1D4ED8;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --border-color: #E5E7EB;
+            --success-color: #10B981;
+            --warning-color: #F59E0B;
+            --error-color: #EF4444;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --sidebar-width: 280px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            border-right: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            color: white;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+
+        .sidebar-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .sidebar-subtitle {
+            font-size: 0.75rem;
+            opacity: 0.9;
+        }
+
+        .nav-menu {
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 0.875rem 1.5rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: var(--primary-bg);
+            border-left-color: var(--accent-color);
+        }
+
+        .nav-item.active {
+            background: var(--secondary-bg);
+            border-left-color: var(--accent-color);
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            display: inline-block;
+            width: 20px;
+            margin-right: 0.75rem;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+        }
+
+        .header {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-bg);
+        }
+
+        .btn-danger {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #DC2626;
+        }
+
+        /* Stats Overview */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-title {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-change {
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-change.positive {
+            color: var(--success-color);
+        }
+
+        .stat-change.negative {
+            color: var(--error-color);
+        }
+
+        /* Evaluations Section */
+        .evaluations-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem;
+            background: var(--primary-bg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            background: white;
+        }
+
+        .evaluations-list {
+            padding: 1.5rem;
+        }
+
+        .evaluation-item {
+            background: var(--primary-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent-color);
+            transition: all 0.2s;
+        }
+
+        .evaluation-item:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .evaluation-item.completed {
+            border-left-color: var(--success-color);
+        }
+
+        .evaluation-item.pending {
+            border-left-color: var(--warning-color);
+        }
+
+        .evaluation-item.overdue {
+            border-left-color: var(--error-color);
+        }
+
+        .evaluation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .employee-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .employee-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.125rem;
+        }
+
+        .employee-details {
+            flex: 1;
+        }
+
+        .employee-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .employee-meta {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .evaluation-status {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.5rem;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-badge.in-progress {
+            background: #DBEAFE;
+            color: #1E3A8A;
+        }
+
+        .status-badge.completed {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .status-badge.pending {
+            background: #FED7AA;
+            color: #9A3412;
+        }
+
+        .status-badge.overdue {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .evaluation-content {
+            margin-bottom: 1rem;
+        }
+
+        .evaluation-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .summary-item {
+            text-align: center;
+            padding: 0.75rem;
+            background: white;
+            border-radius: 6px;
+        }
+
+        .summary-value {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .summary-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-hover));
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .evaluation-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        /* Mobile Responsive */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+                padding-top: 4rem;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: none;
+            }
+
+            .evaluation-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .evaluation-status {
+                align-items: flex-start;
+            }
+
+            .evaluation-summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .evaluation-actions {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="layout">
-    <aside class="sidebar">
-      <h2>Supervisor</h2>
-      <nav>
-        <a href="dashboard.html">Dashboard</a>
-        <a class="active" href="evaluations.html">Evaluate Employees</a>
-        <a href="rate.html">Rate Criteria</a>
-        <a href="comments.html">Comments</a>
-        <a href="recommendations.html">Recommendations</a>
-        <a href="#" onclick="logout(); return false;">Logout</a>
-      </nav>
-    </aside>
-    <main class="main">
-      <h1>Evaluate Employees</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Employee</th>
-            <th>Department</th>
-            <th>Cycle</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Maria Santos</td>
-            <td>Finance</td>
-            <td>Q2 2026</td>
-            <td>Pending</td>
-          </tr>
-          <tr>
-            <td>Liam David</td>
-            <td>IT</td>
-            <td>Q2 2026</td>
-            <td>In Progress</td>
-          </tr>
-        </tbody>
-      </table>
-    </main>
-  </div>
+    <div class="app-container">
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-toggle" onclick="toggleSidebar()">☰</button>
+        
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <div class="logo-icon">EP</div>
+                    <div>
+                        <div class="sidebar-title">Supervisor Portal</div>
+                        <div class="sidebar-subtitle">Performance Evaluation</div>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item">
+                    <span class="nav-icon">📊</span> Dashboard
+                </a>
+                <a href="team.html" class="nav-item">
+                    <span class="nav-icon">👥</span> Team Management
+                </a>
+                <a href="evaluations.html" class="nav-item active">
+                    <span class="nav-icon">📝</span> Team Evaluations
+                </a>
+                <a href="schedule.html" class="nav-item">
+                    <span class="nav-icon">📅</span> Schedule Reviews
+                </a>
+                <a href="feedback.html" class="nav-item">
+                    <span class="nav-icon">💬</span> Give Feedback
+                </a>
+                <a href="reports.html" class="nav-item">
+                    <span class="nav-icon">📈</span> Team Reports
+                </a>
+                <a href="../admin/settings.html" class="nav-item">
+                    <span class="nav-icon">⚙️</span> Settings
+                </a>
+            </nav>
+        </aside>
 
-  <script>
-    const auth = JSON.parse(localStorage.getItem("epsAuth") || "null");
-    if (!auth || auth.role !== "Supervisor") location.href = "../index.html";
-    function logout() {
-      localStorage.removeItem("epsAuth");
-      location.href = "../index.html";
-    }
-  </script>
+        <!-- Overlay for mobile -->
+        <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div>
+                    <h1 class="header-title">Team Evaluations</h1>
+                    <p style="color: var(--text-secondary); margin-top: 0.25rem;">Manage and review team member evaluations</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="startNewEvaluation()">
+                        <span>➕</span> Start New Evaluation
+                    </button>
+                    <button class="btn btn-danger" onclick="logout()">
+                        <span>🚪</span> Logout
+                    </button>
+                </div>
+            </header>
+
+            <!-- Statistics Overview -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Total Evaluations</h3>
+                        <div class="stat-icon" style="background: #DBEAFE; color: #2563EB;">📝</div>
+                    </div>
+                    <div class="stat-value">24</div>
+                    <div class="stat-change positive">
+                        <span>↑</span> 6 this month
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Pending Reviews</h3>
+                        <div class="stat-icon" style="background: #FED7AA; color: #F59E0B;">⏳</div>
+                    </div>
+                    <div class="stat-value">8</div>
+                    <div class="stat-change negative">
+                        <span>↑</span> 2 this week
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Completed This Month</h3>
+                        <div class="stat-icon" style="background: #D1FAE5; color: #10B981;">✅</div>
+                    </div>
+                    <div class="stat-value">15</div>
+                    <div class="stat-change positive">
+                        <span>↑</span> 20% increase
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Team Average Score</h3>
+                        <div class="stat-icon" style="background: #FEE2E2; color: #EF4444;">📊</div>
+                    </div>
+                    <div class="stat-value">4.1</div>
+                    <div class="stat-change positive">
+                        <span>↑</span> 0.2 improvement
+                    </div>
+                </div>
+            </section>
+
+            <!-- Evaluations List -->
+            <section class="evaluations-section">
+                <div class="section-header">
+                    <h3 class="section-title">Evaluation Queue</h3>
+                    <button class="btn btn-secondary" onclick="exportEvaluations()">Export All</button>
+                </div>
+
+                <div class="filter-controls">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" class="search-input" placeholder="Search evaluations..." id="searchInput">
+                    </div>
+                    <select class="filter-select" id="statusFilter">
+                        <option value="">All Status</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                        <option value="pending">Pending</option>
+                        <option value="overdue">Overdue</option>
+                    </select>
+                    <select class="filter-select" id="employeeFilter">
+                        <option value="">All Employees</option>
+                        <option value="john-doe">John Doe</option>
+                        <option value="mike-wilson">Mike Wilson</option>
+                        <option value="emily-davis">Emily Davis</option>
+                        <option value="robert-brown">Robert Brown</option>
+                    </select>
+                </div>
+
+                <div class="evaluations-list" id="evaluationsList">
+                    <!-- In Progress Evaluation -->
+                    <div class="evaluation-item" data-status="in-progress" data-employee="john-doe">
+                        <div class="evaluation-header">
+                            <div class="employee-info">
+                                <div class="employee-avatar">JD</div>
+                                <div class="employee-details">
+                                    <h4 class="employee-name">John Doe - Q1 2024 Evaluation</h4>
+                                    <p class="employee-meta">Senior Software Developer • Started: April 1, 2024</p>
+                                </div>
+                            </div>
+                            <div class="evaluation-status">
+                                <span class="status-badge in-progress">IN PROGRESS</span>
+                            </div>
+                        </div>
+                        <div class="evaluation-content">
+                            <div class="evaluation-summary">
+                                <div class="summary-item">
+                                    <div class="summary-value">75%</div>
+                                    <div class="summary-label">Completed</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">5</div>
+                                    <div class="summary-label">Criteria</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">3</div>
+                                    <div class="summary-label">Days Left</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">4.2</div>
+                                    <div class="summary-label">Current Score</div>
+                                </div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%;"></div>
+                            </div>
+                        </div>
+                        <div class="evaluation-actions">
+                            <button class="btn btn-secondary" onclick="viewEvaluation('john-doe-q1')">View Details</button>
+                            <button class="btn btn-primary" onclick="continueEvaluation('john-doe-q1')">Continue Review</button>
+                        </div>
+                    </div>
+
+                    <!-- Pending Evaluation -->
+                    <div class="evaluation-item pending" data-status="pending" data-employee="mike-wilson">
+                        <div class="evaluation-header">
+                            <div class="employee-info">
+                                <div class="employee-avatar">MW</div>
+                                <div class="employee-details">
+                                    <h4 class="employee-name">Mike Wilson - Q1 2024 Evaluation</h4>
+                                    <p class="employee-meta">Software Developer • Submitted: April 10, 2024</p>
+                                </div>
+                            </div>
+                            <div class="evaluation-status">
+                                <span class="status-badge pending">PENDING REVIEW</span>
+                            </div>
+                        </div>
+                        <div class="evaluation-content">
+                            <div class="evaluation-summary">
+                                <div class="summary-item">
+                                    <div class="summary-value">100%</div>
+                                    <div class="summary-label">Self-Assessment</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">5</div>
+                                    <div class="summary-label">Criteria</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">2</div>
+                                    <div class="summary-label">Days Waiting</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">3.8</div>
+                                    <div class="summary-label">Self Score</div>
+                                </div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 50%;"></div>
+                            </div>
+                        </div>
+                        <div class="evaluation-actions">
+                            <button class="btn btn-secondary" onclick="viewEvaluation('mike-wilson-q1')">View Details</button>
+                            <button class="btn btn-primary" onclick="startReview('mike-wilson-q1')">Start Review</button>
+                        </div>
+                    </div>
+
+                    <!-- Overdue Evaluation -->
+                    <div class="evaluation-item overdue" data-status="overdue" data-employee="robert-brown">
+                        <div class="evaluation-header">
+                            <div class="employee-info">
+                                <div class="employee-avatar">RB</div>
+                                <div class="employee-details">
+                                    <h4 class="employee-name">Robert Brown - Q1 2024 Evaluation</h4>
+                                    <p class="employee-meta">Frontend Developer • Due: March 31, 2024</p>
+                                </div>
+                            </div>
+                            <div class="evaluation-status">
+                                <span class="status-badge overdue">OVERDUE</span>
+                            </div>
+                        </div>
+                        <div class="evaluation-content">
+                            <div class="evaluation-summary">
+                                <div class="summary-item">
+                                    <div class="summary-value">25%</div>
+                                    <div class="summary-label">Completed</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">5</div>
+                                    <div class="summary-label">Criteria</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">14</div>
+                                    <div class="summary-label">Days Overdue</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">-</div>
+                                    <div class="summary-label">Score</div>
+                                </div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 25%;"></div>
+                            </div>
+                        </div>
+                        <div class="evaluation-actions">
+                            <button class="btn btn-secondary" onclick="viewEvaluation('robert-brown-q1')">View Details</button>
+                            <button class="btn btn-primary" onclick="sendReminder('robert-brown-q1')">Send Reminder</button>
+                        </div>
+                    </div>
+
+                    <!-- Completed Evaluation -->
+                    <div class="evaluation-item completed" data-status="completed" data-employee="emily-davis">
+                        <div class="evaluation-header">
+                            <div class="employee-info">
+                                <div class="employee-avatar">ED</div>
+                                <div class="employee-details">
+                                    <h4 class="employee-name">Emily Davis - Q1 2024 Evaluation</h4>
+                                    <p class="employee-meta">Junior Developer • Completed: April 5, 2024</p>
+                                </div>
+                            </div>
+                            <div class="evaluation-status">
+                                <span class="status-badge completed">COMPLETED</span>
+                            </div>
+                        </div>
+                        <div class="evaluation-content">
+                            <div class="evaluation-summary">
+                                <div class="summary-item">
+                                    <div class="summary-value">100%</div>
+                                    <div class="summary-label">Completed</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">5</div>
+                                    <div class="summary-label">Criteria</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">4.1</div>
+                                    <div class="summary-label">Final Score</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">7</div>
+                                    <div class="summary-label">Days Ago</div>
+                                </div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%;"></div>
+                            </div>
+                        </div>
+                        <div class="evaluation-actions">
+                            <button class="btn btn-secondary" onclick="viewEvaluation('emily-davis-q1')">View Details</button>
+                            <button class="btn btn-primary" onclick="downloadReport('emily-davis-q1')">Download Report</button>
+                        </div>
+                    </div>
+
+                    <!-- Another In Progress -->
+                    <div class="evaluation-item" data-status="in-progress" data-employee="lisa-johnson">
+                        <div class="evaluation-header">
+                            <div class="employee-info">
+                                <div class="employee-avatar">LJ</div>
+                                <div class="employee-details">
+                                    <h4 class="employee-name">Lisa Johnson - Q4 2023 Evaluation</h4>
+                                    <p class="employee-meta">Backend Developer • Started: March 15, 2024</p>
+                                </div>
+                            </div>
+                            <div class="evaluation-status">
+                                <span class="status-badge in-progress">IN PROGRESS</span>
+                            </div>
+                        </div>
+                        <div class="evaluation-content">
+                            <div class="evaluation-summary">
+                                <div class="summary-item">
+                                    <div class="summary-value">60%</div>
+                                    <div class="summary-label">Completed</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">6</div>
+                                    <div class="summary-label">Criteria</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">5</div>
+                                    <div class="summary-label">Days Left</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">4.0</div>
+                                    <div class="summary-label">Current Score</div>
+                                </div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 60%;"></div>
+                            </div>
+                        </div>
+                        <div class="evaluation-actions">
+                            <button class="btn btn-secondary" onclick="viewEvaluation('lisa-johnson-q4')">View Details</button>
+                            <button class="btn btn-primary" onclick="continueEvaluation('lisa-johnson-q4')">Continue Review</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Check authentication
+        function checkAuth() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            const user = JSON.parse(currentUser);
+            if (user.role !== 'supervisor') {
+                const dashboardMap = {
+                    administrator: '../admin/dashboard.html',
+                    hr: '../hr/dashboard.html',
+                    employee: '../employee/dashboard.html'
+                };
+                if (dashboardMap[user.role]) {
+                    window.location.href = dashboardMap[user.role];
+                }
+            }
+        }
+
+        // Toggle sidebar for mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        // Global logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('currentUser');
+                window.location.href = '../index.html';
+            }
+        }
+
+        // Evaluation actions
+        function startNewEvaluation() {
+            const employee = prompt('Select employee for new evaluation:\n1. John Doe\n2. Mike Wilson\n3. Emily Davis\n4. Robert Brown\n\nEnter number:');
+            if (employee) {
+                const employees = ['John Doe', 'Mike Wilson', 'Emily Davis', 'Robert Brown'];
+                const selectedEmployee = employees[parseInt(employee) - 1];
+                if (selectedEmployee) {
+                    alert(`Starting new evaluation for ${selectedEmployee}...`);
+                    // In real app, would navigate to evaluation form
+                }
+            }
+        }
+
+        function continueEvaluation(evaluationId) {
+            alert(`Continuing evaluation: ${evaluationId}`);
+            // In real app, would navigate to evaluation form with saved progress
+        }
+
+        function startReview(evaluationId) {
+            alert(`Starting supervisor review: ${evaluationId}`);
+            // In real app, would navigate to review form
+        }
+
+        function viewEvaluation(evaluationId) {
+            alert(`Viewing evaluation details: ${evaluationId}`);
+            // In real app, would open detailed evaluation view
+        }
+
+        function downloadReport(evaluationId) {
+            alert(`Downloading evaluation report: ${evaluationId}`);
+            // In real app, would generate and download PDF report
+        }
+
+        function sendReminder(evaluationId) {
+            alert(`Sending reminder for evaluation: ${evaluationId}`);
+            // In real app, would send reminder to employee
+        }
+
+        function exportEvaluations() {
+            alert('Exporting all evaluations to Excel...');
+            // In real app, would generate and download Excel file
+        }
+
+        // Filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+
+            // Search functionality
+            document.getElementById('searchInput').addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                const items = document.querySelectorAll('.evaluation-item');
+                
+                items.forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    item.style.display = text.includes(searchTerm) ? '' : 'none';
+                });
+            });
+
+            // Filter functionality
+            const filters = ['statusFilter', 'employeeFilter'];
+            filters.forEach(filterId => {
+                document.getElementById(filterId).addEventListener('change', function() {
+                    filterEvaluations();
+                });
+            });
+        });
+
+        function filterEvaluations() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const employeeFilter = document.getElementById('employeeFilter').value;
+            const items = document.querySelectorAll('.evaluation-item');
+
+            items.forEach(item => {
+                const matchesStatus = !statusFilter || item.dataset.status === statusFilter;
+                const matchesEmployee = !employeeFilter || item.dataset.employee === employeeFilter;
+
+                item.style.display = matchesStatus && matchesEmployee ? '' : 'none';
+            });
+        }
+
+        // Initialize page
+        window.addEventListener('load', function() {
+            // Animate progress bars
+            setTimeout(() => {
+                const progressBars = document.querySelectorAll('.progress-fill');
+                progressBars.forEach((bar, index) => {
+                    const width = bar.style.width;
+                    bar.style.width = '0%';
+                    setTimeout(() => {
+                        bar.style.width = width;
+                    }, index * 100);
+                });
+            }, 500);
+
+            // Animate evaluation items
+            const evaluationItems = document.querySelectorAll('.evaluation-item');
+            evaluationItems.forEach((item, index) => {
+                item.style.animation = `fadeInUp 0.5s ease ${index * 0.1}s both`;
+            });
+        });
+
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
 </html>

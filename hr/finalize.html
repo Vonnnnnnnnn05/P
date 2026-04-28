@@ -1,118 +1,1200 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HR - Finalize</title>
-  <style>
-    :root {
-      --bg: #F8FAFC;
-      --soft: #E0F2FE;
-      --accent: #0EA5E9;
-      --text: #0f172a;
-      --border: #e2e8f0;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-    .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
-    .sidebar { background: var(--soft); padding: 18px; }
-    .sidebar h2 { margin: 0 0 8px; font-size: 1.1rem; }
-    .sidebar a {
-      display: block;
-      padding: 10px 12px;
-      margin: 6px 0;
-      border-radius: 8px;
-      text-decoration: none;
-      color: var(--text);
-    }
-    .sidebar a.active,
-    .sidebar a:hover { background: #bae6fd; }
-    .main { padding: 22px; }
-    .card {
-      background: #fff;
-      padding: 16px;
-      border-radius: 12px;
-      max-width: 860px;
-    }
-    .btn {
-      background: var(--accent);
-      color: #fff;
-      border: 0;
-      padding: 10px 12px;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-    table { width: 100%; border-collapse: collapse; }
-    th, td {
-      padding: 10px;
-      border-bottom: 1px solid var(--border);
-      text-align: left;
-    }
-    @media (max-width: 860px) {
-      .layout { grid-template-columns: 1fr; }
-      .sidebar { display: flex; gap: 6px; overflow: auto; }
-      .sidebar a { white-space: nowrap; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finalize Evaluations - Performance Evaluation System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-bg: #F8FAFC;
+            --secondary-bg: #DBEAFE;
+            --accent-color: #2563EB;
+            --accent-hover: #1D4ED8;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --border-color: #E5E7EB;
+            --success-color: #10B981;
+            --warning-color: #F59E0B;
+            --error-color: #EF4444;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --sidebar-width: 280px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            border-right: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            color: white;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+
+        .sidebar-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .sidebar-subtitle {
+            font-size: 0.75rem;
+            opacity: 0.9;
+        }
+
+        .nav-menu {
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 0.875rem 1.5rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: var(--primary-bg);
+            border-left-color: var(--accent-color);
+        }
+
+        .nav-item.active {
+            background: var(--secondary-bg);
+            border-left-color: var(--accent-color);
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            display: inline-block;
+            width: 20px;
+            margin-right: 0.75rem;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+        }
+
+        .header {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-bg);
+        }
+
+        .btn-danger {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #DC2626;
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        /* Stats Overview */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-title {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-change {
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-change.positive {
+            color: var(--success-color);
+        }
+
+        .stat-change.negative {
+            color: var(--error-color);
+        }
+
+        /* Finalization Queue */
+        .finalize-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem;
+            background: var(--primary-bg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            background: white;
+        }
+
+        .finalize-list {
+            padding: 1.5rem;
+        }
+
+        .finalize-item {
+            background: var(--primary-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--success-color);
+            transition: all 0.2s;
+        }
+
+        .finalize-item:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .finalize-item.pending {
+            border-left-color: var(--warning-color);
+        }
+
+        .finalize-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .employee-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .employee-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.125rem;
+        }
+
+        .employee-details {
+            flex: 1;
+        }
+
+        .employee-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .employee-meta {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .finalize-status {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.5rem;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-badge.ready {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .status-badge.pending {
+            background: #FED7AA;
+            color: #9A3412;
+        }
+
+        .status-badge.finalized {
+            background: #DBEAFE;
+            color: #1E3A8A;
+        }
+
+        .finalize-content {
+            margin-bottom: 1rem;
+        }
+
+        .evaluation-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .summary-item {
+            text-align: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 6px;
+        }
+
+        .summary-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .summary-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .checklist {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .checklist-title {
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .checklist-checkbox {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--success-color);
+        }
+
+        .checklist-item.completed {
+            color: var(--success-color);
+        }
+
+        .finalize-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        /* Batch Actions */
+        .batch-actions {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .batch-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .batch-title {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .selected-count {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .batch-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* Mobile Responsive */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+                padding-top: 4rem;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: none;
+            }
+
+            .finalize-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .finalize-status {
+                align-items: flex-start;
+            }
+
+            .evaluation-summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .batch-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="layout">
-    <aside class="sidebar">
-      <h2>HR Officer</h2>
-      <nav>
-        <a href="dashboard.html">Dashboard</a>
-        <a href="forms.html">Evaluation Forms</a>
-        <a href="schedules.html">Schedules</a>
-        <a href="review.html">Review</a>
-        <a class="active" href="finalize.html">Finalize</a>
-        <a href="reports.html">Reports</a>
-        <a href="#" onclick="logout(); return false;">Logout</a>
-      </nav>
-    </aside>
-    <main class="main">
-      <h1>Finalize Evaluations</h1>
-      <div class="card">
-        <table>
-          <thead>
-            <tr>
-              <th>Employee</th>
-              <th>Department</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Maria Santos</td>
-              <td>Finance</td>
-              <td>Validated</td>
-            </tr>
-            <tr>
-              <td>Liam David</td>
-              <td>IT</td>
-              <td>Validated</td>
-            </tr>
-          </tbody>
-        </table>
-        <br />
-        <button class="btn" onclick="alert('Evaluations finalized and locked (prototype).')">
-          Finalize Batch
-        </button>
-      </div>
-    </main>
-  </div>
+    <div class="app-container">
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-toggle" onclick="toggleSidebar()">☰</button>
+        
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <div class="logo-icon">EP</div>
+                    <div>
+                        <div class="sidebar-title">HR Portal</div>
+                        <div class="sidebar-subtitle">Performance Evaluation</div>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item">
+                    <span class="nav-icon">📊</span> Dashboard
+                </a>
+                <a href="forms.html" class="nav-item">
+                    <span class="nav-icon">📝</span> Evaluation Forms
+                </a>
+                <a href="schedules.html" class="nav-item">
+                    <span class="nav-icon">📅</span> Schedules
+                </a>
+                <a href="review.html" class="nav-item">
+                    <span class="nav-icon">👁️</span> Review & Validate
+                </a>
+                <a href="finalize.html" class="nav-item active">
+                    <span class="nav-icon">✅</span> Finalize Evaluations
+                </a>
+                <a href="reports.html" class="nav-item">
+                    <span class="nav-icon">📈</span> Reports
+                </a>
+                <a href="../admin/settings.html" class="nav-item">
+                    <span class="nav-icon">⚙️</span> Settings
+                </a>
+            </nav>
+        </aside>
 
-  <script>
-    const auth = JSON.parse(localStorage.getItem("epsAuth") || "null");
-    if (!auth || auth.role !== "HR Officer") location.href = "../index.html";
-    function logout() {
-      localStorage.removeItem("epsAuth");
-      location.href = "../index.html";
-    }
-  </script>
+        <!-- Overlay for mobile -->
+        <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div>
+                    <h1 class="header-title">Finalize Evaluations</h1>
+                    <p style="color: var(--text-secondary); margin-top: 0.25rem;">Complete and finalize approved evaluations</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-success" onclick="batchFinalize()">
+                        <span>✅</span> Batch Finalize
+                    </button>
+                    <button class="btn btn-danger" onclick="logout()">
+                        <span>🚪</span> Logout
+                    </button>
+                </div>
+            </header>
+
+            <!-- Statistics Overview -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Ready to Finalize</h3>
+                        <div class="stat-icon" style="background: #D1FAE5; color: #10B981;">✅</div>
+                    </div>
+                    <div class="stat-value">18</div>
+                    <div class="stat-change positive">
+                        <span>↑</span> 5 more today
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Pending Signatures</h3>
+                        <div class="stat-icon" style="background: #FED7AA; color: #F59E0B;">📝</div>
+                    </div>
+                    <div class="stat-value">7</div>
+                    <div class="stat-change negative">
+                        <span>↓</span> 2 less than yesterday
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Finalized This Week</h3>
+                        <div class="stat-icon" style="background: #DBEAFE; color: #2563EB;">📋</div>
+                    </div>
+                    <div class="stat-value">42</div>
+                    <div class="stat-change positive">
+                        <span>↑</span> 15% increase
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Completion Rate</h3>
+                        <div class="stat-icon" style="background: #FEE2E2; color: #EF4444;">📊</div>
+                    </div>
+                    <div class="stat-value">94%</div>
+                    <div class="stat-change positive">
+                        <span>↑</span> 3% improvement
+                    </div>
+                </div>
+            </section>
+
+            <!-- Batch Actions -->
+            <section class="batch-actions">
+                <div class="batch-header">
+                    <h3 class="batch-title">Batch Operations</h3>
+                    <span class="selected-count" id="selectedCount">0 evaluations selected</span>
+                </div>
+                <div class="batch-buttons">
+                    <button class="btn btn-secondary" onclick="selectAll()">Select All Ready</button>
+                    <button class="btn btn-secondary" onclick="clearSelection()">Clear Selection</button>
+                    <button class="btn btn-primary" onclick="generateReports()">Generate Reports</button>
+                    <button class="btn btn-primary" onclick="sendNotifications()">Send Notifications</button>
+                    <button class="btn btn-success" onclick="batchFinalize()">Finalize Selected</button>
+                </div>
+            </section>
+
+            <!-- Finalization Queue -->
+            <section class="finalize-section">
+                <div class="section-header">
+                    <h3 class="section-title">Finalization Queue</h3>
+                    <button class="btn btn-secondary" onclick="exportFinalized()">Export Finalized</button>
+                </div>
+
+                <div class="filter-controls">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" class="search-input" placeholder="Search employees..." id="searchInput">
+                    </div>
+                    <select class="filter-select" id="statusFilter">
+                        <option value="">All Status</option>
+                        <option value="ready">Ready to Finalize</option>
+                        <option value="pending">Pending Signatures</option>
+                        <option value="finalized">Finalized</option>
+                    </select>
+                    <select class="filter-select" id="departmentFilter">
+                        <option value="">All Departments</option>
+                        <option value="IT">IT Department</option>
+                        <option value="HR">HR Department</option>
+                        <option value="Sales">Sales</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Marketing">Marketing</option>
+                    </select>
+                </div>
+
+                <div class="finalize-list" id="finalizeList">
+                    <!-- Ready to Finalize -->
+                    <div class="finalize-item" data-status="ready" data-department="IT">
+                        <div class="finalize-header">
+                            <div class="employee-info">
+                                <input type="checkbox" class="evaluation-checkbox" value="john-smith" onchange="updateSelectedCount()">
+                                <div class="employee-avatar">JS</div>
+                                <div class="employee-details">
+                                    <h4 class="employee-name">John Smith</h4>
+                                    <p class="employee-meta">Software Developer • IT Department • Q1 2024 Evaluation</p>
+                                </div>
+                            </div>
+                            <div class="finalize-status">
+                                <span class="status-badge ready">READY TO FINALIZE</span>
+                            </div>
+                        </div>
+                        <div class="finalize-content">
+                            <div class="evaluation-summary">
+                                <div class="summary-item">
+                                    <div class="summary-value">4.2</div>
+                                    <div class="summary-label">Final Score</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">100%</div>
+                                    <div class="summary-label">Complete</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">5</div>
+                                    <div class="summary-label">Criteria</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">Approved</div>
+                                    <div class="summary-label">Status</div>
+                                </div>
+                            </div>
+                            <div class="checklist">
+                                <div class="checklist-title">Finalization Checklist:</div>
+                                <div class="checklist-item completed">
+                                    <input type="checkbox" class="checklist-checkbox" checked disabled>
+                                    <span>Employee evaluation completed</span>
+                                </div>
+                                <div class="checklist-item completed">
+                                    <input type="checkbox" class="checklist-checkbox" checked disabled>
+                                    <span>Supervisor review approved</span>
+                                </div>
+                                <div class="checklist-item completed">
+                                    <input type="checkbox" class="checklist-checkbox" checked disabled>
+                                    <span>HR validation completed</span>
+                                </div>
+                                <div class="checklist-item completed">
+                                    <input type="checkbox" class="checklist-checkbox" checked disabled>
+                                    <span>All signatures collected</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="finalize-actions">
+                            <button class="btn btn-secondary" onclick="viewEvaluation('john-smith')">View Details</button>
+                            <button class="btn btn-primary" onclick="downloadPDF('john-smith')">Download PDF</button>
+                            <button class="btn btn-success" onclick="finalizeEvaluation('john-smith')">Finalize</button>
+                        </div>
+                    </div>
+
+                    <!-- Pending Signatures -->
+                    <div class="finalize-item pending" data-status="pending" data-department="Sales">
+                        <div class="finalize-header">
+                            <div class="employee-info">
+                                <input type="checkbox" class="evaluation-checkbox" value="mike-wilson" onchange="updateSelectedCount()" disabled>
+                                <div class="employee-avatar">MW</div>
+                                <div class="employee-details">
+                                    <h4 class="employee-name">Mike Wilson</h4>
+                                    <p class="employee-meta">Sales Representative • Sales Department • Q1 2024 Evaluation</p>
+                                </div>
+                            </div>
+                            <div class="finalize-status">
+                                <span class="status-badge pending">PENDING SIGNATURES</span>
+                            </div>
+                        </div>
+                        <div class="finalize-content">
+                            <div class="evaluation-summary">
+                                <div class="summary-item">
+                                    <div class="summary-value">3.8</div>
+                                    <div class="summary-label">Final Score</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">100%</div>
+                                    <div class="summary-label">Complete</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">5</div>
+                                    <div class="summary-label">Criteria</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">Approved</div>
+                                    <div class="summary-label">Status</div>
+                                </div>
+                            </div>
+                            <div class="checklist">
+                                <div class="checklist-title">Finalization Checklist:</div>
+                                <div class="checklist-item completed">
+                                    <input type="checkbox" class="checklist-checkbox" checked disabled>
+                                    <span>Employee evaluation completed</span>
+                                </div>
+                                <div class="checklist-item completed">
+                                    <input type="checkbox" class="checklist-checkbox" checked disabled>
+                                    <span>Supervisor review approved</span>
+                                </div>
+                                <div class="checklist-item completed">
+                                    <input type="checkbox" class="checklist-checkbox" checked disabled>
+                                    <span>HR validation completed</span>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" class="checklist-checkbox" disabled>
+                                    <span>Employee signature pending</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="finalize-actions">
+                            <button class="btn btn-secondary" onclick="viewEvaluation('mike-wilson')">View Details</button>
+                            <button class="btn btn-primary" onclick="sendReminder('mike-wilson')">Send Reminder</button>
+                            <button class="btn btn-secondary" onclick="downloadPDF('mike-wilson')">Download Draft</button>
+                        </div>
+                    </div>
+
+                    <!-- Already Finalized -->
+                    <div class="finalize-item" data-status="finalized" data-department="HR">
+                        <div class="finalize-header">
+                            <div class="employee-info">
+                                <input type="checkbox" class="evaluation-checkbox" value="sarah-johnson" onchange="updateSelectedCount()" disabled>
+                                <div class="employee-avatar">SJ</div>
+                                <div class="employee-details">
+                                    <h4 class="employee-name">Sarah Johnson</h4>
+                                    <p class="employee-meta">HR Manager • HR Department • Q1 2024 Evaluation</p>
+                                </div>
+                            </div>
+                            <div class="finalize-status">
+                                <span class="status-badge finalized">FINALIZED</span>
+                            </div>
+                        </div>
+                        <div class="finalize-content">
+                            <div class="evaluation-summary">
+                                <div class="summary-item">
+                                    <div class="summary-value">4.5</div>
+                                    <div class="summary-label">Final Score</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">100%</div>
+                                    <div class="summary-label">Complete</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">6</div>
+                                    <div class="summary-label">Criteria</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">Apr 10</div>
+                                    <div class="summary-label">Finalized</div>
+                                </div>
+                            </div>
+                            <div class="checklist">
+                                <div class="checklist-title">Finalization Checklist:</div>
+                                <div class="checklist-item completed">
+                                    <input type="checkbox" class="checklist-checkbox" checked disabled>
+                                    <span>All requirements completed</span>
+                                </div>
+                                <div class="checklist-item completed">
+                                    <input type="checkbox" class="checklist-checkbox" checked disabled>
+                                    <span>Evaluation finalized and archived</span>
+                                </div>
+                                <div class="checklist-item completed">
+                                    <input type="checkbox" class="checklist-checkbox" checked disabled>
+                                    <span>Employee notified of results</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="finalize-actions">
+                            <button class="btn btn-secondary" onclick="viewEvaluation('sarah-johnson')">View Details</button>
+                            <button class="btn btn-primary" onclick="downloadPDF('sarah-johnson')">Download PDF</button>
+                            <button class="btn btn-secondary" onclick="viewHistory('sarah-johnson')">View History</button>
+                        </div>
+                    </div>
+
+                    <!-- Ready to Finalize 2 -->
+                    <div class="finalize-item" data-status="ready" data-department="Finance">
+                        <div class="finalize-header">
+                            <div class="employee-info">
+                                <input type="checkbox" class="evaluation-checkbox" value="emily-davis" onchange="updateSelectedCount()">
+                                <div class="employee-avatar">ED</div>
+                                <div class="employee-details">
+                                    <h4 class="employee-name">Emily Davis</h4>
+                                    <p class="employee-meta">Financial Analyst • Finance Department • Q1 2024 Evaluation</p>
+                                </div>
+                            </div>
+                            <div class="finalize-status">
+                                <span class="status-badge ready">READY TO FINALIZE</span>
+                            </div>
+                        </div>
+                        <div class="finalize-content">
+                            <div class="evaluation-summary">
+                                <div class="summary-item">
+                                    <div class="summary-value">4.7</div>
+                                    <div class="summary-label">Final Score</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">100%</div>
+                                    <div class="summary-label">Complete</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">5</div>
+                                    <div class="summary-label">Criteria</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">Approved</div>
+                                    <div class="summary-label">Status</div>
+                                </div>
+                            </div>
+                            <div class="checklist">
+                                <div class="checklist-title">Finalization Checklist:</div>
+                                <div class="checklist-item completed">
+                                    <input type="checkbox" class="checklist-checkbox" checked disabled>
+                                    <span>Employee evaluation completed</span>
+                                </div>
+                                <div class="checklist-item completed">
+                                    <input type="checkbox" class="checklist-checkbox" checked disabled>
+                                    <span>Supervisor review approved</span>
+                                </div>
+                                <div class="checklist-item completed">
+                                    <input type="checkbox" class="checklist-checkbox" checked disabled>
+                                    <span>HR validation completed</span>
+                                </div>
+                                <div class="checklist-item completed">
+                                    <input type="checkbox" class="checklist-checkbox" checked disabled>
+                                    <span>All signatures collected</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="finalize-actions">
+                            <button class="btn btn-secondary" onclick="viewEvaluation('emily-davis')">View Details</button>
+                            <button class="btn btn-primary" onclick="downloadPDF('emily-davis')">Download PDF</button>
+                            <button class="btn btn-success" onclick="finalizeEvaluation('emily-davis')">Finalize</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Check authentication
+        function checkAuth() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            const user = JSON.parse(currentUser);
+            if (user.role !== 'hr') {
+                const dashboardMap = {
+                    administrator: '../admin/dashboard.html',
+                    employee: '../employee/dashboard.html',
+                    supervisor: '../supervisor/dashboard.html'
+                };
+                if (dashboardMap[user.role]) {
+                    window.location.href = dashboardMap[user.role];
+                }
+            }
+        }
+
+        // Toggle sidebar for mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        // Global logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('currentUser');
+                window.location.href = '../index.html';
+            }
+        }
+
+        // Selection management
+        function updateSelectedCount() {
+            const checkboxes = document.querySelectorAll('.evaluation-checkbox:checked:not(:disabled)');
+            const count = checkboxes.length;
+            document.getElementById('selectedCount').textContent = `${count} evaluation${count !== 1 ? 's' : ''} selected`;
+        }
+
+        function selectAll() {
+            const checkboxes = document.querySelectorAll('.evaluation-checkbox:not(:disabled)');
+            checkboxes.forEach(checkbox => checkbox.checked = true);
+            updateSelectedCount();
+        }
+
+        function clearSelection() {
+            const checkboxes = document.querySelectorAll('.evaluation-checkbox');
+            checkboxes.forEach(checkbox => checkbox.checked = false);
+            updateSelectedCount();
+        }
+
+        // Finalization actions
+        function finalizeEvaluation(employeeId) {
+            if (confirm('Finalize this evaluation? This action cannot be undone.')) {
+                alert('Evaluation finalized successfully!');
+                // In real app, would update status and create final record
+            }
+        }
+
+        function batchFinalize() {
+            const selectedCheckboxes = document.querySelectorAll('.evaluation-checkbox:checked:not(:disabled)');
+            if (selectedCheckboxes.length === 0) {
+                alert('No evaluations selected for finalization.');
+                return;
+            }
+            
+            if (confirm(`Finalize ${selectedCheckboxes.length} selected evaluations? This action cannot be undone.`)) {
+                alert('Selected evaluations finalized successfully!');
+                clearSelection();
+                // In real app, would update all selected items
+            }
+        }
+
+        function viewEvaluation(employeeId) {
+            alert('View evaluation details for: ' + employeeId);
+            // In real app, would open detailed view modal
+        }
+
+        function downloadPDF(employeeId) {
+            alert('Downloading evaluation PDF for: ' + employeeId);
+            // In real app, would generate and download PDF
+        }
+
+        function viewHistory(employeeId) {
+            alert('View evaluation history for: ' + employeeId);
+            // In real app, would show historical evaluations
+        }
+
+        function sendReminder(employeeId) {
+            alert('Reminder sent to employee for signature: ' + employeeId);
+            // In real app, would send email notification
+        }
+
+        function generateReports() {
+            const selectedCheckboxes = document.querySelectorAll('.evaluation-checkbox:checked:not(:disabled)');
+            if (selectedCheckboxes.length === 0) {
+                alert('No evaluations selected for report generation.');
+                return;
+            }
+            
+            alert(`Generating reports for ${selectedCheckboxes.length} selected evaluations...`);
+            // In real app, would generate comprehensive reports
+        }
+
+        function sendNotifications() {
+            const selectedCheckboxes = document.querySelectorAll('.evaluation-checkbox:checked:not(:disabled)');
+            if (selectedCheckboxes.length === 0) {
+                alert('No evaluations selected for notifications.');
+                return;
+            }
+            
+            alert(`Sending notifications for ${selectedCheckboxes.length} selected evaluations...`);
+            // In real app, would send email notifications to employees
+        }
+
+        function exportFinalized() {
+            alert('Exporting finalized evaluations to Excel...');
+            // In real app, would generate and download Excel file
+        }
+
+        // Filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+
+            // Search functionality
+            document.getElementById('searchInput').addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                const items = document.querySelectorAll('.finalize-item');
+                
+                items.forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    item.style.display = text.includes(searchTerm) ? '' : 'none';
+                });
+            });
+
+            // Filter functionality
+            const filters = ['statusFilter', 'departmentFilter'];
+            filters.forEach(filterId => {
+                document.getElementById(filterId).addEventListener('change', function() {
+                    filterFinalizations();
+                });
+            });
+        });
+
+        function filterFinalizations() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const departmentFilter = document.getElementById('departmentFilter').value;
+            const items = document.querySelectorAll('.finalize-item');
+
+            items.forEach(item => {
+                const matchesStatus = !statusFilter || item.dataset.status === statusFilter;
+                const matchesDepartment = !departmentFilter || item.dataset.department === departmentFilter;
+
+                item.style.display = matchesStatus && matchesDepartment ? '' : 'none';
+            });
+        }
+
+        // Add animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Animate finalize items on load
+        window.addEventListener('load', function() {
+            const finalizeItems = document.querySelectorAll('.finalize-item');
+            finalizeItems.forEach((item, index) => {
+                item.style.animation = `fadeInUp 0.5s ease ${index * 0.1}s both`;
+            });
+        });
+    </script>
 </body>
 </html>

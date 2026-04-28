@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Evaluation - Performance Evaluation System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-bg: #F8FAFC;
+            --secondary-bg: #DBEAFE;
+            --accent-color: #2563EB;
+            --accent-hover: #1D4ED8;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --border-color: #E5E7EB;
+            --success-color: #10B981;
+            --warning-color: #F59E0B;
+            --error-color: #EF4444;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-bg);
+        }
+
+        .btn-danger {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #DC2626;
+        }
+
+        /* System Status */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .status-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s;
+            border-left: 4px solid var(--success-color);
+        }
+
+        .status-card.warning {
+            border-left-color: var(--warning-color);
+        }
+
+        .status-card.error {
+            border-left-color: var(--error-color);
+        }
+
+        .status-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .status-title {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .status-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .status-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .status-description {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .status-indicator.online {
+            background: var(--success-color);
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.warning {
+            background: var(--warning-color);
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.offline {
+            background: var(--error-color);
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+            }
+        }
+
+        /* Evaluation Sections */
+        .evaluation-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .section-content {
+            padding: 2rem;
+        }
+
+        /* Performance Metrics */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--primary-bg);
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-change {
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+        }
+
+        .metric-change.positive {
+            color: var(--success-color);
+        }
+
+        .metric-change.negative {
+            color: var(--error-color);
+        }
+
+        /* Health Checks */
+        .health-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .health-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: var(--primary-bg);
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .health-item:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .health-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        .health-status.healthy {
+            background: var(--success-color);
+        }
+
+        .health-status.warning {
+            background: var(--warning-color);
+        }
+
+        .health-status.critical {
+            background: var(--error-color);
+        }
+
+        .health-info {
+            flex: 1;
+        }
+
+        .health-name {
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .health-description {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .health-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .action-btn:hover {
+            background: var(--secondary-bg);
+            color: var(--accent-color);
+        }
+
+        /* System Logs */
+        .logs-container {
+            background: #1F2937;
+            border-radius: 8px;
+            padding: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+        }
+
+        .log-entry {
+            padding: 0.5rem;
+            border-bottom: 1px solid #374151;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+
+        .log-timestamp {
+            color: #9CA3AF;
+            flex-shrink: 0;
+            min-width: 120px;
+        }
+
+        .log-level {
+            flex-shrink: 0;
+            min-width: 60px;
+            font-weight: bold;
+        }
+
+        .log-level.info {
+            color: #60A5FA;
+        }
+
+        .log-level.warning {
+            color: #FBBF24;
+        }
+
+        .log-level.error {
+            color: #F87171;
+        }
+
+        .log-message {
+            color: #E5E7EB;
+            flex: 1;
+        }
+
+        /* Recommendations */
+        .recommendations-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .recommendation-card {
+            padding: 1.5rem;
+            background: var(--primary-bg);
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-color);
+            transition: all 0.2s;
+        }
+
+        .recommendation-card:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .recommendation-card.high {
+            border-left-color: var(--error-color);
+        }
+
+        .recommendation-card.medium {
+            border-left-color: var(--warning-color);
+        }
+
+        .recommendation-card.low {
+            border-left-color: var(--success-color);
+        }
+
+        .recommendation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .recommendation-title {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .priority-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .priority-badge.high {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .priority-badge.medium {
+            background: #FED7AA;
+            color: #9A3412;
+        }
+
+        .priority-badge.low {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .recommendation-description {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .recommendation-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .status-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .health-item {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .health-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .log-entry {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+
+            .log-timestamp,
+            .log-level {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div>
+                <h1 class="header-title">System Evaluation</h1>
+                <p style="color: var(--text-secondary); margin-top: 0.25rem;">Monitor system health, performance, and overall status</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="runFullEvaluation()">
+                    <span>🔍</span> Run Full Evaluation
+                </button>
+                <button class="btn btn-secondary" onclick="exportReport()">
+                    <span>📥</span> Export Report
+                </button>
+                <button class="btn btn-danger" onclick="window.location.href='../index.html'">
+                    <span>🚪</span> Exit
+                </button>
+            </div>
+        </header>
+
+        <!-- System Status Overview -->
+        <section class="status-grid">
+            <div class="status-card">
+                <div class="status-header">
+                    <h3 class="status-title">System Health</h3>
+                    <div class="status-icon" style="background: #D1FAE5; color: #10B981;">💚</div>
+                </div>
+                <div class="status-value">
+                    <span class="status-indicator online"></span>
+                    Healthy
+                </div>
+                <p class="status-description">All systems operational</p>
+            </div>
+
+            <div class="status-card">
+                <div class="status-header">
+                    <h3 class="status-title">Database Status</h3>
+                    <div class="status-icon" style="background: #D1FAE5; color: #10B981;">🗄️</div>
+                </div>
+                <div class="status-value">
+                    <span class="status-indicator online"></span>
+                    Online
+                </div>
+                <p class="status-description">Response time: 45ms</p>
+            </div>
+
+            <div class="status-card">
+                <div class="status-header">
+                    <h3 class="status-title">API Services</h3>
+                    <div class="status-icon" style="background: #D1FAE5; color: #10B981;">🔌</div>
+                </div>
+                <div class="status-value">
+                    <span class="status-indicator online"></span>
+                    Active
+                </div>
+                <p class="status-description">12/12 services running</p>
+            </div>
+
+            <div class="status-card warning">
+                <div class="status-header">
+                    <h3 class="status-title">Storage Usage</h3>
+                    <div class="status-icon" style="background: #FED7AA; color: #F59E0B;">💾</div>
+                </div>
+                <div class="status-value">78%</div>
+                <p class="status-description">7.8GB of 10GB used</p>
+            </div>
+        </section>
+
+        <!-- Performance Metrics -->
+        <section class="evaluation-section">
+            <div class="section-header">
+                <h3 class="section-title">Performance Metrics</h3>
+                <button class="btn btn-secondary" onclick="refreshMetrics()">Refresh</button>
+            </div>
+            <div class="section-content">
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">98.5%</div>
+                        <div class="metric-label">Uptime</div>
+                        <div class="metric-change positive">
+                            <span>↑</span> 0.2% this week
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-value">1.2s</div>
+                        <div class="metric-label">Avg Response Time</div>
+                        <div class="metric-change positive">
+                            <span>↓</span> 0.3s improvement
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-value">45ms</div>
+                        <div class="metric-label">Database Query Time</div>
+                        <div class="metric-change positive">
+                            <span>↓</span> 12ms faster
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-value">2,847</div>
+                        <div class="metric-label">Requests/Hour</div>
+                        <div class="metric-change positive">
+                            <span>↑</span> 12% increase
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-value">99.9%</div>
+                        <div class="metric-label">Success Rate</div>
+                        <div class="metric-change positive">
+                            <span>↑</span> 0.1% improvement
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-value">512MB</div>
+                        <div class="metric-label">Memory Usage</div>
+                        <div class="metric-change negative">
+                            <span>↑</span> 64MB increase
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Health Checks -->
+        <section class="evaluation-section">
+            <div class="section-header">
+                <h3 class="section-title">System Health Checks</h3>
+                <button class="btn btn-secondary" onclick="runHealthChecks()">Run Checks</button>
+            </div>
+            <div class="section-content">
+                <div class="health-list">
+                    <div class="health-item">
+                        <div class="health-status healthy"></div>
+                        <div class="health-info">
+                            <div class="health-name">Database Connection</div>
+                            <div class="health-description">Connection to PostgreSQL database is stable and responsive</div>
+                        </div>
+                        <div class="health-actions">
+                            <button class="action-btn" onclick="testConnection('database')" title="Test">🔍</button>
+                            <button class="action-btn" onclick="viewDetails('database')" title="Details">📊</button>
+                        </div>
+                    </div>
+
+                    <div class="health-item">
+                        <div class="health-status healthy"></div>
+                        <div class="health-info">
+                            <div class="health-name">Authentication Service</div>
+                            <div class="health-description">JWT token validation and user authentication working properly</div>
+                        </div>
+                        <div class="health-actions">
+                            <button class="action-btn" onclick="testConnection('auth')" title="Test">🔍</button>
+                            <button class="action-btn" onclick="viewDetails('auth')" title="Details">📊</button>
+                        </div>
+                    </div>
+
+                    <div class="health-item">
+                        <div class="health-status healthy"></div>
+                        <div class="health-info">
+                            <div class="health-name">File Storage</div>
+                            <div class="health-description">File upload and storage systems functioning normally</div>
+                        </div>
+                        <div class="health-actions">
+                            <button class="action-btn" onclick="testConnection('storage')" title="Test">🔍</button>
+                            <button class="action-btn" onclick="viewDetails('storage')" title="Details">📊</button>
+                        </div>
+                    </div>
+
+                    <div class="health-item">
+                        <div class="health-status warning"></div>
+                        <div class="health-info">
+                            <div class="health-name">Email Service</div>
+                            <div class="health-description">Email service experiencing minor delays (avg 2.5s response time)</div>
+                        </div>
+                        <div class="health-actions">
+                            <button class="action-btn" onclick="testConnection('email')" title="Test">🔍</button>
+                            <button class="action-btn" onclick="viewDetails('email')" title="Details">📊</button>
+                        </div>
+                    </div>
+
+                    <div class="health-item">
+                        <div class="health-status healthy"></div>
+                        <div class="health-info">
+                            <div class="health-name">API Gateway</div>
+                            <div class="health-description">All API endpoints responding within acceptable time limits</div>
+                        </div>
+                        <div class="health-actions">
+                            <button class="action-btn" onclick="testConnection('api')" title="Test">🔍</button>
+                            <button class="action-btn" onclick="viewDetails('api')" title="Details">📊</button>
+                        </div>
+                    </div>
+
+                    <div class="health-item">
+                        <div class="health-status healthy"></div>
+                        <div class="health-info">
+                            <div class="health-name">Backup System</div>
+                            <div class="health-description">Automated backups running successfully, last backup: 2 hours ago</div>
+                        </div>
+                        <div class="health-actions">
+                            <button class="action-btn" onclick="testConnection('backup')" title="Test">🔍</button>
+                            <button class="action-btn" onclick="viewDetails('backup')" title="Details">📊</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- System Logs -->
+        <section class="evaluation-section">
+            <div class="section-header">
+                <h3 class="section-title">System Logs</h3>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="btn btn-secondary" onclick="clearLogs()">Clear</button>
+                    <button class="btn btn-secondary" onclick="downloadLogs()">Download</button>
+                </div>
+            </div>
+            <div class="section-content">
+                <div class="logs-container" id="logsContainer">
+                    <div class="log-entry">
+                        <div class="log-timestamp">2024-04-15 14:32:15</div>
+                        <div class="log-level info">INFO</div>
+                        <div class="log-message">System evaluation completed successfully</div>
+                    </div>
+                    <div class="log-entry">
+                        <div class="log-timestamp">2024-04-15 14:30:42</div>
+                        <div class="log-level info">INFO</div>
+                        <div class="log-message">Database backup completed - Size: 2.3GB</div>
+                    </div>
+                    <div class="log-entry">
+                        <div class="log-timestamp">2024-04-15 14:28:17</div>
+                        <div class="log-level warning">WARNING</div>
+                        <div class="log-message">Email service response time exceeding threshold: 2.5s</div>
+                    </div>
+                    <div class="log-entry">
+                        <div class="log-timestamp">2024-04-15 14:25:33</div>
+                        <div class="log-level info">INFO</div>
+                        <div class="log-message">User authentication successful for user ID: 142</div>
+                    </div>
+                    <div class="log-entry">
+                        <div class="log-timestamp">2024-04-15 14:22:08</div>
+                        <div class="log-level info">INFO</div>
+                        <div class="log-message">Performance evaluation report generated</div>
+                    </div>
+                    <div class="log-entry">
+                        <div class="log-timestamp">2024-04-15 14:20:45</div>
+                        <div class="log-level info">INFO</div>
+                        <div class="log-message">Cache cleared successfully - 156 items removed</div>
+                    </div>
+                    <div class="log-entry">
+                        <div class="log-timestamp">2024-04-15 14:18:22</div>
+                        <div class="log-level error">ERROR</div>
+                        <div class="log-message">Failed to connect to external API: Timeout after 30s</div>
+                    </div>
+                    <div class="log-entry">
+                        <div class="log-timestamp">2024-04-15 14:15:10</div>
+                        <div class="log-level info">INFO</div>
+                        <div class="log-message">System health check completed - All services operational</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recommendations -->
+        <section class="evaluation-section">
+            <div class="section-header">
+                <h3 class="section-title">System Recommendations</h3>
+                <button class="btn btn-secondary" onclick="generateRecommendations()">Generate New</button>
+            </div>
+            <div class="section-content">
+                <div class="recommendations-grid">
+                    <div class="recommendation-card high">
+                        <div class="recommendation-header">
+                            <h4 class="recommendation-title">Upgrade Storage Capacity</h4>
+                            <span class="priority-badge high">HIGH PRIORITY</span>
+                        </div>
+                        <p class="recommendation-description">
+                            Current storage usage is at 78% capacity. Consider upgrading to additional storage or implementing data archiving policies to prevent storage issues. Recommended action within 2 weeks.
+                        </p>
+                        <div class="recommendation-actions">
+                            <button class="btn btn-primary" onclick="implementRecommendation('storage')">Implement</button>
+                            <button class="btn btn-secondary" onclick="scheduleRecommendation('storage')">Schedule</button>
+                        </div>
+                    </div>
+
+                    <div class="recommendation-card medium">
+                        <div class="recommendation-header">
+                            <h4 class="recommendation-title">Optimize Email Service</h4>
+                            <span class="priority-badge medium">MEDIUM PRIORITY</span>
+                        </div>
+                        <p class="recommendation-description">
+                            Email service is experiencing increased response times. Consider implementing email queuing or switching to a more efficient email provider to improve notification delivery speed.
+                        </p>
+                        <div class="recommendation-actions">
+                            <button class="btn btn-primary" onclick="implementRecommendation('email')">Implement</button>
+                            <button class="btn btn-secondary" onclick="scheduleRecommendation('email')">Schedule</button>
+                        </div>
+                    </div>
+
+                    <div class="recommendation-card low">
+                        <div class="recommendation-header">
+                            <h4 class="recommendation-title">Memory Optimization</h4>
+                            <span class="priority-badge low">LOW PRIORITY</span>
+                        </div>
+                        <p class="recommendation-description">
+                            Memory usage has increased by 64MB. Review recent code changes and consider implementing memory optimization techniques to maintain optimal performance.
+                        </p>
+                        <div class="recommendation-actions">
+                            <button class="btn btn-primary" onclick="implementRecommendation('memory')">Implement</button>
+                            <button class="btn btn-secondary" onclick="scheduleRecommendation('memory')">Schedule</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // System evaluation functions
+        function runFullEvaluation() {
+            alert('Running comprehensive system evaluation...\n\nThis will check all system components, performance metrics, and generate a detailed report. This may take several minutes to complete.');
+            
+            // Simulate evaluation progress
+            setTimeout(() => {
+                addLogEntry('INFO', 'Starting full system evaluation...');
+            }, 1000);
+            
+            setTimeout(() => {
+                addLogEntry('INFO', 'Checking database connectivity...');
+            }, 2000);
+            
+            setTimeout(() => {
+                addLogEntry('INFO', 'Testing API endpoints...');
+            }, 3000);
+            
+            setTimeout(() => {
+                addLogEntry('INFO', 'Analyzing performance metrics...');
+            }, 4000);
+            
+            setTimeout(() => {
+                addLogEntry('INFO', 'System evaluation completed successfully');
+                alert('System evaluation completed!\n\nOverall Status: HEALTHY\nIssues Found: 1 (Storage capacity)\nRecommendations: 3 generated');
+            }, 5000);
+        }
+
+        function refreshMetrics() {
+            alert('Refreshing performance metrics...\n\nAll metrics will be updated with the latest data.');
+            
+            // Update metric values with animation
+            const metrics = document.querySelectorAll('.metric-value');
+            metrics.forEach(metric => {
+                metric.style.transform = 'scale(1.1)';
+                metric.style.color = 'var(--accent-color)';
+                
+                setTimeout(() => {
+                    metric.style.transform = 'scale(1)';
+                    metric.style.color = 'var(--text-primary)';
+                }, 300);
+            });
+            
+            addLogEntry('INFO', 'Performance metrics refreshed');
+        }
+
+        function runHealthChecks() {
+            alert('Running system health checks...\n\nTesting all system components and services.');
+            
+            const healthItems = document.querySelectorAll('.health-item');
+            healthItems.forEach((item, index) => {
+                setTimeout(() => {
+                    const status = item.querySelector('.health-status');
+                    status.style.transform = 'scale(1.5)';
+                    
+                    setTimeout(() => {
+                        status.style.transform = 'scale(1)';
+                    }, 300);
+                }, index * 200);
+            });
+            
+            addLogEntry('INFO', 'Health checks completed - All systems operational');
+        }
+
+        function testConnection(service) {
+            alert(`Testing connection to ${service} service...\n\nThis will verify connectivity and response time.`);
+            addLogEntry('INFO', `Testing ${service} service connection...`);
+            
+            setTimeout(() => {
+                addLogEntry('INFO', `${service} service connection test successful`);
+            }, 2000);
+        }
+
+        function viewDetails(service) {
+            alert(`Viewing detailed information for ${service} service...\n\nThis will open a detailed view with performance metrics, configuration details, and historical data.`);
+        }
+
+        // Log management
+        function addLogEntry(level, message) {
+            const logsContainer = document.getElementById('logsContainer');
+            const timestamp = new Date().toLocaleString();
+            
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `
+                <div class="log-timestamp">${timestamp}</div>
+                <div class="log-level ${level.toLowerCase()}">${level}</div>
+                <div class="log-message">${message}</div>
+            `;
+            
+            logsContainer.insertBefore(logEntry, logsContainer.firstChild);
+            
+            // Remove old logs if too many
+            while (logsContainer.children.length > 50) {
+                logsContainer.removeChild(logsContainer.lastChild);
+            }
+        }
+
+        function clearLogs() {
+            if (confirm('Clear all system logs? This action cannot be undone.')) {
+                document.getElementById('logsContainer').innerHTML = '<div class="log-entry"><div class="log-timestamp">' + new Date().toLocaleString() + '</div><div class="log-level info">INFO</div><div class="log-message">System logs cleared</div></div>';
+            }
+        }
+
+        function downloadLogs() {
+            alert('Downloading system logs...\n\nAll logs will be exported to a text file for analysis.');
+        }
+
+        // Recommendations
+        function generateRecommendations() {
+            alert('Generating system recommendations...\n\nAnalyzing current system state and performance to generate actionable recommendations.');
+            addLogEntry('INFO', 'Generating system recommendations...');
+            
+            setTimeout(() => {
+                addLogEntry('INFO', 'System recommendations generated successfully');
+            }, 2000);
+        }
+
+        function implementRecommendation(type) {
+            alert(`Implementing recommendation: ${type}\n\nThis will execute the recommended changes to improve system performance.`);
+            addLogEntry('INFO', `Implementing ${type} recommendation...`);
+        }
+
+        function scheduleRecommendation(type) {
+            const schedule = prompt('Schedule implementation (enter date and time):');
+            if (schedule) {
+                alert(`Recommendation ${type} scheduled for: ${schedule}`);
+                addLogEntry('INFO', `${type} recommendation scheduled for ${schedule}`);
+            }
+        }
+
+        function exportReport() {
+            alert('Exporting system evaluation report...\n\nA comprehensive report will be generated including all metrics, health checks, logs, and recommendations.');
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add real-time log updates
+            setInterval(() => {
+                const randomMessages = [
+                    { level: 'INFO', message: 'Periodic system check completed' },
+                    { level: 'INFO', message: 'Cache optimization performed' },
+                    { level: 'INFO', message: 'Database query executed successfully' },
+                    { level: 'WARNING', message: 'High memory usage detected on server 2' },
+                    { level: 'INFO', message: 'User session cleaned up' }
+                ];
+                
+                const randomMessage = randomMessages[Math.floor(Math.random() * randomMessages.length)];
+                
+                // Only add logs occasionally (10% chance)
+                if (Math.random() < 0.1) {
+                    addLogEntry(randomMessage.level, randomMessage.message);
+                }
+            }, 30000); // Every 30 seconds
+
+            // Animate status cards on load
+            const statusCards = document.querySelectorAll('.status-card');
+            statusCards.forEach((card, index) => {
+                card.style.animation = `fadeInUp 0.5s ease ${index * 0.1}s both`;
+            });
+
+            // Animate metric cards on load
+            const metricCards = document.querySelectorAll('.metric-card');
+            metricCards.forEach((card, index) => {
+                card.style.animation = `fadeInUp 0.5s ease ${index * 0.1 + 0.4}s both`;
+            });
+
+            // Animate health items on load
+            const healthItems = document.querySelectorAll('.health-item');
+            healthItems.forEach((item, index) => {
+                item.style.animation = `fadeInUp 0.5s ease ${index * 0.1 + 0.8}s both`;
+            });
+        });
+
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

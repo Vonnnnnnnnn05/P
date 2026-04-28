@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard - Performance Evaluation System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-bg: #F8FAFC;
+            --secondary-bg: #DBEAFE;
+            --accent-color: #2563EB;
+            --accent-hover: #1D4ED8;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --border-color: #E5E7EB;
+            --success-color: #10B981;
+            --warning-color: #F59E0B;
+            --error-color: #EF4444;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-bg);
+        }
+
+        .btn-danger {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #DC2626;
+        }
+
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .kpi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .kpi-title {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .kpi-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .kpi-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-change {
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .kpi-change.positive {
+            color: var(--success-color);
+        }
+
+        .kpi-change.negative {
+            color: var(--error-color);
+        }
+
+        .kpi-sparkline {
+            margin-top: 1rem;
+            height: 40px;
+            background: var(--primary-bg);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Charts Section */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .chart-card.large {
+            grid-column: span 2;
+        }
+
+        .chart-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chart-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .chart-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chart-action-btn {
+            padding: 0.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--primary-bg);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .chart-action-btn:hover {
+            background: var(--secondary-bg);
+            color: var(--accent-color);
+        }
+
+        .chart-content {
+            padding: 1.5rem;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chart-placeholder {
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .chart-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Real-time Updates */
+        .updates-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .updates-list {
+            padding: 1.5rem;
+        }
+
+        .update-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--primary-bg);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            transition: all 0.2s;
+        }
+
+        .update-item:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .update-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .update-content {
+            flex: 1;
+        }
+
+        .update-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .update-description {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .update-time {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Filters */
+        .filters-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+
+        .filter-select {
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            background: white;
+        }
+
+        .filter-date {
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-card.large {
+                grid-column: span 1;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .update-item {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div>
+                <h1 class="header-title">Analytics Dashboard</h1>
+                <p style="color: var(--text-secondary); margin-top: 0.25rem;">Real-time performance analytics and data visualization</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="refreshData()">
+                    <span>🔄</span> Refresh Data
+                </button>
+                <button class="btn btn-secondary" onclick="exportDashboard()">
+                    <span>📥</span> Export
+                </button>
+                <button class="btn btn-secondary" onclick="window.location.href='../index.html'">
+                    <span>📊</span> All Reports
+                </button>
+            </div>
+        </header>
+
+        <!-- Filters -->
+        <section class="filters-section">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label class="filter-label">Time Period</label>
+                    <select class="filter-select" onchange="updateDashboard()">
+                        <option value="today">Today</option>
+                        <option value="week" selected>This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="quarter">This Quarter</option>
+                        <option value="year">This Year</option>
+                        <option value="custom">Custom Range</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Department</label>
+                    <select class="filter-select" onchange="updateDashboard()">
+                        <option value="all" selected>All Departments</option>
+                        <option value="it">IT</option>
+                        <option value="hr">HR</option>
+                        <option value="finance">Finance</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="sales">Sales</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Employee Level</label>
+                    <select class="filter-select" onchange="updateDashboard()">
+                        <option value="all" selected>All Levels</option>
+                        <option value="junior">Junior</option>
+                        <option value="mid">Mid-Level</option>
+                        <option value="senior">Senior</option>
+                        <option value="lead">Lead</option>
+                        <option value="manager">Manager</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Metric Type</label>
+                    <select class="filter-select" onchange="updateDashboard()">
+                        <option value="performance" selected>Performance</option>
+                        <option value="engagement">Engagement</option>
+                        <option value="development">Development</option>
+                        <option value="retention">Retention</option>
+                        <option value="productivity">Productivity</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- KPI Cards -->
+        <section class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <h3 class="kpi-title">Total Evaluations</h3>
+                    <div class="kpi-icon" style="background: #DBEAFE; color: #2563EB;">📊</div>
+                </div>
+                <div class="kpi-value">156</div>
+                <div class="kpi-change positive">
+                    <span>↑</span> 23 this week
+                </div>
+                <div class="kpi-sparkline" id="evaluationsSparkline"></div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <h3 class="kpi-title">Average Score</h3>
+                    <div class="kpi-icon" style="background: #D1FAE5; color: #10B981;">⭐</div>
+                </div>
+                <div class="kpi-value">4.1</div>
+                <div class="kpi-change positive">
+                    <span>↑</span> 0.2 improvement
+                </div>
+                <div class="kpi-sparkline" id="scoreSparkline"></div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <h3 class="kpi-title">Completion Rate</h3>
+                    <div class="kpi-icon" style="background: #FED7AA; color: #F59E0B;">✅</div>
+                </div>
+                <div class="kpi-value">87%</div>
+                <div class="kpi-change positive">
+                    <span>↑</span> 5% increase
+                </div>
+                <div class="kpi-sparkline" id="completionSparkline"></div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <h3 class="kpi-title">Active Users</h3>
+                    <div class="kpi-icon" style="background: #FEE2E2; color: #EF4444;">👥</div>
+                </div>
+                <div class="kpi-value">48</div>
+                <div class="kpi-change positive">
+                    <span>↑</span> 5 new users
+                </div>
+                <div class="kpi-sparkline" id="usersSparkline"></div>
+            </div>
+        </section>
+
+        <!-- Charts -->
+        <section class="charts-grid">
+            <!-- Performance Trend Chart -->
+            <div class="chart-card large">
+                <div class="chart-header">
+                    <h3 class="chart-title">Performance Trend Analysis</h3>
+                    <div class="chart-actions">
+                        <button class="chart-action-btn" onclick="downloadChart('performance-trend')" title="Download">📥</button>
+                        <button class="chart-action-btn" onclick="fullscreenChart('performance-trend')" title="Fullscreen">⛶</button>
+                        <button class="chart-action-btn" onclick="refreshChart('performance-trend')" title="Refresh">🔄</button>
+                    </div>
+                </div>
+                <div class="chart-content">
+                    <div class="chart-placeholder">
+                        <div class="chart-icon">📈</div>
+                        <h4>Performance Trend Chart</h4>
+                        <p>Line graph showing performance scores over time</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Department Comparison -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Department Comparison</h3>
+                    <div class="chart-actions">
+                        <button class="chart-action-btn" onclick="downloadChart('department-comparison')" title="Download">📥</button>
+                        <button class="chart-action-btn" onclick="fullscreenChart('department-comparison')" title="Fullscreen">⛶</button>
+                    </div>
+                </div>
+                <div class="chart-content">
+                    <div class="chart-placeholder">
+                        <div class="chart-icon">📊</div>
+                        <h4>Bar Chart</h4>
+                        <p>Department performance comparison</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Skills Distribution -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Skills Distribution</h3>
+                    <div class="chart-actions">
+                        <button class="chart-action-btn" onclick="downloadChart('skills-distribution')" title="Download">📥</button>
+                        <button class="chart-action-btn" onclick="fullscreenChart('skills-distribution')" title="Fullscreen">⛶</button>
+                    </div>
+                </div>
+                <div class="chart-content">
+                    <div class="chart-placeholder">
+                        <div class="chart-icon">🎯</div>
+                        <h4>Pie Chart</h4>
+                        <p>Skills proficiency distribution</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Goal Achievement -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Goal Achievement Rate</h3>
+                    <div class="chart-actions">
+                        <button class="chart-action-btn" onclick="downloadChart('goal-achievement')" title="Download">📥</button>
+                        <button class="chart-action-btn" onclick="fullscreenChart('goal-achievement')" title="Fullscreen">⛶</button>
+                    </div>
+                </div>
+                <div class="chart-content">
+                    <div class="chart-placeholder">
+                        <div class="chart-icon">🏆</div>
+                        <h4>Gauge Chart</h4>
+                        <p>Goal completion percentage</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Engagement Metrics -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Engagement Metrics</h3>
+                    <div class="chart-actions">
+                        <button class="chart-action-btn" onclick="downloadChart('engagement-metrics')" title="Download">📥</button>
+                        <button class="chart-action-btn" onclick="fullscreenChart('engagement-metrics')" title="Fullscreen">⛶</button>
+                    </div>
+                </div>
+                <div class="chart-content">
+                    <div class="chart-placeholder">
+                        <div class="chart-icon">💬</div>
+                        <h4>Radar Chart</h4>
+                        <p>Multi-dimensional engagement analysis</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Predictive Analytics -->
+            <div class="chart-card large">
+                <div class="chart-header">
+                    <h3 class="chart-title">Predictive Analytics</h3>
+                    <div class="chart-actions">
+                        <button class="chart-action-btn" onclick="downloadChart('predictive-analytics')" title="Download">📥</button>
+                        <button class="chart-action-btn" onclick="fullscreenChart('predictive-analytics')" title="Fullscreen">⛶</button>
+                        <button class="chart-action-btn" onclick="runPrediction()" title="Run Prediction">🔮</button>
+                    </div>
+                </div>
+                <div class="chart-content">
+                    <div class="chart-placeholder">
+                        <div class="chart-icon">🔮</div>
+                        <h4>Predictive Model</h4>
+                        <p>AI-powered performance predictions and trend forecasting</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Real-time Updates -->
+        <section class="updates-section">
+            <div class="chart-header">
+                <h3 class="chart-title">Real-time Updates</h3>
+                <div class="chart-actions">
+                    <button class="chart-action-btn" onclick="toggleAutoRefresh()" title="Toggle Auto-refresh">🔄</button>
+                    <button class="chart-action-btn" onclick="clearUpdates()" title="Clear">🗑️</button>
+                </div>
+            </div>
+            <div class="updates-list" id="updatesList">
+                <div class="update-item">
+                    <div class="update-icon" style="background: #D1FAE5; color: #10B981;">✅</div>
+                    <div class="update-content">
+                        <h4 class="update-title">New Evaluation Completed</h4>
+                        <p class="update-description">John Doe completed Q1 2024 performance evaluation with a score of 4.3</p>
+                        <span class="update-time">2 minutes ago</span>
+                    </div>
+                </div>
+
+                <div class="update-item">
+                    <div class="update-icon" style="background: #DBEAFE; color: #2563EB;">📊</div>
+                    <div class="update-content">
+                        <h4 class="update-title">Performance Score Updated</h4>
+                        <p class="update-description">Team average performance score increased from 4.0 to 4.1</p>
+                        <span class="update-time">5 minutes ago</span>
+                    </div>
+                </div>
+
+                <div class="update-item">
+                    <div class="update-icon" style="background: #FED7AA; color: #F59E0B;">🎯</div>
+                    <div class="update-content">
+                        <h4 class="update-title">Goal Achieved</h4>
+                        <p class="update-description">Emily Davis achieved her Q1 goal: "Complete React certification"</p>
+                        <span class="update-time">12 minutes ago</span>
+                    </div>
+                </div>
+
+                <div class="update-item">
+                    <div class="update-icon" style="background: #FEE2E2; color: #EF4444;">👥</div>
+                    <div class="update-content">
+                        <h4 class="update-title">New User Registered</h4>
+                        <p class="update-description">Tom Garcia joined the Development team as Junior Software Developer</p>
+                        <span class="update-time">18 minutes ago</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        let autoRefresh = true;
+        let refreshInterval;
+
+        // Dashboard functions
+        function refreshData() {
+            alert('Refreshing dashboard data...\n\nAll charts and metrics will be updated with the latest data.');
+            // In real app, would fetch fresh data from API
+            animateKPIUpdates();
+        }
+
+        function updateDashboard() {
+            alert('Updating dashboard with selected filters...\n\nThe dashboard will be refreshed to show data for the selected time period and filters.');
+            // In real app, would apply filters and refresh data
+        }
+
+        function exportDashboard() {
+            alert('Exporting dashboard data...\n\nA comprehensive report will be generated with all current charts and metrics.');
+            // In real app, would generate and download dashboard export
+        }
+
+        // Chart functions
+        function downloadChart(chartId) {
+            alert(`Downloading chart: ${chartId}\n\nThe chart will be exported as a high-resolution image.`);
+            // In real app, would download chart as image
+        }
+
+        function fullscreenChart(chartId) {
+            alert(`Opening ${chartId} in fullscreen mode...\n\nThe chart will be displayed in a larger, interactive view.`);
+            // In real app, would open chart in fullscreen modal
+        }
+
+        function refreshChart(chartId) {
+            alert(`Refreshing ${chartId} with latest data...`);
+            // In real app, would refresh specific chart
+        }
+
+        function runPrediction() {
+            alert('Running predictive analytics model...\n\nThis may take a few moments as the AI analyzes current trends and generates forecasts.');
+            // In real app, would run ML prediction model
+        }
+
+        // Real-time updates
+        function toggleAutoRefresh() {
+            autoRefresh = !autoRefresh;
+            if (autoRefresh) {
+                startAutoRefresh();
+                alert('Auto-refresh enabled. Dashboard will update every 30 seconds.');
+            } else {
+                stopAutoRefresh();
+                alert('Auto-refresh disabled.');
+            }
+        }
+
+        function clearUpdates() {
+            if (confirm('Clear all real-time updates?')) {
+                document.getElementById('updatesList').innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">No updates to display</p>';
+            }
+        }
+
+        function startAutoRefresh() {
+            refreshInterval = setInterval(() => {
+                addNewUpdate();
+            }, 30000); // 30 seconds
+        }
+
+        function stopAutoRefresh() {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+        }
+
+        function addNewUpdate() {
+            const updates = [
+                { icon: '✅', color: '#10B981', bg: '#D1FAE5', title: 'Evaluation Completed', desc: 'Performance evaluation completed successfully' },
+                { icon: '📊', color: '#2563EB', bg: '#DBEAFE', title: 'Metric Updated', desc: 'Performance metrics have been updated' },
+                { icon: '🎯', color: '#F59E0B', bg: '#FED7AA', title: 'Goal Progress', desc: 'Goal progress updated' },
+                { icon: '👥', color: '#EF4444', bg: '#FEE2E2', title: 'User Activity', desc: 'New user activity detected' }
+            ];
+
+            const randomUpdate = updates[Math.floor(Math.random() * updates.length)];
+            const updatesList = document.getElementById('updatesList');
+            
+            const newUpdate = document.createElement('div');
+            newUpdate.className = 'update-item';
+            newUpdate.style.animation = 'fadeInUp 0.5s ease';
+            newUpdate.innerHTML = `
+                <div class="update-icon" style="background: ${randomUpdate.bg}; color: ${randomUpdate.color};">${randomUpdate.icon}</div>
+                <div class="update-content">
+                    <h4 class="update-title">${randomUpdate.title}</h4>
+                    <p class="update-description">${randomUpdate.desc}</p>
+                    <span class="update-time">Just now</span>
+                </div>
+            `;
+
+            updatesList.insertBefore(newUpdate, updatesList.firstChild);
+
+            // Remove old updates if too many
+            while (updatesList.children.length > 5) {
+                updatesList.removeChild(updatesList.lastChild);
+            }
+        }
+
+        // Animate KPI updates
+        function animateKPIUpdates() {
+            const kpiValues = document.querySelectorAll('.kpi-value');
+            kpiValues.forEach((value, index) => {
+                const originalValue = value.textContent;
+                value.style.transform = 'scale(1.2)';
+                value.style.color = 'var(--accent-color)';
+                
+                setTimeout(() => {
+                    value.style.transform = 'scale(1)';
+                    value.style.color = 'var(--text-primary)';
+                }, 300);
+            });
+        }
+
+        // Initialize sparklines
+        function initializeSparklines() {
+            const sparklines = document.querySelectorAll('.kpi-sparkline');
+            sparklines.forEach(sparkline => {
+                sparkline.innerHTML = createSparklineSVG();
+            });
+        }
+
+        function createSparklineSVG() {
+            return `
+                <svg width="100%" height="100%" viewBox="0 0 100 40">
+                    <polyline
+                        points="0,35 20,30 40,25 60,20 80,15 100,10"
+                        fill="none"
+                        stroke="var(--accent-color)"
+                        stroke-width="2"
+                    />
+                    <polyline
+                        points="0,35 20,30 40,25 60,20 80,15 100,10 100,40 0,40"
+                        fill="url(#gradient)"
+                        opacity="0.3"
+                    />
+                    <defs>
+                        <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:var(--accent-color);stop-opacity:0.3" />
+                            <stop offset="100%" style="stop-color:var(--accent-color);stop-opacity:0" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+            `;
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSparklines();
+            
+            // Start auto-refresh
+            if (autoRefresh) {
+                startAutoRefresh();
+            }
+
+            // Animate KPI cards on load
+            const kpiCards = document.querySelectorAll('.kpi-card');
+            kpiCards.forEach((card, index) => {
+                card.style.animation = `fadeInUp 0.5s ease ${index * 0.1}s both`;
+            });
+
+            // Animate chart cards on load
+            const chartCards = document.querySelectorAll('.chart-card');
+            chartCards.forEach((card, index) => {
+                card.style.animation = `fadeInUp 0.5s ease ${index * 0.1 + 0.4}s both`;
+            });
+
+            // Animate update items on load
+            const updateItems = document.querySelectorAll('.update-item');
+            updateItems.forEach((item, index) => {
+                item.style.animation = `fadeInUp 0.5s ease ${index * 0.1 + 0.8}s both`;
+            });
+        });
+
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

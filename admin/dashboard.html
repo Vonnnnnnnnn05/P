@@ -1,183 +1,829 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Dashboard</title>
-  <style>
-    :root {
-      --bg: #F8FAFC;
-      --soft: #DBEAFE;
-      --accent: #2563EB;
-      --text: #0f172a;
-      --card: #ffffff;
-      --border: #e2e8f0;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-    .layout {
-      display: grid;
-      grid-template-columns: 240px 1fr;
-      min-height: 100vh;
-    }
-    .sidebar {
-      background: var(--soft);
-      padding: 18px;
-    }
-    .sidebar h2 { margin: 0 0 8px; font-size: 1.1rem; }
-    .sidebar a {
-      display: block;
-      padding: 10px 12px;
-      margin: 6px 0;
-      border-radius: 8px;
-      text-decoration: none;
-      color: var(--text);
-    }
-    .sidebar a.active,
-    .sidebar a:hover { background: #bfdbfe; }
-    .main { padding: 22px; }
-    .top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    .btn {
-      border: 0;
-      background: var(--accent);
-      color: #fff;
-      padding: 10px 14px;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 14px;
-      margin: 16px 0;
-    }
-    .card {
-      background: var(--card);
-      border-radius: 12px;
-      padding: 16px;
-      box-shadow: 0 6px 20px rgba(2, 6, 23, 0.07);
-    }
-    .badge {
-      background: var(--accent);
-      color: #fff;
-      border-radius: 999px;
-      padding: 2px 8px;
-      font-size: 12px;
-    }
-    .table-wrap { overflow: auto; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: var(--card);
-      border-radius: 12px;
-      overflow: hidden;
-    }
-    th, td {
-      padding: 11px;
-      border-bottom: 1px solid var(--border);
-      text-align: left;
-    }
-    @media (max-width: 860px) {
-      .layout { grid-template-columns: 1fr; }
-      .sidebar { display: flex; gap: 6px; overflow: auto; }
-      .sidebar a { white-space: nowrap; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrator Dashboard - Performance Evaluation System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-bg: #F8FAFC;
+            --secondary-bg: #DBEAFE;
+            --accent-color: #2563EB;
+            --accent-hover: #1D4ED8;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --border-color: #E5E7EB;
+            --success-color: #10B981;
+            --warning-color: #F59E0B;
+            --error-color: #EF4444;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --sidebar-width: 280px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            border-right: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            color: white;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+
+        .sidebar-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .sidebar-subtitle {
+            font-size: 0.75rem;
+            opacity: 0.9;
+        }
+
+        .nav-menu {
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 0.875rem 1.5rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: var(--primary-bg);
+            border-left-color: var(--accent-color);
+        }
+
+        .nav-item.active {
+            background: var(--secondary-bg);
+            border-left-color: var(--accent-color);
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            display: inline-block;
+            width: 20px;
+            margin-right: 0.75rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+        }
+
+        .header {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-bg);
+        }
+
+        .btn-danger {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #DC2626;
+        }
+
+        /* Dashboard Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-title {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-change {
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-change.positive {
+            color: var(--success-color);
+        }
+
+        .stat-change.negative {
+            color: var(--error-color);
+        }
+
+        /* Charts Section */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .chart-container {
+            height: 300px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding: 1rem 0;
+        }
+
+        .bar {
+            width: 40px;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            border-radius: 4px 4px 0 0;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .bar:hover {
+            opacity: 0.8;
+            transform: translateY(-2px);
+        }
+
+        .bar-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Activity Table */
+        .activity-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .activity-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            text-align: left;
+            padding: 0.75rem;
+            background: var(--primary-bg);
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.875rem;
+        }
+
+        .table tr:hover {
+            background: var(--primary-bg);
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-badge.active {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .status-badge.pending {
+            background: #FED7AA;
+            color: #9A3412;
+        }
+
+        .status-badge.completed {
+            background: #DBEAFE;
+            color: #1E3A8A;
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+                padding-top: 4rem;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-container {
+                height: 250px;
+            }
+
+            .bar {
+                width: 30px;
+            }
+
+            .table {
+                font-size: 0.75rem;
+            }
+
+            .table th,
+            .table td {
+                padding: 0.5rem;
+            }
+        }
+
+        /* Overlay for mobile sidebar */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+    </style>
 </head>
 <body>
-  <div class="layout">
-    <aside class="sidebar">
-      <h2>Administrator</h2>
-      <nav>
-        <a class="active" href="dashboard.html">Dashboard</a>
-        <a href="users.html">Manage Users</a>
-        <a href="departments.html">Departments</a>
-        <a href="criteria.html">Evaluation Criteria</a>
-        <a href="settings.html">System Settings</a>
-        <a href="organization.html">Organization Report</a>
-        <a href="system.html">System Evaluation</a>
-        <a href="#" onclick="logout(); return false;">Logout</a>
-      </nav>
-    </aside>
-    <main class="main">
-      <div class="top">
-        <h1>Admin Dashboard</h1>
-      </div>
+    <div class="app-container">
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-toggle" onclick="toggleSidebar()">☰</button>
+        
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <div class="logo-icon">EP</div>
+                    <div>
+                        <div class="sidebar-title">Admin Panel</div>
+                        <div class="sidebar-subtitle">Performance Evaluation</div>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item active">
+                    <span class="nav-icon">📊</span> Dashboard
+                </a>
+                <a href="users.html" class="nav-item">
+                    <span class="nav-icon">👥</span> User Management
+                </a>
+                <a href="departments.html" class="nav-item">
+                    <span class="nav-icon">🏢</span> Departments
+                </a>
+                <a href="criteria.html" class="nav-item">
+                    <span class="nav-icon">📋</span> Evaluation Criteria
+                </a>
+                <a href="settings.html" class="nav-item">
+                    <span class="nav-icon">⚙️</span> System Settings
+                </a>
+                <a href="../reports/individual.html" class="nav-item">
+                    <span class="nav-icon">📈</span> Reports
+                </a>
+                <a href="../evaluation/system.html" class="nav-item">
+                    <span class="nav-icon">🔍</span> System Evaluation
+                </a>
+            </nav>
+        </aside>
 
-      <section class="cards">
-        <div class="card">
-          <h3>Users</h3>
-          <p><strong>48</strong> registered</p>
-        </div>
-        <div class="card">
-          <h3>Departments</h3>
-          <p><strong>7</strong> active units</p>
-        </div>
-        <div class="card">
-          <h3>Pending Approvals <span class="badge">9</span></h3>
-          <p>Profiles and role updates</p>
-        </div>
-        <div class="card">
-          <h3>System Health</h3>
-          <p>Stable - all modules available</p>
-        </div>
-      </section>
+        <!-- Overlay for mobile -->
+        <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
-      <h3>Recent Administrative Activity</h3>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Action</th>
-              <th>Owner</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>2026-04-28</td>
-              <td>Added Supervisor account</td>
-              <td>admin</td>
-              <td>Completed</td>
-            </tr>
-            <tr>
-              <td>2026-04-27</td>
-              <td>Updated KPI criteria set B</td>
-              <td>admin</td>
-              <td>Completed</td>
-            </tr>
-            <tr>
-              <td>2026-04-26</td>
-              <td>Department restructure: QA</td>
-              <td>admin</td>
-              <td>In review</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </main>
-  </div>
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div>
+                    <h1 class="header-title">Administrator Dashboard</h1>
+                    <p style="color: var(--text-secondary); margin-top: 0.25rem;">System overview and management</p>
+                </div>
+                <div class="header-actions">
+                    <div class="user-info">
+                        <div class="user-avatar">A</div>
+                        <div>
+                            <div style="font-weight: 600;">Admin User</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">Administrator</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-danger" onclick="logout()">
+                        <span>🚪</span> Logout
+                    </button>
+                </div>
+            </header>
 
-  <script>
-    // Role guard: admin only
-    const auth = JSON.parse(localStorage.getItem("epsAuth") || "null");
-    if (!auth || auth.role !== "Administrator") location.href = "../index.html";
-    function logout() {
-      localStorage.removeItem("epsAuth");
-      location.href = "../index.html";
-    }
-  </script>
+            <!-- Statistics Cards -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Total Users</h3>
+                        <div class="stat-icon" style="background: #DBEAFE; color: #2563EB;">👥</div>
+                    </div>
+                    <div class="stat-value">247</div>
+                    <div class="stat-change positive">
+                        <span>↑</span> 12% from last month
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Active Evaluations</h3>
+                        <div class="stat-icon" style="background: #FED7AA; color: #F59E0B;">📊</div>
+                    </div>
+                    <div class="stat-value">89</div>
+                    <div class="stat-change positive">
+                        <span>↑</span> 8% from last week
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Departments</h3>
+                        <div class="stat-icon" style="background: #D1FAE5; color: #10B981;">🏢</div>
+                    </div>
+                    <div class="stat-value">12</div>
+                    <div class="stat-change positive">
+                        <span>↑</span> 2 new this quarter
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Completion Rate</h3>
+                        <div class="stat-icon" style="background: #FEE2E2; color: #EF4444;">✅</div>
+                    </div>
+                    <div class="stat-value">87%</div>
+                    <div class="stat-change negative">
+                        <span>↓</span> 3% from last month
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts Section -->
+            <section class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Monthly Evaluations</h3>
+                        <button class="btn btn-secondary">View All</button>
+                    </div>
+                    <div class="chart-container">
+                        <div class="bar" style="height: 60%;">
+                            <span class="bar-value">45</span>
+                            <span class="bar-label">Jan</span>
+                        </div>
+                        <div class="bar" style="height: 80%;">
+                            <span class="bar-value">62</span>
+                            <span class="bar-label">Feb</span>
+                        </div>
+                        <div class="bar" style="height: 70%;">
+                            <span class="bar-value">54</span>
+                            <span class="bar-label">Mar</span>
+                        </div>
+                        <div class="bar" style="height: 90%;">
+                            <span class="bar-value">71</span>
+                            <span class="bar-label">Apr</span>
+                        </div>
+                        <div class="bar" style="height: 85%;">
+                            <span class="bar-value">67</span>
+                            <span class="bar-label">May</span>
+                        </div>
+                        <div class="bar" style="height: 75%;">
+                            <span class="bar-value">58</span>
+                            <span class="bar-label">Jun</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Department Performance</h3>
+                        <button class="btn btn-secondary">Details</button>
+                    </div>
+                    <div class="chart-container">
+                        <div class="bar" style="height: 85%; background: linear-gradient(135deg, #10B981, #059669);">
+                            <span class="bar-value">85%</span>
+                            <span class="bar-label">IT</span>
+                        </div>
+                        <div class="bar" style="height: 78%; background: linear-gradient(135deg, #F59E0B, #D97706);">
+                            <span class="bar-value">78%</span>
+                            <span class="bar-label">HR</span>
+                        </div>
+                        <div class="bar" style="height: 92%; background: linear-gradient(135deg, #8B5CF6, #7C3AED);">
+                            <span class="bar-value">92%</span>
+                            <span class="bar-label">Sales</span>
+                        </div>
+                        <div class="bar" style="height: 73%; background: linear-gradient(135deg, #EF4444, #DC2626);">
+                            <span class="bar-value">73%</span>
+                            <span class="bar-label">Finance</span>
+                        </div>
+                        <div class="bar" style="height: 88%; background: linear-gradient(135deg, #06B6D4, #0891B2);">
+                            <span class="bar-value">88%</span>
+                            <span class="bar-label">Marketing</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recent Activity Table -->
+            <section class="activity-card">
+                <div class="activity-header">
+                    <h3 class="activity-title">Recent System Activity</h3>
+                    <button class="btn btn-secondary">View All</button>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Action</th>
+                            <th>Department</th>
+                            <th>Status</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>John Smith</strong></td>
+                            <td>Completed evaluation</td>
+                            <td>IT Department</td>
+                            <td><span class="status-badge completed">Completed</span></td>
+                            <td>2 hours ago</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sarah Johnson</strong></td>
+                            <td>Started new evaluation</td>
+                            <td>HR Department</td>
+                            <td><span class="status-badge active">Active</span></td>
+                            <td>3 hours ago</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mike Wilson</strong></td>
+                            <td>Submitted feedback</td>
+                            <td>Sales Department</td>
+                            <td><span class="status-badge pending">Pending Review</span></td>
+                            <td>5 hours ago</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Emily Davis</strong></td>
+                            <td>Updated profile</td>
+                            <td>Finance</td>
+                            <td><span class="status-badge completed">Completed</span></td>
+                            <td>1 day ago</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Robert Brown</strong></td>
+                            <td>Assigned evaluator</td>
+                            <td>Marketing</td>
+                            <td><span class="status-badge active">Active</span></td>
+                            <td>1 day ago</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Check authentication and redirect if not logged in
+        function checkAuth() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            const user = JSON.parse(currentUser);
+            if (user.role !== 'administrator') {
+                // Redirect to appropriate dashboard based on role
+                const dashboardMap = {
+                    hr: '../hr/dashboard.html',
+                    employee: '../employee/dashboard.html',
+                    supervisor: '../supervisor/dashboard.html'
+                };
+                if (dashboardMap[user.role]) {
+                    window.location.href = dashboardMap[user.role];
+                }
+            }
+        }
+
+        // Toggle sidebar for mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        // Global logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('currentUser');
+                window.location.href = '../index.html';
+            }
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+
+            // Add interactive animations to stat cards
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach((card, index) => {
+                card.style.animation = `fadeInUp 0.5s ease ${index * 0.1}s both`;
+            });
+
+            // Add hover effects to chart bars
+            const bars = document.querySelectorAll('.bar');
+            bars.forEach(bar => {
+                bar.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-4px)';
+                });
+                bar.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+            });
+
+            // Simulate real-time updates
+            setInterval(() => {
+                const activeEvaluations = document.querySelector('.stat-card:nth-child(2) .stat-value');
+                const currentValue = parseInt(activeEvaluations.textContent);
+                const change = Math.random() > 0.5 ? 1 : -1;
+                const newValue = Math.max(0, currentValue + change);
+                activeEvaluations.textContent = newValue;
+            }, 30000); // Update every 30 seconds
+        });
+
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
 </html>

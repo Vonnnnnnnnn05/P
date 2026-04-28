@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supervisor Reports - Performance Evaluation System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-bg: #F8FAFC;
+            --secondary-bg: #DBEAFE;
+            --accent-color: #2563EB;
+            --accent-hover: #1D4ED8;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --border-color: #E5E7EB;
+            --success-color: #10B981;
+            --warning-color: #F59E0B;
+            --error-color: #EF4444;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-bg);
+        }
+
+        .btn-danger {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #DC2626;
+        }
+
+        /* Stats Overview */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-title {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-change {
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-change.positive {
+            color: var(--success-color);
+        }
+
+        .stat-change.negative {
+            color: var(--error-color);
+        }
+
+        /* Report Categories */
+        .reports-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            padding: 1.5rem;
+        }
+
+        .report-card {
+            background: var(--primary-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            cursor: pointer;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .report-card:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .report-card:hover .report-icon {
+            transform: scale(1.1);
+        }
+
+        .report-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 1rem;
+            transition: transform 0.3s;
+        }
+
+        .report-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .report-description {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .report-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .report-stat {
+            text-align: center;
+        }
+
+        .stat-value-small {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        .stat-label-small {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .report-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn-small {
+            flex: 1;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .action-btn-small:hover {
+            background: var(--secondary-bg);
+            color: var(--accent-color);
+        }
+
+        /* Recent Reports */
+        .recent-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem;
+            background: var(--primary-bg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            background: white;
+        }
+
+        .reports-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .reports-table th {
+            text-align: left;
+            padding: 1rem;
+            background: var(--primary-bg);
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .reports-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.875rem;
+        }
+
+        .reports-table tr:hover {
+            background: var(--primary-bg);
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .action-btn:hover {
+            background: var(--secondary-bg);
+            color: var(--accent-color);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .reports-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: none;
+            }
+
+            .reports-table {
+                font-size: 0.75rem;
+            }
+
+            .reports-table th,
+            .reports-table td {
+                padding: 0.5rem;
+            }
+
+            .table-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div>
+                <h1 class="header-title">Supervisor Reports</h1>
+                <p style="color: var(--text-secondary); margin-top: 0.25rem;">Team performance and management reports</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="createCustomReport()">
+                    <span>➕</span> Custom Report
+                </button>
+                <button class="btn btn-secondary" onclick="window.location.href='../index.html'">
+                    <span>📊</span> All Reports
+                </button>
+                <button class="btn btn-danger" onclick="window.location.href='../supervisor/dashboard.html'">
+                    <span>🚪</span> Supervisor Dashboard
+                </button>
+            </div>
+        </header>
+
+        <!-- Stats Overview -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <h3 class="stat-title">Team Members</h3>
+                    <div class="stat-icon" style="background: #DBEAFE; color: #2563EB;">👥</div>
+                </div>
+                <div class="stat-value">12</div>
+                <div class="stat-change positive">
+                    <span>↑</span> 2 new members
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <h3 class="stat-title">Team Average Score</h3>
+                    <div class="stat-icon" style="background: #D1FAE5; color: #10B981;">📊</div>
+                </div>
+                <div class="stat-value">4.1</div>
+                <div class="stat-change positive">
+                    <span>↑</span> 0.2 improvement
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <h3 class="stat-title">Completed Evaluations</h3>
+                    <div class="stat-icon" style="background: #FED7AA; color: #F59E0B;">✅</div>
+                </div>
+                <div class="stat-value">15</div>
+                <div class="stat-change positive">
+                    <span>↑</span> 20% increase
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <h3 class="stat-title">Goal Achievement Rate</h3>
+                    <div class="stat-icon" style="background: #FEE2E2; color: #EF4444;">🎯</div>
+                </div>
+                <div class="stat-value">78%</div>
+                <div class="stat-change positive">
+                    <span>↑</span> 5% improvement
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Reports -->
+        <section class="reports-section">
+            <div class="section-header">
+                <h3 class="section-title">Team Performance Reports</h3>
+                <button class="btn btn-secondary" onclick="exportAllReports()">Export All</button>
+            </div>
+            <div class="reports-grid">
+                <!-- Team Performance Overview -->
+                <div class="report-card" onclick="generateReport('team-performance')">
+                    <div class="report-icon">👥</div>
+                    <h4 class="report-title">Team Performance Overview</h4>
+                    <p class="report-description">Comprehensive team performance metrics including average scores, completion rates, and comparative analysis.</p>
+                    <div class="report-stats">
+                        <div class="report-stat">
+                            <div class="stat-value-small">4.1</div>
+                            <div class="stat-label-small">Avg Score</div>
+                        </div>
+                        <div class="report-stat">
+                            <div class="stat-value-small">85%</div>
+                            <div class="stat-label-small">Completion</div>
+                        </div>
+                        <div class="report-stat">
+                            <div class="stat-value-small">12</div>
+                            <div class="stat-label-small">Members</div>
+                        </div>
+                    </div>
+                    <div class="report-actions">
+                        <button class="action-btn-small" onclick="event.stopPropagation(); previewReport('team-performance')">Preview</button>
+                        <button class="action-btn-small" onclick="event.stopPropagation(); downloadReport('team-performance')">Download</button>
+                    </div>
+                </div>
+
+                <!-- Individual Performance -->
+                <div class="report-card" onclick="generateReport('individual-performance')">
+                    <div class="report-icon">👤</div>
+                    <h4 class="report-title">Individual Performance</h4>
+                    <p class="report-description">Detailed performance reports for each team member with scores, trends, and development areas.</p>
+                    <div class="report-stats">
+                        <div class="report-stat">
+                            <div class="stat-value-small">8</div>
+                            <div class="stat-label-small">Completed</div>
+                        </div>
+                        <div class="report-stat">
+                            <div class="stat-value-small">4</div>
+                            <div class="stat-label-small">Pending</div>
+                        </div>
+                        <div class="report-stat">
+                            <div class="stat-value-small">4.3</div>
+                            <div class="stat-label-small">Top Score</div>
+                        </div>
+                    </div>
+                    <div class="report-actions">
+                        <button class="action-btn-small" onclick="event.stopPropagation(); previewReport('individual-performance')">Preview</button>
+                        <button class="action-btn-small" onclick="event.stopPropagation(); downloadReport('individual-performance')">Download</button>
+                    </div>
+                </div>
+
+                <!-- Performance Trends -->
+                <div class="report-card" onclick="generateReport('performance-trends')">
+                    <div class="report-icon">📈</div>
+                    <h4 class="report-title">Performance Trends</h4>
+                    <p class="report-description">Analyze team performance trends over time with predictive insights and improvement recommendations.</p>
+                    <div class="report-stats">
+                        <div class="report-stat">
+                            <div class="stat-value-small">+0.3</div>
+                            <div class="stat-label-small">Avg Change</div>
+                        </div>
+                        <div class="report-stat">
+                            <div class="stat-value-small">6</div>
+                            <div class="stat-label-small">Quarters</div>
+                        </div>
+                        <div class="report-stat">
+                            <div class="stat-value-small">92%</div>
+                            <div class="stat-label-small">Accuracy</div>
+                        </div>
+                    </div>
+                    <div class="report-actions">
+                        <button class="action-btn-small" onclick="event.stopPropagation(); previewReport('performance-trends')">Preview</button>
+                        <button class="action-btn-small" onclick="event.stopPropagation(); downloadReport('performance-trends')">Download</button>
+                    </div>
+                </div>
+
+                <!-- Skills Assessment -->
+                <div class="report-card" onclick="generateReport('skills-assessment')">
+                    <div class="report-icon">🎯</div>
+                    <h4 class="report-title">Skills Assessment</h4>
+                    <p class="report-description">Evaluate team skills, identify training needs, and track competency development across various areas.</p>
+                    <div class="report-stats">
+                        <div class="report-stat">
+                            <div class="stat-value-small">15</div>
+                            <div class="stat-label-small">Skills Tracked</div>
+                        </div>
+                        <div class="report-stat">
+                            <div class="stat-value-small">3</div>
+                            <div class="stat-label-small">Need Training</div>
+                        </div>
+                        <div class="report-stat">
+                            <div class="stat-value-small">78%</div>
+                            <div class="stat-label-small">Proficiency</div>
+                        </div>
+                    </div>
+                    <div class="report-actions">
+                        <button class="action-btn-small" onclick="event.stopPropagation(); previewReport('skills-assessment')">Preview</button>
+                        <button class="action-btn-small" onclick="event.stopPropagation(); downloadReport('skills-assessment')">Download</button>
+                    </div>
+                </div>
+
+                <!-- Goal Achievement -->
+                <div class="report-card" onclick="generateReport('goal-achievement')">
+                    <div class="report-icon">🏆</div>
+                    <h4 class="report-title">Goal Achievement</h4>
+                    <p class="report-description">Track team and individual goal completion rates with detailed analysis of achievement patterns.</p>
+                    <div class="report-stats">
+                        <div class="report-stat">
+                            <div class="stat-value-small">68</div>
+                            <div class="stat-label-small">Goals Set</div>
+                        </div>
+                        <div class="report-stat">
+                            <div class="stat-value-small">45</div>
+                            <div class="stat-label-small">Achieved</div>
+                        </div>
+                        <div class="report-stat">
+                            <div class="stat-value-small">66%</div>
+                            <div class="stat-label-small">Success Rate</div>
+                        </div>
+                    </div>
+                    <div class="report-actions">
+                        <button class="action-btn-small" onclick="event.stopPropagation(); previewReport('goal-achievement')">Preview</button>
+                        <button class="action-btn-small" onclick="event.stopPropagation(); downloadReport('goal-achievement')">Download</button>
+                    </div>
+                </div>
+
+                <!-- 360-Degree Feedback -->
+                <div class="report-card" onclick="generateReport('360-feedback')">
+                    <div class="report-icon">🔄</div>
+                    <h4 class="report-title">360° Feedback Summary</h4>
+                    <p class="report-description">Comprehensive feedback analysis from peers, managers, and self-assessments for holistic performance view.</p>
+                    <div class="report-stats">
+                        <div class="report-stat">
+                            <div class="stat-value-small">24</div>
+                            <div class="stat-label-small">Reviews</div>
+                        </div>
+                        <div class="report-stat">
+                            <div class="stat-value-small">4.0</div>
+                            <div class="stat-label-small">Avg Rating</div>
+                        </div>
+                        <div class="report-stat">
+                            <div class="stat-value-small">89%</div>
+                            <div class="stat-label-small">Participation</div>
+                        </div>
+                    </div>
+                    <div class="report-actions">
+                        <button class="action-btn-small" onclick="event.stopPropagation(); previewReport('360-feedback')">Preview</button>
+                        <button class="action-btn-small" onclick="event.stopPropagation(); downloadReport('360-feedback')">Download</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Reports -->
+        <section class="recent-section">
+            <div class="section-header">
+                <h3 class="section-title">Recently Generated Reports</h3>
+                <button class="btn btn-secondary" onclick="scheduleReport()">Schedule Report</button>
+            </div>
+
+            <div class="filter-controls">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" placeholder="Search reports..." id="searchInput">
+                </div>
+                <select class="filter-select" id="typeFilter">
+                    <option value="">All Types</option>
+                    <option value="team">Team Performance</option>
+                    <option value="individual">Individual</option>
+                    <option value="trends">Trends Analysis</option>
+                    <option value="skills">Skills Assessment</option>
+                </select>
+                <select class="filter-select" id="dateFilter">
+                    <option value="">All Dates</option>
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                </select>
+            </div>
+
+            <table class="reports-table">
+                <thead>
+                    <tr>
+                        <th>Report Name</th>
+                        <th>Type</th>
+                        <th>Generated</th>
+                        <th>Generated By</th>
+                        <th>Size</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="reportsTableBody">
+                    <tr data-type="team" data-date="2024-04-10">
+                        <td>Q1 2024 Team Performance Report</td>
+                        <td>Team Performance</td>
+                        <td>April 10, 2024</td>
+                        <td>Sarah Johnson</td>
+                        <td>2.4 MB</td>
+                        <td>
+                            <div class="table-actions">
+                                <button class="action-btn" onclick="viewReport('team-q1-2024')" title="View">👁️</button>
+                                <button class="action-btn" onclick="downloadReport('team-q1-2024')" title="Download">📥</button>
+                                <button class="action-btn" onclick="shareReport('team-q1-2024')" title="Share">📤</button>
+                                <button class="action-btn" onclick="deleteReport('team-q1-2024')" title="Delete">🗑️</button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr data-type="individual" data-date="2024-04-09">
+                        <td>John Doe - Individual Performance</td>
+                        <td>Individual</td>
+                        <td>April 9, 2024</td>
+                        <td>Sarah Johnson</td>
+                        <td>1.8 MB</td>
+                        <td>
+                            <div class="table-actions">
+                                <button class="action-btn" onclick="viewReport('john-doe-individual')" title="View">👁️</button>
+                                <button class="action-btn" onclick="downloadReport('john-doe-individual')" title="Download">📥</button>
+                                <button class="action-btn" onclick="shareReport('john-doe-individual')" title="Share">📤</button>
+                                <button class="action-btn" onclick="deleteReport('john-doe-individual')" title="Delete">🗑️</button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr data-type="trends" data-date="2024-04-08">
+                        <td>Performance Trends - Last 6 Quarters</td>
+                        <td>Trends Analysis</td>
+                        <td>April 8, 2024</td>
+                        <td>Sarah Johnson</td>
+                        <td>3.1 MB</td>
+                        <td>
+                            <div class="table-actions">
+                                <button class="action-btn" onclick="viewReport('trends-6-quarters')" title="View">👁️</button>
+                                <button class="action-btn" onclick="downloadReport('trends-6-quarters')" title="Download">📥</button>
+                                <button class="action-btn" onclick="shareReport('trends-6-quarters')" title="Share">📤</button>
+                                <button class="action-btn" onclick="deleteReport('trends-6-quarters')" title="Delete">🗑️</button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr data-type="skills" data-date="2024-04-05">
+                        <td>Team Skills Assessment Report</td>
+                        <td>Skills Assessment</td>
+                        <td>April 5, 2024</td>
+                        <td>Sarah Johnson</td>
+                        <td>2.7 MB</td>
+                        <td>
+                            <div class="table-actions">
+                                <button class="action-btn" onclick="viewReport('skills-assessment')" title="View">👁️</button>
+                                <button class="action-btn" onclick="downloadReport('skills-assessment')" title="Download">📥</button>
+                                <button class="action-btn" onclick="shareReport('skills-assessment')" title="Share">📤</button>
+                                <button class="action-btn" onclick="deleteReport('skills-assessment')" title="Delete">🗑️</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <script>
+        // Report generation functions
+        function generateReport(reportType) {
+            alert(`Generating ${reportType} report... This may take a few moments.`);
+            // In real app, would generate report and add to table
+        }
+
+        function createCustomReport() {
+            const reportName = prompt('Enter custom report name:');
+            if (reportName) {
+                const reportType = prompt('Select report type:\n1. Team Performance\n2. Individual Analysis\n3. Trend Analysis\n4. Skills Assessment\n\nEnter number:');
+                if (reportType) {
+                    const dateRange = prompt('Enter date range (e.g., 2024-01-01 to 2024-03-31):');
+                    if (dateRange) {
+                        alert(`Creating custom report: ${reportName}\nType: ${reportType}\nDate Range: ${dateRange}`);
+                    }
+                }
+            }
+        }
+
+        function previewReport(reportId) {
+            alert(`Opening preview for report: ${reportId}`);
+            // In real app, would open report preview modal
+        }
+
+        function downloadReport(reportId) {
+            alert(`Downloading report: ${reportId}`);
+            // In real app, would generate and download PDF/Excel file
+        }
+
+        function viewReport(reportId) {
+            alert(`Opening report viewer: ${reportId}`);
+            // In real app, would open detailed report view
+        }
+
+        function shareReport(reportId) {
+            const email = prompt('Enter email address to share report:');
+            if (email) {
+                alert(`Report ${reportId} shared with ${email}`);
+                // In real app, would send sharing email
+            }
+        }
+
+        function deleteReport(reportId) {
+            if (confirm('Are you sure you want to delete this report?')) {
+                alert(`Report ${reportId} deleted successfully!`);
+                // In real app, would delete from database and refresh table
+            }
+        }
+
+        function exportAllReports() {
+            alert('Exporting all reports to ZIP file...');
+            // In real app, would generate and download ZIP file
+        }
+
+        function scheduleReport() {
+            const reportName = prompt('Enter report name to schedule:');
+            if (reportName) {
+                const frequency = prompt('Select frequency:\n1. Daily\n2. Weekly\n3. Monthly\n4. Quarterly\n\nEnter number:');
+                if (frequency) {
+                    alert(`Report scheduled: ${reportName}\nFrequency: ${frequency}`);
+                }
+            }
+        }
+
+        // Filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Search functionality
+            document.getElementById('searchInput').addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                const rows = document.querySelectorAll('#reportsTableBody tr');
+                
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(searchTerm) ? '' : 'none';
+                });
+            });
+
+            // Filter functionality
+            const filters = ['typeFilter', 'dateFilter'];
+            filters.forEach(filterId => {
+                document.getElementById(filterId).addEventListener('change', function() {
+                    filterReports();
+                });
+            });
+        });
+
+        function filterReports() {
+            const typeFilter = document.getElementById('typeFilter').value;
+            const dateFilter = document.getElementById('dateFilter').value;
+            const rows = document.querySelectorAll('#reportsTableBody tr');
+
+            rows.forEach(row => {
+                const matchesType = !typeFilter || row.dataset.type === typeFilter;
+                const matchesDate = !dateFilter || checkDateFilter(row.dataset.date, dateFilter);
+
+                row.style.display = matchesType && matchesDate ? '' : 'none';
+            });
+        }
+
+        function checkDateFilter(dateString, filter) {
+            const date = new Date(dateString);
+            const today = new Date();
+            
+            switch(filter) {
+                case 'today':
+                    return date.toDateString() === today.toDateString();
+                case 'week':
+                    const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    return date >= weekAgo;
+                case 'month':
+                    const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+                    return date >= monthAgo;
+                default:
+                    return true;
+            }
+        }
+
+        // Initialize page
+        window.addEventListener('load', function() {
+            // Animate stat cards
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach((card, index) => {
+                card.style.animation = `fadeInUp 0.5s ease ${index * 0.1}s both`;
+            });
+
+            // Animate report cards
+            const reportCards = document.querySelectorAll('.report-card');
+            reportCards.forEach((card, index) => {
+                card.style.animation = `fadeInUp 0.5s ease ${index * 0.1 + 0.4}s both`;
+            });
+
+            // Animate table rows
+            const tableRows = document.querySelectorAll('#reportsTableBody tr');
+            tableRows.forEach((row, index) => {
+                row.style.animation = `fadeInUp 0.5s ease ${index * 0.05 + 0.8}s both`;
+            });
+        });
+
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

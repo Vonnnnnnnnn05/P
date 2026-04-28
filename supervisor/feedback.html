@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feedback - Performance Evaluation System</title>
+    <title>Give Feedback - Performance Evaluation System</title>
     <style>
         * {
             margin: 0;
@@ -260,7 +260,7 @@
             color: var(--error-color);
         }
 
-        /* Feedback Sections */
+        /* Feedback Form */
         .feedback-section {
             background: white;
             border-radius: 12px;
@@ -287,7 +287,6 @@
             padding: 1.5rem;
         }
 
-        /* Feedback Form */
         .feedback-form {
             display: grid;
             gap: 1.5rem;
@@ -340,16 +339,62 @@
             color: #FCD34D;
         }
 
-        /* Feedback List */
-        .feedback-list {
-            display: grid;
+        /* Feedback History */
+        .history-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .filter-controls {
+            display: flex;
             gap: 1rem;
+            align-items: center;
+            padding: 1rem;
+            background: var(--primary-bg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            background: white;
+        }
+
+        .feedback-list {
+            padding: 1.5rem;
         }
 
         .feedback-item {
             padding: 1.5rem;
             background: var(--primary-bg);
             border-radius: 8px;
+            margin-bottom: 1rem;
             border-left: 4px solid var(--accent-color);
             transition: all 0.2s;
         }
@@ -363,11 +408,7 @@
             border-left-color: var(--success-color);
         }
 
-        .feedback-item.negative {
-            border-left-color: var(--error-color);
-        }
-
-        .feedback-item.neutral {
+        .feedback-item.constructive {
             border-left-color: var(--warning-color);
         }
 
@@ -378,7 +419,7 @@
             margin-bottom: 1rem;
         }
 
-        .feedback-from {
+        .feedback-to {
             display: flex;
             align-items: center;
             gap: 0.75rem;
@@ -520,12 +561,21 @@
                 grid-template-columns: 1fr;
             }
 
+            .filter-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: none;
+            }
+
             .feedback-header {
                 flex-direction: column;
                 gap: 1rem;
             }
 
-            .feedback-from {
+            .feedback-to {
                 width: 100%;
             }
 
@@ -547,7 +597,7 @@
                 <div class="sidebar-logo">
                     <div class="logo-icon">EP</div>
                     <div>
-                        <div class="sidebar-title">Employee Portal</div>
+                        <div class="sidebar-title">Supervisor Portal</div>
                         <div class="sidebar-subtitle">Performance Evaluation</div>
                     </div>
                 </div>
@@ -557,23 +607,23 @@
                 <a href="dashboard.html" class="nav-item">
                     <span class="nav-icon">📊</span> Dashboard
                 </a>
-                <a href="profile.html" class="nav-item">
-                    <span class="nav-icon">👤</span> My Profile
+                <a href="team.html" class="nav-item">
+                    <span class="nav-icon">👥</span> Team Management
                 </a>
                 <a href="evaluations.html" class="nav-item">
-                    <span class="nav-icon">📝</span> My Evaluations
+                    <span class="nav-icon">📝</span> Team Evaluations
                 </a>
-                <a href="upload.html" class="nav-item">
-                    <span class="nav-icon">📤</span> Upload Documents
+                <a href="schedule.html" class="nav-item">
+                    <span class="nav-icon">📅</span> Schedule Reviews
                 </a>
                 <a href="feedback.html" class="nav-item active">
-                    <span class="nav-icon">💬</span> Feedback
+                    <span class="nav-icon">💬</span> Give Feedback
                 </a>
-                <a href="history.html" class="nav-item">
-                    <span class="nav-icon">📈</span> History
+                <a href="reports.html" class="nav-item">
+                    <span class="nav-icon">📈</span> Team Reports
                 </a>
-                <a href="../reports/individual.html" class="nav-item">
-                    <span class="nav-icon">📊</span> Reports
+                <a href="../admin/settings.html" class="nav-item">
+                    <span class="nav-icon">⚙️</span> Settings
                 </a>
             </nav>
         </aside>
@@ -586,13 +636,10 @@
             <!-- Header -->
             <header class="header">
                 <div>
-                    <h1 class="header-title">Feedback</h1>
-                    <p style="color: var(--text-secondary); margin-top: 0.25rem;">Give and receive performance feedback</p>
+                    <h1 class="header-title">Give Feedback</h1>
+                    <p style="color: var(--text-secondary); margin-top: 0.25rem;">Provide feedback to your team members</p>
                 </div>
                 <div class="header-actions">
-                    <button class="btn btn-primary" onclick="scrollToForm()">
-                        <span>➕</span> Give Feedback
-                    </button>
                     <button class="btn btn-danger" onclick="logout()">
                         <span>🚪</span> Logout
                     </button>
@@ -603,19 +650,8 @@
             <section class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-header">
-                        <h3 class="stat-title">Feedback Received</h3>
-                        <div class="stat-icon" style="background: #DBEAFE; color: #2563EB;">💬</div>
-                    </div>
-                    <div class="stat-value">24</div>
-                    <div class="stat-change positive">
-                        <span>↑</span> 6 this month
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-header">
                         <h3 class="stat-title">Feedback Given</h3>
-                        <div class="stat-icon" style="background: #D1FAE5; color: #10B981;">📤</div>
+                        <div class="stat-icon" style="background: #DBEAFE; color: #2563EB;">💬</div>
                     </div>
                     <div class="stat-value">18</div>
                     <div class="stat-change positive">
@@ -625,58 +661,74 @@
 
                 <div class="stat-card">
                     <div class="stat-header">
-                        <h3 class="stat-title">Average Rating</h3>
-                        <div class="stat-icon" style="background: #FED7AA; color: #F59E0B;">⭐</div>
-                    </div>
-                    <div class="stat-value">4.3</div>
-                    <div class="stat-change positive">
-                        <span>↑</span> 0.2 improvement
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-header">
                         <h3 class="stat-title">Pending Responses</h3>
-                        <div class="stat-icon" style="background: #FEE2E2; color: #EF4444;">⏳</div>
+                        <div class="stat-icon" style="background: #FED7AA; color: #F59E0B;">⏳</div>
                     </div>
                     <div class="stat-value">3</div>
                     <div class="stat-change negative">
                         <span>↓</span> 2 less than last week
                     </div>
                 </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Average Rating</h3>
+                        <div class="stat-icon" style="background: #D1FAE5; color: #10B981;">⭐</div>
+                    </div>
+                    <div class="stat-value">4.2</div>
+                    <div class="stat-change positive">
+                        <span>↑</span> 0.1 improvement
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Response Rate</h3>
+                        <div class="stat-icon" style="background: #FEE2E2; color: #EF4444;">📊</div>
+                    </div>
+                    <div class="stat-value">85%</div>
+                    <div class="stat-change positive">
+                        <span>↑</span> 5% increase
+                    </div>
+                </div>
             </section>
 
             <!-- Give Feedback Form -->
-            <section class="feedback-section" id="feedbackForm">
+            <section class="feedback-section">
                 <div class="section-header">
-                    <h3 class="section-title">Give Feedback</h3>
+                    <h3 class="section-title">Give New Feedback</h3>
                 </div>
                 <div class="section-body">
                     <form class="feedback-form" onsubmit="submitFeedback(event)">
                         <div class="form-group">
+                            <label class="form-label">Team Member</label>
+                            <select class="form-select" required>
+                                <option value="">Select Team Member</option>
+                                <option value="john-doe">John Doe - Senior Software Developer</option>
+                                <option value="mike-wilson">Mike Wilson - Software Developer</option>
+                                <option value="emily-davis">Emily Davis - Junior Developer</option>
+                                <option value="robert-brown">Robert Brown - Frontend Developer</option>
+                                <option value="lisa-johnson">Lisa Johnson - Backend Developer</option>
+                                <option value="tom-garcia">Tom Garcia - Software Developer</option>
+                                <option value="anna-martinez">Anna Martinez - Junior Developer</option>
+                                <option value="david-lee">David Lee - Frontend Developer</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
                             <label class="form-label">Feedback Type</label>
                             <select class="form-select" required>
                                 <option value="">Select Type</option>
-                                <option value="peer">Peer Feedback</option>
-                                <option value="manager">Manager Feedback</option>
-                                <option value="self">Self Assessment</option>
-                                <option value="360">360-Degree Feedback</option>
+                                <option value="performance">Performance Feedback</option>
+                                <option value="project">Project-Specific</option>
+                                <option value="behavioral">Behavioral</option>
+                                <option value="development">Professional Development</option>
+                                <option value="recognition">Recognition</option>
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Recipient</label>
-                            <select class="form-select" required>
-                                <option value="">Select Recipient</option>
-                                <option value="mike-wilson">Mike Wilson - Sales Representative</option>
-                                <option value="sarah-johnson">Sarah Johnson - HR Manager</option>
-                                <option value="emily-davis">Emily Davis - Financial Analyst</option>
-                                <option value="robert-brown">Robert Brown - Marketing Specialist</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Rating</label>
+                            <label class="form-label">Overall Rating</label>
                             <div class="rating-group">
                                 <span class="rating-star" onclick="setRating(1)">⭐</span>
                                 <span class="rating-star" onclick="setRating(2)">⭐</span>
@@ -693,149 +745,179 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Areas of Improvement (Optional)</label>
-                            <textarea class="form-textarea" placeholder="Suggest areas for improvement..."></textarea>
+                            <label class="form-label">Specific Examples (Optional)</label>
+                            <textarea class="form-textarea" placeholder="Provide specific examples or situations..."></textarea>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Acknowledgment</label>
-                            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem;">
-                                <input type="checkbox" required>
-                                <span>I confirm this feedback is constructive and professional</span>
-                            </label>
+                            <label class="form-label">Action Items (Optional)</label>
+                            <textarea class="form-textarea" placeholder="Suggest specific actions or next steps..."></textarea>
                         </div>
 
-                        <button type="submit" class="btn btn-primary">Submit Feedback</button>
+                        <div class="form-group">
+                            <label class="form-label">Follow-up Required?</label>
+                            <select class="form-select">
+                                <option value="no">No follow-up needed</option>
+                                <option value="yes">Schedule follow-up meeting</option>
+                                <option value="check-in">Check in next week</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Send Feedback</button>
                     </form>
                 </div>
             </section>
 
-            <!-- Received Feedback -->
-            <section class="feedback-section">
+            <!-- Feedback History -->
+            <section class="history-section">
                 <div class="section-header">
-                    <h3 class="section-title">Received Feedback</h3>
+                    <h3 class="section-title">Feedback History</h3>
                     <button class="btn btn-secondary" onclick="exportFeedback()">Export All</button>
                 </div>
-                <div class="section-body">
-                    <div class="feedback-list">
-                        <!-- Positive Feedback -->
-                        <div class="feedback-item positive">
-                            <div class="feedback-header">
-                                <div class="feedback-from">
-                                    <div class="feedback-avatar">SJ</div>
-                                    <div class="feedback-info">
-                                        <div class="feedback-name">Sarah Johnson</div>
-                                        <div class="feedback-role">HR Manager • Manager Feedback</div>
-                                    </div>
+
+                <div class="filter-controls">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" class="search-input" placeholder="Search feedback..." id="searchInput">
+                    </div>
+                    <select class="filter-select" id="typeFilter">
+                        <option value="">All Types</option>
+                        <option value="performance">Performance</option>
+                        <option value="project">Project</option>
+                        <option value="behavioral">Behavioral</option>
+                        <option value="development">Development</option>
+                        <option value="recognition">Recognition</option>
+                    </select>
+                    <select class="filter-select" id="dateFilter">
+                        <option value="">All Dates</option>
+                        <option value="today">Today</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                    </select>
+                </div>
+
+                <div class="feedback-list" id="feedbackList">
+                    <!-- Positive Feedback -->
+                    <div class="feedback-item positive" data-type="performance" data-date="2024-04-10">
+                        <div class="feedback-header">
+                            <div class="feedback-to">
+                                <div class="feedback-avatar">JD</div>
+                                <div class="feedback-info">
+                                    <div class="feedback-name">John Doe</div>
+                                    <div class="feedback-role">Senior Software Developer</div>
                                 </div>
-                                <div class="feedback-date">April 10, 2024</div>
                             </div>
-                            <div class="feedback-content">
-                                <div class="feedback-message">
-                                    John has demonstrated exceptional performance in Q1 2024. His technical skills have improved significantly, and he consistently delivers high-quality work on time. His collaboration with team members has been outstanding, and he's taken initiative in mentoring junior developers. Keep up the excellent work!
-                                </div>
-                                <div class="feedback-rating">
-                                    <span class="rating-star">⭐</span>
-                                    <span class="rating-star">⭐</span>
-                                    <span class="rating-star">⭐</span>
-                                    <span class="rating-star">⭐</span>
-                                    <span class="rating-star">⭐</span>
-                                </div>
+                            <div class="feedback-date">April 10, 2024</div>
+                        </div>
+                        <div class="feedback-content">
+                            <div class="feedback-message">
+                                Outstanding work on the customer dashboard project! Your technical leadership and problem-solving skills were instrumental in delivering the project ahead of schedule. The code quality and documentation you provided set an excellent example for the team. Keep up the great work!
                             </div>
-                            <div class="feedback-actions">
-                                <button class="action-btn" onclick="respondToFeedback('feedback-1')">Respond</button>
-                                <button class="action-btn" onclick="markAsRead('feedback-1')">Mark as Read</button>
+                            <div class="feedback-rating">
+                                <span class="rating-star">⭐</span>
+                                <span class="rating-star">⭐</span>
+                                <span class="rating-star">⭐</span>
+                                <span class="rating-star">⭐</span>
+                                <span class="rating-star">⭐</span>
                             </div>
                         </div>
+                        <div class="feedback-actions">
+                            <button class="action-btn" onclick="editFeedback('feedback-1')">Edit</button>
+                            <button class="action-btn" onclick="viewFeedback('feedback-1')">View</button>
+                            <button class="action-btn" onclick="followUp('feedback-1')">Follow Up</button>
+                        </div>
+                    </div>
 
-                        <!-- Peer Feedback -->
-                        <div class="feedback-item positive">
-                            <div class="feedback-header">
-                                <div class="feedback-from">
-                                    <div class="feedback-avatar">MW</div>
-                                    <div class="feedback-info">
-                                        <div class="feedback-name">Mike Wilson</div>
-                                        <div class="feedback-role">Sales Representative • Peer Feedback</div>
-                                    </div>
-                                </div>
-                                <div class="feedback-date">April 8, 2024</div>
-                            </div>
-                            <div class="feedback-content">
-                                <div class="feedback-message">
-                                    Great working with John on the recent project. His problem-solving skills are impressive, and he's always willing to help others. The code quality and documentation he provides are excellent. Looking forward to more collaborations!
-                                </div>
-                                <div class="feedback-rating">
-                                    <span class="rating-star">⭐</span>
-                                    <span class="rating-star">⭐</span>
-                                    <span class="rating-star">⭐</span>
-                                    <span class="rating-star">⭐</span>
-                                    <span class="rating-star">⭐</span>
+                    <!-- Constructive Feedback -->
+                    <div class="feedback-item constructive" data-type="behavioral" data-date="2024-04-08">
+                        <div class="feedback-header">
+                            <div class="feedback-to">
+                                <div class="feedback-avatar">MW</div>
+                                <div class="feedback-info">
+                                    <div class="feedback-name">Mike Wilson</div>
+                                    <div class="feedback-role">Software Developer</div>
                                 </div>
                             </div>
-                            <div class="feedback-actions">
-                                <button class="action-btn" onclick="respondToFeedback('feedback-2')">Respond</button>
-                                <button class="action-btn" onclick="markAsRead('feedback-2')">Mark as Read</button>
+                            <div class="feedback-date">April 8, 2024</div>
+                        </div>
+                        <div class="feedback-content">
+                            <div class="feedback-message">
+                                I've noticed some opportunities for improvement in your communication during team meetings. While your technical contributions are strong, sometimes the explanations are too technical for non-technical stakeholders. I'd like to work with you on simplifying your communication and focusing on key business impacts. Let's schedule a session to discuss some strategies.
+                            </div>
+                            <div class="feedback-rating">
+                                <span class="rating-star">⭐</span>
+                                <span class="rating-star">⭐</span>
+                                <span class="rating-star">⭐</span>
+                                <span class="rating-star">⭐</span>
+                                <span class="rating-star" style="color: var(--border-color);">⭐</span>
                             </div>
                         </div>
+                        <div class="feedback-actions">
+                            <button class="action-btn" onclick="editFeedback('feedback-2')">Edit</button>
+                            <button class="action-btn" onclick="viewFeedback('feedback-2')">View</button>
+                            <button class="action-btn" onclick="followUp('feedback-2')">Follow Up</button>
+                        </div>
+                    </div>
 
-                        <!-- Constructive Feedback -->
-                        <div class="feedback-item neutral">
-                            <div class="feedback-header">
-                                <div class="feedback-from">
-                                    <div class="feedback-avatar">ED</div>
-                                    <div class="feedback-info">
-                                        <div class="feedback-name">Emily Davis</div>
-                                        <div class="feedback-role">Financial Analyst • 360-Degree Feedback</div>
-                                    </div>
-                                </div>
-                                <div class="feedback-date">April 5, 2024</div>
-                            </div>
-                            <div class="feedback-content">
-                                <div class="feedback-message">
-                                    John is a talented developer with strong technical skills. I've noticed he could benefit from improving his communication in cross-departmental meetings. Sometimes technical explanations are too detailed for non-technical stakeholders. Overall, great performance with room for growth in stakeholder communication.
-                                </div>
-                                <div class="feedback-rating">
-                                    <span class="rating-star">⭐</span>
-                                    <span class="rating-star">⭐</span>
-                                    <span class="rating-star">⭐</span>
-                                    <span class="rating-star">⭐</span>
-                                    <span class="rating-star" style="color: var(--border-color);">⭐</span>
+                    <!-- Recognition Feedback -->
+                    <div class="feedback-item positive" data-type="recognition" data-date="2024-04-05">
+                        <div class="feedback-header">
+                            <div class="feedback-to">
+                                <div class="feedback-avatar">ED</div>
+                                <div class="feedback-info">
+                                    <div class="feedback-name">Emily Davis</div>
+                                    <div class="feedback-role">Junior Developer</div>
                                 </div>
                             </div>
-                            <div class="feedback-actions">
-                                <button class="action-btn" onclick="respondToFeedback('feedback-3')">Respond</button>
-                                <button class="action-btn" onclick="markAsRead('feedback-3')">Mark as Read</button>
+                            <div class="feedback-date">April 5, 2024</div>
+                        </div>
+                        <div class="feedback-content">
+                            <div class="feedback-message">
+                                I wanted to recognize your exceptional progress this quarter! Your dedication to learning React and taking on challenging tasks has been impressive. The way you handled the recent bug fixes independently shows great growth in your skills. Your positive attitude and willingness to help others make you a valuable team member. Congratulations on completing your JavaScript certification!
+                            </div>
+                            <div class="feedback-rating">
+                                <span class="rating-star">⭐</span>
+                                <span class="rating-star">⭐</span>
+                                <span class="rating-star">⭐</span>
+                                <span class="rating-star">⭐</span>
+                                <span class="rating-star">⭐</span>
                             </div>
                         </div>
+                        <div class="feedback-actions">
+                            <button class="action-btn" onclick="editFeedback('feedback-3')">Edit</button>
+                            <button class="action-btn" onclick="viewFeedback('feedback-3')">View</button>
+                            <button class="action-btn" onclick="followUp('feedback-3')">Follow Up</button>
+                        </div>
+                    </div>
 
-                        <!-- Recent Feedback -->
-                        <div class="feedback-item positive">
-                            <div class="feedback-header">
-                                <div class="feedback-from">
-                                    <div class="feedback-avatar">RB</div>
-                                    <div class="feedback-info">
-                                        <div class="feedback-name">Robert Brown</div>
-                                        <div class="feedback-role">Marketing Specialist • Peer Feedback</div>
-                                    </div>
-                                </div>
-                                <div class="feedback-date">April 2, 2024</div>
-                            </div>
-                            <div class="feedback-content">
-                                <div class="feedback-message">
-                                    John's contributions to the marketing dashboard project were invaluable. He quickly understood our requirements and delivered a solution that exceeded our expectations. His attention to detail and proactive approach made the entire process smooth. Highly recommend working with him!
-                                </div>
-                                <div class="feedback-rating">
-                                    <span class="rating-star">⭐</span>
-                                    <span class="rating-star">⭐</span>
-                                    <span class="rating-star">⭐</span>
-                                    <span class="rating-star">⭐</span>
-                                    <span class="rating-star">⭐</span>
+                    <!-- Development Feedback -->
+                    <div class="feedback-item positive" data-type="development" data-date="2024-04-02">
+                        <div class="feedback-header">
+                            <div class="feedback-to">
+                                <div class="feedback-avatar">RB</div>
+                                <div class="feedback-info">
+                                    <div class="feedback-name">Robert Brown</div>
+                                    <div class="feedback-role">Frontend Developer</div>
                                 </div>
                             </div>
-                            <div class="feedback-actions">
-                                <button class="action-btn" onclick="respondToFeedback('feedback-4')">Respond</button>
-                                <button class="action-btn" onclick="markAsRead('feedback-4')">Mark as Read</button>
+                            <div class="feedback-date">April 2, 2024</div>
+                        </div>
+                        <div class="feedback-content">
+                            <div class="feedback-message">
+                                Your frontend skills have improved significantly over the past few months. The UI components you've developed are clean, responsive, and user-friendly. I encourage you to continue exploring modern CSS frameworks and consider taking on a small leadership role in our next frontend project. You have the potential to become a frontend specialist on the team.
                             </div>
+                            <div class="feedback-rating">
+                                <span class="rating-star">⭐</span>
+                                <span class="rating-star">⭐</span>
+                                <span class="rating-star">⭐</span>
+                                <span class="rating-star">⭐</span>
+                                <span class="rating-star">⭐</span>
+                            </div>
+                        </div>
+                        <div class="feedback-actions">
+                            <button class="action-btn" onclick="editFeedback('feedback-4')">Edit</button>
+                            <button class="action-btn" onclick="viewFeedback('feedback-4')">View</button>
+                            <button class="action-btn" onclick="followUp('feedback-4')">Follow Up</button>
                         </div>
                     </div>
                 </div>
@@ -853,11 +935,11 @@
             }
 
             const user = JSON.parse(currentUser);
-            if (user.role !== 'employee') {
+            if (user.role !== 'supervisor') {
                 const dashboardMap = {
                     administrator: '../admin/dashboard.html',
                     hr: '../hr/dashboard.html',
-                    supervisor: '../supervisor/dashboard.html'
+                    employee: '../employee/dashboard.html'
                 };
                 if (dashboardMap[user.role]) {
                     window.location.href = dashboardMap[user.role];
@@ -905,38 +987,95 @@
                 return;
             }
 
-            alert('Feedback submitted successfully!');
+            alert('Feedback sent successfully!');
             event.target.reset();
             setRating(0);
         }
 
         // Feedback actions
-        function respondToFeedback(feedbackId) {
-            const response = prompt('Enter your response:');
-            if (response) {
-                alert('Response sent successfully!');
-                // In real app, would send response to feedback giver
+        function editFeedback(feedbackId) {
+            alert(`Editing feedback: ${feedbackId}`);
+            // In real app, would open edit modal
+        }
+
+        function viewFeedback(feedbackId) {
+            alert(`Viewing feedback details: ${feedbackId}`);
+            // In real app, would open detailed view
+        }
+
+        function followUp(feedbackId) {
+            const action = prompt('Select follow-up action:\n1. Schedule meeting\n2. Send reminder\n3. Check in next week\n\nEnter number:');
+            if (action) {
+                const actions = ['Schedule meeting', 'Send reminder', 'Check in next week'];
+                const selectedAction = actions[parseInt(action) - 1];
+                if (selectedAction) {
+                    alert(`Follow-up action scheduled: ${selectedAction}`);
+                }
             }
         }
 
-        function markAsRead(feedbackId) {
-            alert('Feedback marked as read.');
-            // In real app, would update feedback status
-        }
-
         function exportFeedback() {
-            alert('Exporting all feedback to PDF...');
-            // In real app, would generate and download PDF
+            alert('Exporting feedback history to Excel...');
+            // In real app, would generate and download Excel file
         }
 
-        function scrollToForm() {
-            document.getElementById('feedbackForm').scrollIntoView({ behavior: 'smooth' });
+        // Filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+
+            // Search functionality
+            document.getElementById('searchInput').addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                const items = document.querySelectorAll('.feedback-item');
+                
+                items.forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    item.style.display = text.includes(searchTerm) ? '' : 'none';
+                });
+            });
+
+            // Filter functionality
+            const filters = ['typeFilter', 'dateFilter'];
+            filters.forEach(filterId => {
+                document.getElementById(filterId).addEventListener('change', function() {
+                    filterFeedback();
+                });
+            });
+        });
+
+        function filterFeedback() {
+            const typeFilter = document.getElementById('typeFilter').value;
+            const dateFilter = document.getElementById('dateFilter').value;
+            const items = document.querySelectorAll('.feedback-item');
+
+            items.forEach(item => {
+                const matchesType = !typeFilter || item.dataset.type === typeFilter;
+                const matchesDate = !dateFilter || checkDateFilter(item.dataset.date, dateFilter);
+
+                item.style.display = matchesType && matchesDate ? '' : 'none';
+            });
+        }
+
+        function checkDateFilter(dateString, filter) {
+            const date = new Date(dateString);
+            const today = new Date();
+            
+            switch(filter) {
+                case 'today':
+                    return date.toDateString() === today.toDateString();
+                case 'week':
+                    const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    return date >= weekAgo;
+                case 'month':
+                    const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+                    return date >= monthAgo;
+                default:
+                    return true;
+            }
         }
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
-            checkAuth();
-
             // Add hover effects to rating stars
             const stars = document.querySelectorAll('.rating-star');
             stars.forEach((star, index) => {

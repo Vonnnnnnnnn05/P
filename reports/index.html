@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - Performance Evaluation System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-bg: #F8FAFC;
+            --secondary-bg: #DBEAFE;
+            --accent-color: #2563EB;
+            --accent-hover: #1D4ED8;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --border-color: #E5E7EB;
+            --success-color: #10B981;
+            --warning-color: #F59E0B;
+            --error-color: #EF4444;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .header-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .header-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+        }
+
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .report-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .report-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .report-header {
+            padding: 2rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .report-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+        }
+
+        .report-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .report-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .report-description {
+            font-size: 1rem;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        .report-body {
+            padding: 2rem;
+        }
+
+        .report-features {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .report-features li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .report-features li::before {
+            content: '✓';
+            color: var(--success-color);
+            font-weight: bold;
+        }
+
+        .report-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            text-align: center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--secondary-bg);
+            color: var(--accent-color);
+        }
+
+        .access-info {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+        }
+
+        .access-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .role-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .role-card {
+            padding: 1.5rem;
+            background: var(--primary-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+
+        .role-card:hover {
+            border-color: var(--accent-color);
+            background: var(--secondary-bg);
+        }
+
+        .role-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .role-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .role-description {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .reports-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .report-header,
+            .report-body {
+                padding: 1.5rem;
+            }
+
+            .report-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="header-title">Performance Evaluation Reports</h1>
+            <p class="header-subtitle">Comprehensive reporting and analytics for all user roles</p>
+        </header>
+
+        <!-- Report Cards -->
+        <div class="reports-grid">
+            <!-- Admin Reports -->
+            <div class="report-card" onclick="window.location.href='admin/'">
+                <div class="report-header" style="background: linear-gradient(135deg, #7C3AED, #6D28D9);">
+                    <div class="report-icon">👑</div>
+                    <h2 class="report-title">Admin Reports</h2>
+                    <p class="report-description">System-wide analytics and administrative reports</p>
+                </div>
+                <div class="report-body">
+                    <ul class="report-features">
+                        <li>System performance metrics</li>
+                        <li>User activity analytics</li>
+                        <li>Security and compliance reports</li>
+                        <li>System health monitoring</li>
+                        <li>Usage statistics</li>
+                    </ul>
+                    <div class="report-actions">
+                        <a href="admin/" class="btn btn-primary">View Reports</a>
+                        <a href="../admin/dashboard.html" class="btn btn-secondary">Admin Dashboard</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HR Reports -->
+            <div class="report-card" onclick="window.location.href='hr/'">
+                <div class="report-header" style="background: linear-gradient(135deg, #2563EB, #1D4ED8);">
+                    <div class="report-icon">💼</div>
+                    <h2 class="report-title">HR Reports</h2>
+                    <p class="report-description">Human resources and workforce analytics</p>
+                </div>
+                <div class="report-body">
+                    <ul class="report-features">
+                        <li>Employee performance summaries</li>
+                        <li>Department analytics</li>
+                        <li>Training and development reports</li>
+                        <li>Compliance and audit reports</li>
+                        <li>Workforce planning insights</li>
+                    </ul>
+                    <div class="report-actions">
+                        <a href="hr/" class="btn btn-primary">View Reports</a>
+                        <a href="../hr/dashboard.html" class="btn btn-secondary">HR Dashboard</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Supervisor Reports -->
+            <div class="report-card" onclick="window.location.href='supervisor/'">
+                <div class="report-header" style="background: linear-gradient(135deg, #10B981, #059669);">
+                    <div class="report-icon">👥</div>
+                    <h2 class="report-title">Supervisor Reports</h2>
+                    <p class="report-description">Team performance and management reports</p>
+                </div>
+                <div class="report-body">
+                    <ul class="report-features">
+                        <li>Team performance analytics</li>
+                        <li>Individual employee reports</li>
+                        <li>Goal achievement tracking</li>
+                        <li>Skills assessment reports</li>
+                        <li>360-degree feedback summaries</li>
+                    </ul>
+                    <div class="report-actions">
+                        <a href="supervisor/" class="btn btn-primary">View Reports</a>
+                        <a href="../supervisor/dashboard.html" class="btn btn-secondary">Supervisor Dashboard</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Employee Reports -->
+            <div class="report-card" onclick="window.location.href='individual/'">
+                <div class="report-header" style="background: linear-gradient(135deg, #F59E0B, #D97706);">
+                    <div class="report-icon">👤</div>
+                    <h2 class="report-title">Individual Reports</h2>
+                    <p class="report-description">Personal performance and development reports</p>
+                </div>
+                <div class="report-body">
+                    <ul class="report-features">
+                        <li>Personal performance history</li>
+                        <li>Skills and competencies analysis</li>
+                        <li>Goal progress tracking</li>
+                        <li>Feedback summaries</li>
+                        <li>Development recommendations</li>
+                    </ul>
+                    <div class="report-actions">
+                        <a href="individual/" class="btn btn-primary">View Reports</a>
+                        <a href="../employee/dashboard.html" class="btn btn-secondary">Employee Dashboard</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Custom Reports -->
+            <div class="report-card" onclick="window.location.href='custom/'">
+                <div class="report-header" style="background: linear-gradient(135deg, #EF4444, #DC2626);">
+                    <div class="report-icon">📊</div>
+                    <h2 class="report-title">Custom Reports</h2>
+                    <p class="report-description">Build and generate custom reports</p>
+                </div>
+                <div class="report-body">
+                    <ul class="report-features">
+                        <li>Drag-and-drop report builder</li>
+                        <li>Custom metrics and KPIs</li>
+                        <li>Scheduled report generation</li>
+                        <li>Advanced filtering options</li>
+                        <li>Export in multiple formats</li>
+                    </ul>
+                    <div class="report-actions">
+                        <a href="custom/" class="btn btn-primary">Create Report</a>
+                        <a href="#" class="btn btn-secondary" onclick="showTutorial()">View Tutorial</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Dashboard -->
+            <div class="report-card" onclick="window.location.href='analytics/'">
+                <div class="report-header" style="background: linear-gradient(135deg, #06B6D4, #0891B2);">
+                    <div class="report-icon">📈</div>
+                    <h2 class="report-title">Analytics Dashboard</h2>
+                    <p class="report-description">Real-time analytics and data visualization</p>
+                </div>
+                <div class="report-body">
+                    <ul class="report-features">
+                        <li>Interactive charts and graphs</li>
+                        <li>Real-time data updates</li>
+                        <li>Trend analysis tools</li>
+                        <li>Predictive analytics</li>
+                        <li>Data export capabilities</li>
+                    </ul>
+                    <div class="report-actions">
+                        <a href="analytics/" class="btn btn-primary">View Analytics</a>
+                        <a href="#" class="btn btn-secondary" onclick="showDemo()">Live Demo</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Access Information -->
+        <section class="access-info">
+            <h3 class="access-title">Role-Based Report Access</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                Each user role has access to specific reports based on their permissions and responsibilities.
+            </p>
+            <div class="role-cards">
+                <div class="role-card">
+                    <div class="role-icon">👑</div>
+                    <div class="role-name">Administrator</div>
+                    <div class="role-description">Full system access</div>
+                </div>
+                <div class="role-card">
+                    <div class="role-icon">💼</div>
+                    <div class="role-name">HR Manager</div>
+                    <div class="role-description">Workforce analytics</div>
+                </div>
+                <div class="role-card">
+                    <div class="role-icon">👥</div>
+                    <div class="role-name">Supervisor</div>
+                    <div class="role-description">Team performance</div>
+                </div>
+                <div class="role-card">
+                    <div class="role-icon">👤</div>
+                    <div class="role-name">Employee</div>
+                    <div class="role-description">Personal reports</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function showTutorial() {
+            alert('Tutorial: Custom Reports Builder\n\n1. Select data sources\n2. Choose metrics and KPIs\n3. Design report layout\n4. Set filters and parameters\n5. Schedule or generate report\n\nFor detailed help, visit the documentation center.');
+        }
+
+        function showDemo() {
+            alert('Live Demo: Analytics Dashboard\n\nThe analytics dashboard provides:\n\n• Real-time performance metrics\n• Interactive data visualization\n• Trend analysis and predictions\n• Customizable widgets\n• Export capabilities\n\nContact your administrator for demo access.');
+        }
+
+        // Add hover effects and animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.report-card');
+            cards.forEach((card, index) => {
+                card.style.animation = `fadeInUp 0.5s ease ${index * 0.1}s both`;
+            });
+
+            const roleCards = document.querySelectorAll('.role-card');
+            roleCards.forEach((card, index) => {
+                card.style.animation = `fadeInUp 0.5s ease ${index * 0.1 + 0.6}s both`;
+            });
+        });
+
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

@@ -1,110 +1,1370 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HR - Review</title>
-  <style>
-    :root {
-      --bg: #F8FAFC;
-      --soft: #E0F2FE;
-      --accent: #0EA5E9;
-      --text: #0f172a;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-    .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
-    .sidebar { background: var(--soft); padding: 18px; }
-    .sidebar h2 { margin: 0 0 8px; font-size: 1.1rem; }
-    .sidebar a {
-      display: block;
-      padding: 10px 12px;
-      margin: 6px 0;
-      border-radius: 8px;
-      text-decoration: none;
-      color: var(--text);
-    }
-    .sidebar a.active,
-    .sidebar a:hover { background: #bae6fd; }
-    .main { padding: 22px; }
-    .box {
-      background: #fff;
-      padding: 16px;
-      border-radius: 12px;
-      max-width: 840px;
-    }
-    input {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      margin: 6px 0;
-    }
-    .btn {
-      background: var(--accent);
-      border: 0;
-      color: #fff;
-      padding: 10px 12px;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-    .score { font-weight: 700; }
-    @media (max-width: 860px) {
-      .layout { grid-template-columns: 1fr; }
-      .sidebar { display: flex; gap: 6px; overflow: auto; }
-      .sidebar a { white-space: nowrap; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review & Validate - Performance Evaluation System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-bg: #F8FAFC;
+            --secondary-bg: #DBEAFE;
+            --accent-color: #2563EB;
+            --accent-hover: #1D4ED8;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --border-color: #E5E7EB;
+            --success-color: #10B981;
+            --warning-color: #F59E0B;
+            --error-color: #EF4444;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --sidebar-width: 280px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            border-right: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            color: white;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+
+        .sidebar-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .sidebar-subtitle {
+            font-size: 0.75rem;
+            opacity: 0.9;
+        }
+
+        .nav-menu {
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 0.875rem 1.5rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: var(--primary-bg);
+            border-left-color: var(--accent-color);
+        }
+
+        .nav-item.active {
+            background: var(--secondary-bg);
+            border-left-color: var(--accent-color);
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            display: inline-block;
+            width: 20px;
+            margin-right: 0.75rem;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+        }
+
+        .header {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-bg);
+        }
+
+        .btn-danger {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #DC2626;
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        /* Stats Overview */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-title {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-change {
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-change.positive {
+            color: var(--success-color);
+        }
+
+        .stat-change.negative {
+            color: var(--error-color);
+        }
+
+        /* Review Queue */
+        .review-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem;
+            background: var(--primary-bg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            background: white;
+        }
+
+        .review-list {
+            padding: 1.5rem;
+        }
+
+        .review-item {
+            background: var(--primary-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent-color);
+            transition: all 0.2s;
+        }
+
+        .review-item:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .review-item.urgent {
+            border-left-color: var(--error-color);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .employee-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .employee-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.125rem;
+        }
+
+        .employee-details {
+            flex: 1;
+        }
+
+        .employee-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .employee-meta {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .review-status {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.5rem;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-badge.pending {
+            background: #FED7AA;
+            color: #9A3412;
+        }
+
+        .status-badge.reviewed {
+            background: #DBEAFE;
+            color: #1E3A8A;
+        }
+
+        .status-badge.approved {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .status-badge.rejected {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .priority-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .priority-badge.high {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .priority-badge.medium {
+            background: #FED7AA;
+            color: #9A3412;
+        }
+
+        .priority-badge.low {
+            background: #E5E7EB;
+            color: #6B7280;
+        }
+
+        .review-content {
+            margin-bottom: 1rem;
+        }
+
+        .evaluation-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .summary-item {
+            text-align: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 6px;
+        }
+
+        .summary-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .summary-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .review-notes {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .notes-title {
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .notes-content {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .review-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        /* Evaluation Details Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.25rem;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .evaluation-details {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .detail-section {
+            background: var(--primary-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .detail-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .criteria-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .criteria-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: white;
+            border-radius: 6px;
+        }
+
+        .criteria-name {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .criteria-score {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .score-value {
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+
+        .score-bar {
+            width: 100px;
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .score-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-hover));
+            border-radius: 4px;
+        }
+
+        .review-form {
+            margin-top: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        /* Mobile Responsive */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+                padding-top: 4rem;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: none;
+            }
+
+            .review-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .review-status {
+                align-items: flex-start;
+            }
+
+            .evaluation-summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .review-actions {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="layout">
-    <aside class="sidebar">
-      <h2>HR Officer</h2>
-      <nav>
-        <a href="dashboard.html">Dashboard</a>
-        <a href="forms.html">Evaluation Forms</a>
-        <a href="schedules.html">Schedules</a>
-        <a class="active" href="review.html">Review</a>
-        <a href="finalize.html">Finalize</a>
-        <a href="reports.html">Reports</a>
-        <a href="#" onclick="logout(); return false;">Logout</a>
-      </nav>
-    </aside>
-    <main class="main">
-      <h1>Review & Validate Evaluations</h1>
-      <div class="box">
-        <p>Prototype score validation with auto-calculation.</p>
-        <label>Quality<input id="s1" type="number" min="1" max="5" value="4" /></label>
-        <label>Productivity<input id="s2" type="number" min="1" max="5" value="5" /></label>
-        <label>Teamwork<input id="s3" type="number" min="1" max="5" value="4" /></label>
-        <p class="score">Average Score: <span id="avg">4.33</span></p>
-        <button class="btn" onclick="validateEval()">Validate</button>
-      </div>
-    </main>
-  </div>
+    <div class="app-container">
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-toggle" onclick="toggleSidebar()">☰</button>
+        
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <div class="logo-icon">EP</div>
+                    <div>
+                        <div class="sidebar-title">HR Portal</div>
+                        <div class="sidebar-subtitle">Performance Evaluation</div>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item">
+                    <span class="nav-icon">📊</span> Dashboard
+                </a>
+                <a href="forms.html" class="nav-item">
+                    <span class="nav-icon">📝</span> Evaluation Forms
+                </a>
+                <a href="schedules.html" class="nav-item">
+                    <span class="nav-icon">📅</span> Schedules
+                </a>
+                <a href="review.html" class="nav-item active">
+                    <span class="nav-icon">👁️</span> Review & Validate
+                </a>
+                <a href="finalize.html" class="nav-item">
+                    <span class="nav-icon">✅</span> Finalize Evaluations
+                </a>
+                <a href="reports.html" class="nav-item">
+                    <span class="nav-icon">📈</span> Reports
+                </a>
+                <a href="../admin/settings.html" class="nav-item">
+                    <span class="nav-icon">⚙️</span> Settings
+                </a>
+            </nav>
+        </aside>
 
-  <script>
-    const auth = JSON.parse(localStorage.getItem("epsAuth") || "null");
-    if (!auth || auth.role !== "HR Officer") location.href = "../index.html";
+        <!-- Overlay for mobile -->
+        <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
-    [s1, s2, s3].forEach((i) => i.addEventListener("input", calc));
-    function calc() {
-      avg.textContent = (
-        [s1, s2, s3].reduce((t, x) => t + (Number(x.value) || 0), 0) / 3
-      ).toFixed(2);
-    }
-    function validateEval() {
-      alert(`Evaluation validated with average ${avg.textContent}.`);
-    }
-    function logout() {
-      localStorage.removeItem("epsAuth");
-      location.href = "../index.html";
-    }
-  </script>
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div>
+                    <h1 class="header-title">Review & Validate</h1>
+                    <p style="color: var(--text-secondary); margin-top: 0.25rem;">Review and validate submitted evaluations</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-success" onclick="approveAll()">
+                        <span>✅</span> Approve Selected
+                    </button>
+                    <button class="btn btn-danger" onclick="logout()">
+                        <span>🚪</span> Logout
+                    </button>
+                </div>
+            </header>
+
+            <!-- Statistics Overview -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Pending Review</h3>
+                        <div class="stat-icon" style="background: #FED7AA; color: #F59E0B;">⏳</div>
+                    </div>
+                    <div class="stat-value">23</div>
+                    <div class="stat-change positive">
+                        <span>↓</span> 5 less than yesterday
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Reviewed Today</h3>
+                        <div class="stat-icon" style="background: #DBEAFE; color: #2563EB;">👁️</div>
+                    </div>
+                    <div class="stat-value">8</div>
+                    <div class="stat-change positive">
+                        <span>↑</span> 3 more than average
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Approved This Week</h3>
+                        <div class="stat-icon" style="background: #D1FAE5; color: #10B981;">✅</div>
+                    </div>
+                    <div class="stat-value">45</div>
+                    <div class="stat-change positive">
+                        <span>↑</span> 12% increase
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Requiring Changes</h3>
+                        <div class="stat-icon" style="background: #FEE2E2; color: #EF4444;">🔄</div>
+                    </div>
+                    <div class="stat-value">7</div>
+                    <div class="stat-change negative">
+                        <span>↑</span> 2 more than yesterday
+                    </div>
+                </div>
+            </section>
+
+            <!-- Review Queue -->
+            <section class="review-section">
+                <div class="section-header">
+                    <h3 class="section-title">Review Queue</h3>
+                    <button class="btn btn-secondary" onclick="exportReviews()">Export Review List</button>
+                </div>
+
+                <div class="filter-controls">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" class="search-input" placeholder="Search employees..." id="searchInput">
+                    </div>
+                    <select class="filter-select" id="statusFilter">
+                        <option value="">All Status</option>
+                        <option value="pending">Pending Review</option>
+                        <option value="reviewed">Reviewed</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                    <select class="filter-select" id="priorityFilter">
+                        <option value="">All Priorities</option>
+                        <option value="high">High Priority</option>
+                        <option value="medium">Medium Priority</option>
+                        <option value="low">Low Priority</option>
+                    </select>
+                    <select class="filter-select" id="departmentFilter">
+                        <option value="">All Departments</option>
+                        <option value="IT">IT Department</option>
+                        <option value="HR">HR Department</option>
+                        <option value="Sales">Sales</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Marketing">Marketing</option>
+                    </select>
+                </div>
+
+                <div class="review-list" id="reviewList">
+                    <!-- Urgent Review Item -->
+                    <div class="review-item urgent" data-status="pending" data-priority="high" data-department="IT">
+                        <div class="review-header">
+                            <div class="employee-info">
+                                <div class="employee-avatar">JS</div>
+                                <div class="employee-details">
+                                    <h4 class="employee-name">John Smith</h4>
+                                    <p class="employee-meta">Software Developer • IT Department • Q1 2024 Evaluation</p>
+                                </div>
+                            </div>
+                            <div class="review-status">
+                                <span class="priority-badge high">HIGH PRIORITY</span>
+                                <span class="status-badge pending">PENDING REVIEW</span>
+                            </div>
+                        </div>
+                        <div class="review-content">
+                            <div class="evaluation-summary">
+                                <div class="summary-item">
+                                    <div class="summary-value">4.2</div>
+                                    <div class="summary-label">Overall Score</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">85%</div>
+                                    <div class="summary-label">Completion</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">5</div>
+                                    <div class="summary-label">Criteria</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">2d</div>
+                                    <div class="summary-label">Age</div>
+                                </div>
+                            </div>
+                            <div class="review-notes">
+                                <div class="notes-title">Supervisor Notes:</div>
+                                <div class="notes-content">
+                                    John has shown excellent technical skills and consistently meets project deadlines. 
+                                    Areas for improvement include communication with cross-functional teams and taking initiative 
+                                    in team meetings. Overall performance is above expectations.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="review-actions">
+                            <button class="btn btn-secondary" onclick="viewDetails('john-smith')">View Details</button>
+                            <button class="btn btn-primary" onclick="reviewEvaluation('john-smith')">Review</button>
+                            <button class="btn btn-success" onclick="approveEvaluation('john-smith')">Approve</button>
+                            <button class="btn btn-danger" onclick="rejectEvaluation('john-smith')">Reject</button>
+                        </div>
+                    </div>
+
+                    <!-- Medium Priority Review -->
+                    <div class="review-item" data-status="pending" data-priority="medium" data-department="Sales">
+                        <div class="review-header">
+                            <div class="employee-info">
+                                <div class="employee-avatar">MW</div>
+                                <div class="employee-details">
+                                    <h4 class="employee-name">Mike Wilson</h4>
+                                    <p class="employee-meta">Sales Representative • Sales Department • Q1 2024 Evaluation</p>
+                                </div>
+                            </div>
+                            <div class="review-status">
+                                <span class="priority-badge medium">MEDIUM PRIORITY</span>
+                                <span class="status-badge pending">PENDING REVIEW</span>
+                            </div>
+                        </div>
+                        <div class="review-content">
+                            <div class="evaluation-summary">
+                                <div class="summary-item">
+                                    <div class="summary-value">3.8</div>
+                                    <div class="summary-label">Overall Score</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">100%</div>
+                                    <div class="summary-label">Completion</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">5</div>
+                                    <div class="summary-label">Criteria</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">1d</div>
+                                    <div class="summary-label">Age</div>
+                                </div>
+                            </div>
+                            <div class="review-notes">
+                                <div class="notes-title">Supervisor Notes:</div>
+                                <div class="notes-content">
+                                    Mike has achieved 115% of his sales target this quarter. Excellent customer relationship 
+                                    management skills. Could benefit from better time management and administrative task completion.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="review-actions">
+                            <button class="btn btn-secondary" onclick="viewDetails('mike-wilson')">View Details</button>
+                            <button class="btn btn-primary" onclick="reviewEvaluation('mike-wilson')">Review</button>
+                            <button class="btn btn-success" onclick="approveEvaluation('mike-wilson')">Approve</button>
+                            <button class="btn btn-danger" onclick="rejectEvaluation('mike-wilson')">Reject</button>
+                        </div>
+                    </div>
+
+                    <!-- Reviewed Item -->
+                    <div class="review-item" data-status="reviewed" data-priority="low" data-department="HR">
+                        <div class="review-header">
+                            <div class="employee-info">
+                                <div class="employee-avatar">SJ</div>
+                                <div class="employee-details">
+                                    <h4 class="employee-name">Sarah Johnson</h4>
+                                    <p class="employee-meta">HR Manager • HR Department • Q1 2024 Evaluation</p>
+                                </div>
+                            </div>
+                            <div class="review-status">
+                                <span class="priority-badge low">LOW PRIORITY</span>
+                                <span class="status-badge reviewed">REVIEWED</span>
+                            </div>
+                        </div>
+                        <div class="review-content">
+                            <div class="evaluation-summary">
+                                <div class="summary-item">
+                                    <div class="summary-value">4.5</div>
+                                    <div class="summary-label">Overall Score</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">100%</div>
+                                    <div class="summary-label">Completion</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">6</div>
+                                    <div class="summary-label">Criteria</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">3h</div>
+                                    <div class="summary-label">Age</div>
+                                </div>
+                            </div>
+                            <div class="review-notes">
+                                <div class="notes-title">HR Review Notes:</div>
+                                <div class="notes-content">
+                                    Evaluation has been reviewed and minor clarifications requested regarding training metrics. 
+                                    Overall assessment is positive with recommendations for leadership development program.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="review-actions">
+                            <button class="btn btn-secondary" onclick="viewDetails('sarah-johnson')">View Details</button>
+                            <button class="btn btn-success" onclick="approveEvaluation('sarah-johnson')">Approve</button>
+                            <button class="btn btn-danger" onclick="rejectEvaluation('sarah-johnson')">Reject</button>
+                        </div>
+                    </div>
+
+                    <!-- Approved Item -->
+                    <div class="review-item" data-status="approved" data-priority="low" data-department="Finance">
+                        <div class="review-header">
+                            <div class="employee-info">
+                                <div class="employee-avatar">ED</div>
+                                <div class="employee-details">
+                                    <h4 class="employee-name">Emily Davis</h4>
+                                    <p class="employee-meta">Financial Analyst • Finance Department • Q1 2024 Evaluation</p>
+                                </div>
+                            </div>
+                            <div class="review-status">
+                                <span class="priority-badge low">LOW PRIORITY</span>
+                                <span class="status-badge approved">APPROVED</span>
+                            </div>
+                        </div>
+                        <div class="review-content">
+                            <div class="evaluation-summary">
+                                <div class="summary-item">
+                                    <div class="summary-value">4.7</div>
+                                    <div class="summary-label">Overall Score</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">100%</div>
+                                    <div class="summary-label">Completion</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">5</div>
+                                    <div class="summary-label">Criteria</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-value">1d</div>
+                                    <div class="summary-label">Age</div>
+                                </div>
+                            </div>
+                            <div class="review-notes">
+                                <div class="notes-title">Final Review Notes:</div>
+                                <div class="notes-content">
+                                    Evaluation has been approved and finalized. Emily demonstrates exceptional analytical skills 
+                                    and attention to detail. Recommended for advanced certification program.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="review-actions">
+                            <button class="btn btn-secondary" onclick="viewDetails('emily-davis')">View Details</button>
+                            <button class="btn btn-secondary" onclick="downloadPDF('emily-davis')">Download PDF</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Evaluation Details Modal -->
+    <div class="modal" id="detailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Evaluation Details - John Smith</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="evaluation-details">
+                    <div class="detail-section">
+                        <h4 class="detail-title">Employee Information</h4>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                            <div>
+                                <strong>Name:</strong> John Smith
+                            </div>
+                            <div>
+                                <strong>Department:</strong> IT Department
+                            </div>
+                            <div>
+                                <strong>Position:</strong> Software Developer
+                            </div>
+                            <div>
+                                <strong>Evaluator:</strong> Sarah Johnson
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <h4 class="detail-title">Evaluation Scores</h4>
+                        <div class="criteria-list">
+                            <div class="criteria-item">
+                                <span class="criteria-name">Job Performance</span>
+                                <div class="criteria-score">
+                                    <div class="score-bar">
+                                        <div class="score-fill" style="width: 90%;"></div>
+                                    </div>
+                                    <span class="score-value">4.5/5.0</span>
+                                </div>
+                            </div>
+                            <div class="criteria-item">
+                                <span class="criteria-name">Teamwork</span>
+                                <div class="criteria-score">
+                                    <div class="score-bar">
+                                        <div class="score-fill" style="width: 80%;"></div>
+                                    </div>
+                                    <span class="score-value">4.0/5.0</span>
+                                </div>
+                            </div>
+                            <div class="criteria-item">
+                                <span class="criteria-name">Communication</span>
+                                <div class="criteria-score">
+                                    <div class="score-bar">
+                                        <div class="score-fill" style="width: 70%;"></div>
+                                    </div>
+                                    <span class="score-value">3.5/5.0</span>
+                                </div>
+                            </div>
+                            <div class="criteria-item">
+                                <span class="criteria-name">Innovation</span>
+                                <div class="criteria-score">
+                                    <div class="score-bar">
+                                        <div class="score-fill" style="width: 85%;"></div>
+                                    </div>
+                                    <span class="score-value">4.25/5.0</span>
+                                </div>
+                            </div>
+                            <div class="criteria-item">
+                                <span class="criteria-name">Leadership</span>
+                                <div class="criteria-score">
+                                    <div class="score-bar">
+                                        <div class="score-fill" style="width: 75%;"></div>
+                                    </div>
+                                    <span class="score-value">3.75/5.0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <h4 class="detail-title">HR Review</h4>
+                        <div class="review-form">
+                            <div class="form-group">
+                                <label class="form-label">Review Comments</label>
+                                <textarea class="form-textarea" placeholder="Enter your review comments..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Recommendations</label>
+                                <textarea class="form-textarea" placeholder="Enter recommendations for improvement..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-danger" onclick="rejectFromModal()">Reject</button>
+                <button class="btn btn-success" onclick="approveFromModal()">Approve</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check authentication
+        function checkAuth() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            const user = JSON.parse(currentUser);
+            if (user.role !== 'hr') {
+                const dashboardMap = {
+                    administrator: '../admin/dashboard.html',
+                    employee: '../employee/dashboard.html',
+                    supervisor: '../supervisor/dashboard.html'
+                };
+                if (dashboardMap[user.role]) {
+                    window.location.href = dashboardMap[user.role];
+                }
+            }
+        }
+
+        // Toggle sidebar for mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        // Global logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('currentUser');
+                window.location.href = '../index.html';
+            }
+        }
+
+        // Review actions
+        function viewDetails(employeeId) {
+            document.getElementById('detailsModal').classList.add('active');
+        }
+
+        function reviewEvaluation(employeeId) {
+            viewDetails(employeeId);
+        }
+
+        function approveEvaluation(employeeId) {
+            if (confirm('Approve this evaluation?')) {
+                alert('Evaluation approved successfully!');
+                // In real app, would update status and send notifications
+            }
+        }
+
+        function rejectEvaluation(employeeId) {
+            const reason = prompt('Please provide reason for rejection:');
+            if (reason) {
+                alert('Evaluation rejected. Reason: ' + reason);
+                // In real app, would update status and notify evaluator
+            }
+        }
+
+        function approveFromModal() {
+            if (confirm('Approve this evaluation?')) {
+                alert('Evaluation approved successfully!');
+                closeModal();
+            }
+        }
+
+        function rejectFromModal() {
+            const reason = prompt('Please provide reason for rejection:');
+            if (reason) {
+                alert('Evaluation rejected. Reason: ' + reason);
+                closeModal();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('detailsModal').classList.remove('active');
+        }
+
+        function approveAll() {
+            const pendingItems = document.querySelectorAll('[data-status="pending"]');
+            if (pendingItems.length === 0) {
+                alert('No pending evaluations to approve.');
+                return;
+            }
+            
+            if (confirm(`Approve all ${pendingItems.length} pending evaluations?`)) {
+                alert('All pending evaluations approved successfully!');
+                // In real app, would update all pending items
+            }
+        }
+
+        function exportReviews() {
+            alert('Exporting review list to Excel...');
+            // In real app, would generate and download Excel file
+        }
+
+        function downloadPDF(employeeId) {
+            alert('Downloading evaluation PDF...');
+            // In real app, would generate and download PDF
+        }
+
+        // Filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+
+            // Search functionality
+            document.getElementById('searchInput').addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                const items = document.querySelectorAll('.review-item');
+                
+                items.forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    item.style.display = text.includes(searchTerm) ? '' : 'none';
+                });
+            });
+
+            // Filter functionality
+            const filters = ['statusFilter', 'priorityFilter', 'departmentFilter'];
+            filters.forEach(filterId => {
+                document.getElementById(filterId).addEventListener('change', function() {
+                    filterReviews();
+                });
+            });
+        });
+
+        function filterReviews() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const priorityFilter = document.getElementById('priorityFilter').value;
+            const departmentFilter = document.getElementById('departmentFilter').value;
+            const items = document.querySelectorAll('.review-item');
+
+            items.forEach(item => {
+                const matchesStatus = !statusFilter || item.dataset.status === statusFilter;
+                const matchesPriority = !priorityFilter || item.dataset.priority === priorityFilter;
+                const matchesDepartment = !departmentFilter || item.dataset.department === departmentFilter;
+
+                item.style.display = matchesStatus && matchesPriority && matchesDepartment ? '' : 'none';
+            });
+        }
+
+        // Add animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Animate review items on load
+        window.addEventListener('load', function() {
+            const reviewItems = document.querySelectorAll('.review-item');
+            reviewItems.forEach((item, index) => {
+                item.style.animation = `fadeInUp 0.5s ease ${index * 0.1}s both`;
+            });
+        });
+    </script>
 </body>
 </html>

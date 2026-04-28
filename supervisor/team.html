@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Management - Performance Evaluation System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-bg: #F8FAFC;
+            --secondary-bg: #DBEAFE;
+            --accent-color: #2563EB;
+            --accent-hover: #1D4ED8;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --border-color: #E5E7EB;
+            --success-color: #10B981;
+            --warning-color: #F59E0B;
+            --error-color: #EF4444;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --sidebar-width: 280px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            border-right: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            color: white;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+
+        .sidebar-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .sidebar-subtitle {
+            font-size: 0.75rem;
+            opacity: 0.9;
+        }
+
+        .nav-menu {
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 0.875rem 1.5rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: var(--primary-bg);
+            border-left-color: var(--accent-color);
+        }
+
+        .nav-item.active {
+            background: var(--secondary-bg);
+            border-left-color: var(--accent-color);
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            display: inline-block;
+            width: 20px;
+            margin-right: 0.75rem;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+        }
+
+        .header {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-bg);
+        }
+
+        .btn-danger {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #DC2626;
+        }
+
+        /* Team Stats */
+        .team-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin: 0 auto 1rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Team Table */
+        .team-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem;
+            background: var(--primary-bg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            background: white;
+        }
+
+        .team-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .team-table th {
+            text-align: left;
+            padding: 1rem;
+            background: var(--primary-bg);
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .team-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.875rem;
+        }
+
+        .team-table tr:hover {
+            background: var(--primary-bg);
+        }
+
+        .employee-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .employee-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .employee-details {
+            flex: 1;
+        }
+
+        .employee-name {
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .employee-role {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-badge.on-track {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .status-badge.needs-attention {
+            background: #FED7AA;
+            color: #9A3412;
+        }
+
+        .status-badge.overdue {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .status-badge.completed {
+            background: #DBEAFE;
+            color: #1E3A8A;
+        }
+
+        .performance-score {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .performance-score.excellent {
+            color: var(--success-color);
+        }
+
+        .performance-score.good {
+            color: var(--accent-color);
+        }
+
+        .performance-score.average {
+            color: var(--warning-color);
+        }
+
+        .performance-score.poor {
+            color: var(--error-color);
+        }
+
+        .progress-bar {
+            width: 100px;
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-hover));
+            border-radius: 4px;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .action-btn:hover {
+            background: var(--secondary-bg);
+            color: var(--accent-color);
+        }
+
+        /* Mobile Responsive */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+                padding-top: 4rem;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .team-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filter-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: none;
+            }
+
+            .team-table {
+                font-size: 0.75rem;
+            }
+
+            .team-table th,
+            .team-table td {
+                padding: 0.5rem;
+            }
+
+            .table-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-toggle" onclick="toggleSidebar()">☰</button>
+        
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <div class="logo-icon">EP</div>
+                    <div>
+                        <div class="sidebar-title">Supervisor Portal</div>
+                        <div class="sidebar-subtitle">Performance Evaluation</div>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item">
+                    <span class="nav-icon">📊</span> Dashboard
+                </a>
+                <a href="team.html" class="nav-item active">
+                    <span class="nav-icon">👥</span> Team Management
+                </a>
+                <a href="evaluations.html" class="nav-item">
+                    <span class="nav-icon">📝</span> Team Evaluations
+                </a>
+                <a href="schedule.html" class="nav-item">
+                    <span class="nav-icon">📅</span> Schedule Reviews
+                </a>
+                <a href="feedback.html" class="nav-item">
+                    <span class="nav-icon">💬</span> Give Feedback
+                </a>
+                <a href="reports.html" class="nav-item">
+                    <span class="nav-icon">📈</span> Team Reports
+                </a>
+                <a href="../admin/settings.html" class="nav-item">
+                    <span class="nav-icon">⚙️</span> Settings
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Overlay for mobile -->
+        <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div>
+                    <h1 class="header-title">Team Management</h1>
+                    <p style="color: var(--text-secondary); margin-top: 0.25rem;">Manage your team members and their performance</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="addTeamMember()">
+                        <span>➕</span> Add Team Member
+                    </button>
+                    <button class="btn btn-danger" onclick="logout()">
+                        <span>🚪</span> Logout
+                    </button>
+                </div>
+            </header>
+
+            <!-- Team Statistics -->
+            <section class="team-stats">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #DBEAFE; color: #2563EB;">👥</div>
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">Total Members</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #D1FAE5; color: #10B981;">✅</div>
+                    <div class="stat-value">8</div>
+                    <div class="stat-label">On Track</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #FED7AA; color: #F59E0B;">⚠️</div>
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Need Attention</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #FEE2E2; color: #EF4444;">📊</div>
+                    <div class="stat-value">4.1</div>
+                    <div class="stat-label">Avg Score</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #E5E7EB; color: #6B7280;">📈</div>
+                    <div class="stat-value">85%</div>
+                    <div class="stat-label">Completion Rate</div>
+                </div>
+            </section>
+
+            <!-- Team Table -->
+            <section class="team-section">
+                <div class="section-header">
+                    <h3 class="section-title">Team Members</h3>
+                    <button class="btn btn-secondary" onclick="exportTeamData()">Export Data</button>
+                </div>
+
+                <div class="filter-controls">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" class="search-input" placeholder="Search team members..." id="searchInput">
+                    </div>
+                    <select class="filter-select" id="statusFilter">
+                        <option value="">All Status</option>
+                        <option value="on-track">On Track</option>
+                        <option value="needs-attention">Needs Attention</option>
+                        <option value="overdue">Overdue</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                    <select class="filter-select" id="roleFilter">
+                        <option value="">All Roles</option>
+                        <option value="senior">Senior Developer</option>
+                        <option value="developer">Software Developer</option>
+                        <option value="junior">Junior Developer</option>
+                        <option value="frontend">Frontend Developer</option>
+                        <option value="backend">Backend Developer</option>
+                    </select>
+                </div>
+
+                <table class="team-table">
+                    <thead>
+                        <tr>
+                            <th>Employee</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Last Score</th>
+                            <th>Progress</th>
+                            <th>Next Review</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="teamTableBody">
+                        <tr data-status="on-track" data-role="senior">
+                            <td>
+                                <div class="employee-info">
+                                    <div class="employee-avatar">JD</div>
+                                    <div class="employee-details">
+                                        <div class="employee-name">John Doe</div>
+                                        <div class="employee-role">EMP-2022-0142</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>Senior Software Developer</td>
+                            <td><span class="status-badge on-track">ON TRACK</span></td>
+                            <td><span class="performance-score excellent">4.3</span></td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 75%;"></div>
+                                </div>
+                            </td>
+                            <td>Apr 30, 2024</td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="action-btn" onclick="viewEmployee('john-doe')" title="View Profile">👁️</button>
+                                    <button class="action-btn" onclick="evaluateEmployee('john-doe')" title="Evaluate">📝</button>
+                                    <button class="action-btn" onclick="sendMessage('john-doe')" title="Send Message">💬</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr data-status="needs-attention" data-role="developer">
+                            <td>
+                                <div class="employee-info">
+                                    <div class="employee-avatar">MW</div>
+                                    <div class="employee-details">
+                                        <div class="employee-name">Mike Wilson</div>
+                                        <div class="employee-role">EMP-2021-0089</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>Software Developer</td>
+                            <td><span class="status-badge needs-attention">NEEDS ATTENTION</span></td>
+                            <td><span class="performance-score good">3.8</span></td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 45%;"></div>
+                                </div>
+                            </td>
+                            <td>Apr 25, 2024</td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="action-btn" onclick="viewEmployee('mike-wilson')" title="View Profile">👁️</button>
+                                    <button class="action-btn" onclick="evaluateEmployee('mike-wilson')" title="Evaluate">📝</button>
+                                    <button class="action-btn" onclick="sendMessage('mike-wilson')" title="Send Message">💬</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr data-status="on-track" data-role="junior">
+                            <td>
+                                <div class="employee-info">
+                                    <div class="employee-avatar">ED</div>
+                                    <div class="employee-details">
+                                        <div class="employee-name">Emily Davis</div>
+                                        <div class="employee-role">EMP-2023-0156</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>Junior Developer</td>
+                            <td><span class="status-badge on-track">ON TRACK</span></td>
+                            <td><span class="performance-score good">4.1</span></td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 90%;"></div>
+                                </div>
+                            </td>
+                            <td>May 5, 2024</td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="action-btn" onclick="viewEmployee('emily-davis')" title="View Profile">👁️</button>
+                                    <button class="action-btn" onclick="evaluateEmployee('emily-davis')" title="Evaluate">📝</button>
+                                    <button class="action-btn" onclick="sendMessage('emily-davis')" title="Send Message">💬</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr data-status="overdue" data-role="frontend">
+                            <td>
+                                <div class="employee-info">
+                                    <div class="employee-avatar">RB</div>
+                                    <div class="employee-details">
+                                        <div class="employee-name">Robert Brown</div>
+                                        <div class="employee-role">EMP-2022-0123</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>Frontend Developer</td>
+                            <td><span class="status-badge overdue">OVERDUE</span></td>
+                            <td><span class="performance-score average">3.5</span></td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 25%;"></div>
+                                </div>
+                            </td>
+                            <td>Mar 31, 2024</td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="action-btn" onclick="viewEmployee('robert-brown')" title="View Profile">👁️</button>
+                                    <button class="action-btn" onclick="evaluateEmployee('robert-brown')" title="Evaluate">📝</button>
+                                    <button class="action-btn" onclick="sendMessage('robert-brown')" title="Send Message">💬</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr data-status="completed" data-role="backend">
+                            <td>
+                                <div class="employee-info">
+                                    <div class="employee-avatar">LJ</div>
+                                    <div class="employee-details">
+                                        <div class="employee-name">Lisa Johnson</div>
+                                        <div class="employee-role">EMP-2021-0078</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>Backend Developer</td>
+                            <td><span class="status-badge completed">COMPLETED</span></td>
+                            <td><span class="performance-score excellent">4.4</span></td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 100%;"></div>
+                                </div>
+                            </td>
+                            <td>Jul 15, 2024</td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="action-btn" onclick="viewEmployee('lisa-johnson')" title="View Profile">👁️</button>
+                                    <button class="action-btn" onclick="evaluateEmployee('lisa-johnson')" title="Evaluate">📝</button>
+                                    <button class="action-btn" onclick="sendMessage('lisa-johnson')" title="Send Message">💬</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr data-status="on-track" data-role="developer">
+                            <td>
+                                <div class="employee-info">
+                                    <div class="employee-avatar">TG</div>
+                                    <div class="employee-details">
+                                        <div class="employee-name">Tom Garcia</div>
+                                        <div class="employee-role">EMP-2023-0167</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>Software Developer</td>
+                            <td><span class="status-badge on-track">ON TRACK</span></td>
+                            <td><span class="performance-score good">4.0</span></td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 80%;"></div>
+                                </div>
+                            </td>
+                            <td>May 10, 2024</td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="action-btn" onclick="viewEmployee('tom-garcia')" title="View Profile">👁️</button>
+                                    <button class="action-btn" onclick="evaluateEmployee('tom-garcia')" title="Evaluate">📝</button>
+                                    <button class="action-btn" onclick="sendMessage('tom-garcia')" title="Send Message">💬</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr data-status="needs-attention" data-role="junior">
+                            <td>
+                                <div class="employee-info">
+                                    <div class="employee-avatar">AM</div>
+                                    <div class="employee-details">
+                                        <div class="employee-name">Anna Martinez</div>
+                                        <div class="employee-role">EMP-2023-0189</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>Junior Developer</td>
+                            <td><span class="status-badge needs-attention">NEEDS ATTENTION</span></td>
+                            <td><span class="performance-score average">3.6</span></td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 55%;"></div>
+                                </div>
+                            </td>
+                            <td>Apr 28, 2024</td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="action-btn" onclick="viewEmployee('anna-martinez')" title="View Profile">👁️</button>
+                                    <button class="action-btn" onclick="evaluateEmployee('anna-martinez')" title="Evaluate">📝</button>
+                                    <button class="action-btn" onclick="sendMessage('anna-martinez')" title="Send Message">💬</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr data-status="on-track" data-role="frontend">
+                            <td>
+                                <div class="employee-info">
+                                    <div class="employee-avatar">DL</div>
+                                    <div class="employee-details">
+                                        <div class="employee-name">David Lee</div>
+                                        <div class="employee-role">EMP-2022-0134</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>Frontend Developer</td>
+                            <td><span class="status-badge on-track">ON TRACK</span></td>
+                            <td><span class="performance-score excellent">4.2</span></td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 85%;"></div>
+                                </div>
+                            </td>
+                            <td>May 8, 2024</td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="action-btn" onclick="viewEmployee('david-lee')" title="View Profile">👁️</button>
+                                    <button class="action-btn" onclick="evaluateEmployee('david-lee')" title="Evaluate">📝</button>
+                                    <button class="action-btn" onclick="sendMessage('david-lee')" title="Send Message">💬</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Check authentication
+        function checkAuth() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            const user = JSON.parse(currentUser);
+            if (user.role !== 'supervisor') {
+                const dashboardMap = {
+                    administrator: '../admin/dashboard.html',
+                    hr: '../hr/dashboard.html',
+                    employee: '../employee/dashboard.html'
+                };
+                if (dashboardMap[user.role]) {
+                    window.location.href = dashboardMap[user.role];
+                }
+            }
+        }
+
+        // Toggle sidebar for mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        // Global logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('currentUser');
+                window.location.href = '../index.html';
+            }
+        }
+
+        // Team member actions
+        function addTeamMember() {
+            const name = prompt('Enter new team member name:');
+            if (name) {
+                const role = prompt('Enter role:');
+                if (role) {
+                    alert(`Team member ${name} (${role}) added successfully!`);
+                    // In real app, would add to database and refresh table
+                }
+            }
+        }
+
+        function viewEmployee(employeeId) {
+            alert(`Viewing employee profile: ${employeeId}`);
+            // In real app, would navigate to employee profile
+        }
+
+        function evaluateEmployee(employeeId) {
+            alert(`Starting evaluation for: ${employeeId}`);
+            // In real app, would navigate to evaluation form
+        }
+
+        function sendMessage(employeeId) {
+            const message = prompt(`Send message to ${employeeId}:`);
+            if (message) {
+                alert(`Message sent to ${employeeId}: ${message}`);
+                // In real app, would send message through system
+            }
+        }
+
+        function exportTeamData() {
+            alert('Exporting team data to Excel...');
+            // In real app, would generate and download Excel file
+        }
+
+        // Filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+
+            // Search functionality
+            document.getElementById('searchInput').addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                const rows = document.querySelectorAll('#teamTableBody tr');
+                
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(searchTerm) ? '' : 'none';
+                });
+            });
+
+            // Filter functionality
+            const filters = ['statusFilter', 'roleFilter'];
+            filters.forEach(filterId => {
+                document.getElementById(filterId).addEventListener('change', function() {
+                    filterTeamTable();
+                });
+            });
+        });
+
+        function filterTeamTable() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const roleFilter = document.getElementById('roleFilter').value;
+            const rows = document.querySelectorAll('#teamTableBody tr');
+
+            rows.forEach(row => {
+                const matchesStatus = !statusFilter || row.dataset.status === statusFilter;
+                const matchesRole = !roleFilter || row.dataset.role.includes(roleFilter);
+
+                row.style.display = matchesStatus && matchesRole ? '' : 'none';
+            });
+        }
+
+        // Initialize page
+        window.addEventListener('load', function() {
+            // Animate stat cards
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach((card, index) => {
+                card.style.animation = `fadeInUp 0.5s ease ${index * 0.1}s both`;
+            });
+
+            // Animate table rows
+            const tableRows = document.querySelectorAll('#teamTableBody tr');
+            tableRows.forEach((row, index) => {
+                row.style.animation = `fadeInUp 0.5s ease ${index * 0.05 + 0.5}s both`;
+            });
+
+            // Add hover effects to table rows
+            const rows = document.querySelectorAll('#teamTableBody tr');
+            rows.forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.01)';
+                    this.style.boxShadow = 'var(--shadow-md)';
+                });
+                row.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                    this.style.boxShadow = 'none';
+                });
+            });
+        });
+
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
